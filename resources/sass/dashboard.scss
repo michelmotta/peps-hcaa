@@ -1,0 +1,180 @@
+.btn-primary {
+    --dashui-btn-color: #fff;
+    --dashui-btn-bg: #133b6a;
+    --dashui-btn-border-color: #133b6a;
+    --dashui-btn-hover-color: #fff;
+    --dashui-btn-hover-bg: #275181;
+    --dashui-btn-hover-border-color: #4e3ccc;
+    --dashui-btn-focus-shadow-rgb: 122, 102, 255;
+    --dashui-btn-active-color: #fff;
+    --dashui-btn-active-bg: #133b6a;
+    --dashui-btn-active-border-color: #4a38bf;
+    --dashui-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    --dashui-btn-disabled-color: #fff;
+    --dashui-btn-disabled-bg: #133b6a;
+    --dashui-btn-disabled-border-color: #133b6a;
+}
+
+.nav-dashboard {
+    background: #212b36;
+    border-right: 0px;
+}
+
+.navbar-vertical {
+    .navbar-nav {
+        .nav-item {
+            .nav-link {
+                color: #919eab !important;
+                font-size: 16px;
+                padding: 8px 20px;
+                border-radius: 5px;
+
+                &:hover {
+                    color: #FFF !important;
+                    background: #454f5b !important;
+
+                    .nav-icon {
+                        color: #FFF !important;
+                    }
+                }
+
+                &.menu-active {
+                    background: #454f5b !important;
+                    color: #FFF !important;
+                }
+            }
+
+            .text-white {
+                color: #FFF !important;
+            }
+        }
+    }
+}
+
+.bg-primary {
+    background: #133b6a !important;
+}
+
+.card-footer {
+    p {
+        margin-bottom: 0px !important;
+    }
+
+    .pagination {
+        margin-bottom: 0px !important;
+    }
+}
+
+.roles {
+    margin-bottom: 40px !important;
+
+    .form-label {
+        font-size: 24px;
+        font-weight: 600;
+        color: #333333;
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    .form-check {
+        flex-wrap: wrap;
+        gap: 24px;
+        justify-content: center;
+
+        .role-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            transition: background-color 0.3s, border-color 0.3s;
+            cursor: pointer;
+            min-width: 200px; // optional: control card size
+            justify-content: center;
+
+            &:hover {
+                background-color: #f0f8ff;
+                border-color: #133b6a;
+            }
+
+            input[type='checkbox'] {
+                width: 20px;
+                height: 20px;
+                accent-color: #133b6a;
+                cursor: pointer;
+            }
+
+            .form-check-label {
+                font-size: 16px;
+                font-weight: 500;
+                color: #333333;
+                margin-top: 3px;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+
+.ql-editor {
+    min-height: 150px;
+}
+
+.alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    max-width: 90vw;
+    width: 100%;
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translateY(-50px);
+    transition: all 0.5s ease;
+}
+
+/* Optional: cap it at 500px for larger screens */
+@media (min-width: 600px) {
+    .alert {
+        min-width: 500px;
+        max-width: 500px;
+    }
+}
+
+.alert.alert-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ts-wrapper {
+    .ts-control {
+        height: 39px !important;
+    }
+}
+
+.ts-dropdown {
+    background: #FFF !important;
+}
+
+fieldset {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 20px;
+    margin-bottom: 1.5rem;
+}
+
+legend {
+    float: unset;
+    width: auto;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 0 10px;
+    color: #133b6a;
+}
+
+#resume {
+    height: 90px;
+}

@@ -1,0 +1,27 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.0.0",
+        "axios": "^1.8.2",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^1.2.0",
+        "sass": "^1.86.3",
+        "tailwindcss": "^4.0.0",
+        "vite": "^6.2.4"
+    },
+    "dependencies": {
+        "@fancyapps/ui": "^5.0.36",
+        "dropzone": "^6.0.0-beta.2",
+        "imask": "^7.6.1",
+        "jquery": "^3.7.1",
+        "owl.carousel": "^2.3.4",
+        "plyr": "^3.7.8",
+        "sweetalert2": "^11.6.13",
+        "tom-select": "^2.4.3"
+    }
+}

@@ -1,0 +1,30 @@
+services:
+  web:
+    container_name: webserver
+    image: nginx:latest
+    ports:
+      - '8080:80'
+    volumes:
+      - .:/var/www/eps.hcaa.org.br
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: /var/www/eps.hcaa.org.br
+    links:
+      - php-fpm
+  php-fpm:
+    container_name: php-fpm
+    build: .
+    volumes:
+      - .:/var/www/eps.hcaa.org.br
+    working_dir: /var/www/eps.hcaa.org.br
+    command: bash -c "php artisan migrate:fresh --seed && php-fpm"
+  postgres:
+    container_name: postgres
+    image: postgres:17-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+  
