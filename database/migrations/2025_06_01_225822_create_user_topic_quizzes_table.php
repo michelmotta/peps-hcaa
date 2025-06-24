@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('user_topic_quizzes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('lesson_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('topic_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->nullOnDelete();
+            $table->foreignId('lesson_id')->constrained()->nullOnDelete();
+            $table->foreignId('topic_id')->constrained()->nullOnDelete();
             $table->integer('correct_count');
             $table->integer('total_count');
             $table->decimal('score', 5, 2);

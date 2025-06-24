@@ -567,6 +567,7 @@ footer,
 
         .teacher-card-thumbnail {
             padding: 30px 30px 0px 30px;
+
             img {
                 width: 100%;
                 height: auto;
@@ -681,8 +682,7 @@ footer,
             height: 300px;
             object-fit: cover;
             width: 100%;
-            border-top-left-radius: 20px !important;
-            border-top-right-radius: 20px !important;
+            border-radius: 20px;
         }
     }
 
@@ -1799,6 +1799,44 @@ footer,
     }
 }
 
-.quiz-feedback-message{
+.quiz-feedback-message {
     border-radius: 0px !important;
+}
+
+.avaliacao-section {
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 5px;
+
+        input[type='radio'] {
+            display: none;
+        }
+
+        label {
+            font-size: 60px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s ease;
+
+            &:hover,
+            &:hover~label {
+                color: #ffc107;
+            }
+        }
+
+        span {
+            font-size: 60px;
+        }
+
+        input[type='radio']:checked~label {
+            color: #ffc107;
+        }
+
+        &.read-only {
+            pointer-events: none;
+            user-select: none;
+        }
+    }
 }

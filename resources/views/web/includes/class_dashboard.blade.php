@@ -65,7 +65,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="conteudo-tab" data-bs-toggle="tab"
                                 data-bs-target="#conteudo" type="button" role="tab">
-                                <i class="bi bi-journal-text me-1"></i> Sobre
+                                <i class="bi bi-journal-text me-1"></i> Informações
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -83,7 +83,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="avaliacao-tab" data-bs-toggle="tab" data-bs-target="#avaliacao"
                                 type="button" role="tab">
-                                <i class="bi bi-bar-chart-line me-1"></i> Avaliação
+                                <i class="bi bi-bar-chart-line me-1"></i> Quiz
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -95,7 +95,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="feedback-tab" data-bs-toggle="tab" data-bs-target="#feedback"
                                 type="button" role="tab">
-                                <i class="bi bi-chat-dots me-1"></i> Feedback
+                                <i class="bi bi-chat-dots me-1"></i> Avaliar
                             </button>
                         </li>
                     </ul>
@@ -336,19 +336,18 @@
                                         <h2 class="mb-3">Você já finalizou a avaliação desta aula!</h2>
                                         <p class="mb-4">Seu certificado está disponível na aba Certificado.</p>
                                     @else
-                                        <h2 class="mb-3">Avaliação do Aprendizado</h2>
-                                        <p class="mb-4">Clique no botão abaixo para iniciar sua avaliação.</p>
+                                        <h2 class="mb-3">Quiz de Avaliação do Aprendizado</h2>
+                                        <p class="mb-4">Clique no botão abaixo para iniciar o quiz.</p>
 
                                         <button type="button"
                                             class="btn btn-primary btn-lg d-inline-flex align-items-center gap-2"
                                             data-bs-toggle="modal" data-bs-target="#quizModal"
                                             data-lesson-id="{{ $lesson->id ?? 'UNKNOWN_LESSON' }}">
-                                            <i class="bi bi-play-circle-fill"></i> Iniciar Avaliação
+                                            <i class="bi bi-play-circle-fill"></i> Iniciar Quiz
                                         </button>
                                     @endif
                                 </div>
                             </section>
-
                             <section>
                                 <div class="modal fade" id="quizModal" tabindex="-1"
                                     aria-labelledby="quizModalLabel" aria-hidden="true" data-bs-backdrop="static">
@@ -401,10 +400,9 @@
                             </section>
                         </div>
                         <div class="tab-pane fade" id="certificado" role="tabpanel">
-                            <!-- Seção -->
                             <section class="avaliacao-section">
                                 <div class="container text-center pt-5 pb-5">
-                                    <h2 class="mb-3">Gerar Certificado</h2>
+                                    <h2 class="mb-3">Certificado de Conclusão</h2>
                                     @if (Gate::allows('generateCertificate', $lesson))
                                         <a href="{{ route('web.certificates.generate', $lesson->id) }}"
                                             class="btn btn-primary btn-lg d-inline-flex align-items-center gap-2"
@@ -413,14 +411,62 @@
                                         </a>
                                     @else
                                         <p class="mb-4">
-                                            Você poderá gerar o certificado assim que concluir a avaliação.
+                                            Você poderá gerar o certificado assim que concluir o quiz.
                                         </p>
                                     @endif
                                 </div>
                             </section>
                         </div>
                         <div class="tab-pane fade" id="feedback" role="tabpanel">
-                            <p>Deixe seu feedback aqui.</p>
+                            <section class="avaliacao-section">
+                                <h2 class="text-center mb-4">Avaliação da Aula</h2>
+                                <div id="avaliacao-wrapper">
+                                    @if ($feedback === null)
+                                        <div id="avaliacao-status" class="mb-4"></div>
+                                        <form id="avaliacao-form" data-lesson-id="{{ $lesson->id }}"
+                                            class="avaliacao-form mx-auto">
+                                            @csrf
+                                            <div class="mb-4 text-center">
+                                                <label class="form-label d-block">Dê a sua nota:</label>
+                                                <div class="star-rating">
+                                                    @for ($i = 5; $i >= 1; $i--)
+                                                        <input type="radio" name="rating"
+                                                            id="star{{ $i }}"
+                                                            value="{{ $i }}">
+                                                        <label for="star{{ $i }}">&#9733;</label>
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="comentario" class="form-label">Comentário
+                                                    (opcional)</label>
+                                                <textarea class="form-control" name="comentario" id="comentario" rows="4"></textarea>
+                                            </div>
+
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-primary">Enviar
+                                                    Avaliação</button>
+                                            </div>
+                                        </form>
+                                    @else
+                                        <div class="text-center">
+                                            <p class="mb-2">Você avaliou esta aula com:</p>
+                                            <div class="star-rating read-only mb-3">
+                                                @for ($i = 5; $i >= 1; $i--)
+                                                    <span
+                                                        style="color: {{ $i <= $feedback->rating ? '#ffc107' : '#ccc' }}">&#9733;</span>
+                                                @endfor
+                                            </div>
+
+                                            @if ($feedback->comentario)
+                                                <div class="alert alert-light border text-muted">
+                                                    <strong>Comentário:</strong><br>
+                                                    {{ $feedback->comentario }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+                            </section>
                         </div>
                     </div>
                 </div>
@@ -428,24 +474,4 @@
         </div>
     </div>
 </section>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const quizModal = document.getElementById('quizModal');
 
-        // Answer selection functionality
-        quizModal.querySelectorAll('.btn-answer').forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all buttons
-                quizModal.querySelectorAll('.btn-answer').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-
-                // Add active class to clicked button
-                this.classList.add('active');
-
-                // Enable submit button
-                quizModal.querySelector('.btn-submit').disabled = false;
-            });
-        });
-    });
-</script>

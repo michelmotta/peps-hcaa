@@ -287,7 +287,7 @@ function initPlyrWithTopics() {
 
     const player = new Plyr(videoElement);
     let playTimer = null;
-    const sentHistory = new Set(); // Evita enviar o mesmo tópico mais de uma vez
+    const sentHistory = new Set();
 
     const topicItems = document.querySelectorAll('.topic-item[data-video]');
     if (!topicItems.length) return;
@@ -310,29 +310,24 @@ function initPlyrWithTopics() {
     }
 
     function sendPlayEvent(topicId, itemElement) {
-        if (sentHistory.has(topicId)) return; // Já enviado
+        if (sentHistory.has(topicId)) return;
 
-        // Marca o item como assistido visualmente
         itemElement.classList.add('watched');
 
-        // Adiciona a badge "Assistido" se não existir
         let badge = itemElement.querySelector('.badge-watched');
         if (!badge) {
             badge = document.createElement('span');
             badge.classList.add('badge', 'badge-watched');
             badge.textContent = 'Assistido';
 
-            // Aqui pegamos a div onde a badge deve ficar: dentro do .topic-info, na div d-flex
             const topicInfo = itemElement.querySelector('.topic-info > div.d-flex');
             if (topicInfo) {
                 topicInfo.appendChild(badge);
             }
         }
 
-        // Atualiza a barra de progresso
         updateProgressBar();
 
-        // Envia para o servidor
         axios.post(window.location.pathname + '/history', { topic_id: topicId })
             .then(() => {
                 console.log('Histórico salvo com sucesso para o tópico ' + topicId);
@@ -343,7 +338,6 @@ function initPlyrWithTopics() {
             });
     }
 
-    // Ativa o primeiro tópico
     const firstItem = topicItems[0];
     if (firstItem) {
         firstItem.classList.add('active');
@@ -354,9 +348,7 @@ function initPlyrWithTopics() {
                 sources: [{ src: firstVideoUrl, type: 'video/mp4' }],
             };
 
-            // Play the video and apply animation after it starts
             player.once('playing', () => {
-                // Remove playing from all before setting it
                 topicItems.forEach(el => el.classList.remove('playing'));
                 firstItem.classList.add('playing');
             });
@@ -368,7 +360,6 @@ function initPlyrWithTopics() {
             const videoUrl = item.dataset.video;
             if (!videoUrl) return;
 
-            // Remove destaque e ícones anteriores
             topicItems.forEach(el => {
                 el.classList.remove('active', 'playing');
                 const icon = el.querySelector('.play-indicator');
@@ -397,32 +388,26 @@ function initPlyrWithTopics() {
 
         const mustWatchPercentage = 0.1;
 
-        // Get video duration and current time
         const duration = player.duration;
         const currentTime = player.currentTime;
 
         if (!sentEvent && duration && currentTime >= duration * mustWatchPercentage) {
             sentEvent = true;
 
-            // Remove playing class from all items
             topicItems.forEach(el => el.classList.remove('playing'));
 
-            // Add playing class to current item
             currentItem?.classList.add('playing');
 
             sendPlayEvent(topicId, currentItem);
         }
     });
 
-    // Reset flag when video changes or is loaded
     player.on('loadeddata', () => {
         sentEvent = false;
     });
 
-    // Atualiza barra de progresso ao carregar a página
     updateProgressBar();
 
-    // Aqui entra o código de controle da borda enquanto toca
     player.on('playing', () => {
         topicItems.forEach(el => el.classList.remove('playing'));
         const currentItem = document.querySelector('.topic-item.active');
@@ -440,12 +425,10 @@ function initPlyrWithTopics() {
     });
 }
 
-// Ensure this code runs after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     const quizModalEl = document.getElementById('quizModal');
     if (!quizModalEl) return;
 
-    // Element selection
     const questionCounterEl = document.getElementById('questionCounter');
     const progressBarEl = document.getElementById('quizProgressBar');
     const quizTopicEl = document.getElementById('quizTopic');
@@ -491,11 +474,10 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = false;
         });
 
-        // MODIFIED: Set initial button visibility and state for a new question
-        btnSubmitAnswerEl.style.display = 'inline-block'; // Show Responder
+        btnSubmitAnswerEl.style.display = 'inline-block';
         btnSubmitAnswerEl.disabled = true;
 
-        btnNextQuestionEl.style.display = 'none'; // Hide Next button
+        btnNextQuestionEl.style.display = 'none';
         btnNextQuestionEl.disabled = true;
     }
 
@@ -602,10 +584,8 @@ document.addEventListener('DOMContentLoaded', () => {
             answerOptionsContainerEl.querySelectorAll('.btn-answer').forEach(btn => {
                 btn.disabled = true;
             });
-            
-            // MODIFIED: Hide submit button after every submission
+
             btnSubmitAnswerEl.style.display = 'none';
-            // MODIFIED: Show next button
             btnNextQuestionEl.style.display = 'inline-block';
 
             if (data.is_correct) {
@@ -616,12 +596,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 showFeedback(data.message || 'Resposta Incorreta!', 'danger');
             }
-            
-            // Enable Next button unless the topic has failed
+
             if (data.status !== 'topic_failed') {
                 btnNextQuestionEl.disabled = false;
             } else {
-                // Topic failed logic (video info display)
                 if (data.video) {
                     topicFailedVideoInfoEl.style.display = 'block';
                     videoTitleEl.textContent = data.video.name || 'Vídeo de revisão do tópico.';
@@ -630,19 +608,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         videoThumbnailEl.style.display = 'block';
                     } else { videoThumbnailEl.style.display = 'none'; }
                     if (data.video.path) {
-                        videoLinkEl.href = '#!'; // Placeholder
+                        videoLinkEl.href = '#!';
                         videoLinkEl.textContent = `Revisar o vídeo: ${data.video.name}`;
                         videoLinkEl.style.display = 'block';
                     } else { videoLinkEl.style.display = 'none'; }
                 }
-                btnNextQuestionEl.disabled = true; // Keep next disabled on failure
+                btnNextQuestionEl.disabled = true;
             }
 
         } else if (data.status === 'finished') {
             questionTextEl.textContent = data.message || 'Quiz finalizado com sucesso!';
             quizTopicEl.textContent = 'Parabéns!';
             answerOptionsContainerEl.innerHTML = '';
-            
+
             if (data.total_questions_in_lesson) {
                 progressBarEl.style.width = '100%';
                 questionCounterEl.textContent = `Completado ${data.total_questions_in_lesson} de ${data.total_questions_in_lesson} questões!`;
@@ -653,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             btnSubmitAnswerEl.style.display = 'none';
             btnNextQuestionTextEl.textContent = 'Fechar Quiz';
-            btnNextQuestionEl.style.display = 'inline-block'; // Ensure it's visible
+            btnNextQuestionEl.style.display = 'inline-block';
             btnNextQuestionEl.disabled = false;
             btnNextQuestionEl.onclick = () => {
                 const modal = bootstrap.Modal.getInstance(quizModalEl);
@@ -666,7 +644,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- EVENT LISTENERS ---
     quizModalEl.addEventListener('show.bs.modal', (event) => {
         const button = event.relatedTarget;
         if (button && button.dataset.lessonId && button.dataset.lessonId !== 'UNKNOWN_LESSON') {
@@ -688,10 +665,37 @@ document.addEventListener('DOMContentLoaded', () => {
         questionCounterEl.textContent = 'Questão ... de ...';
         progressBarEl.style.width = '0%';
         currentQuestionId = null;
-        
+
         btnNextQuestionTextEl.textContent = 'Próxima';
         btnNextQuestionEl.onclick = fetchNextQuestion;
     });
 
     btnSubmitAnswerEl.addEventListener('click', submitAnswerHandler);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('avaliacao-form');
+    const statusEl = document.getElementById('avaliacao-status');
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const lessonId = form.dataset.lessonId;
+            const formData = new FormData(form);
+
+            try {
+                const response = await axios.post(`/aula/${lessonId}/feedback`, formData);
+                statusEl.innerHTML = `<div class="alert alert-success text-center">${response.data.message}</div>`;
+                form.style.display = 'none';
+            } catch (error) {
+                if (error.response?.status === 422) {
+                    const errors = Object.values(error.response.data.errors).flat().join('<br>');
+                    statusEl.innerHTML = `<div class="alert alert-danger">${errors}</div>`;
+                } else {
+                    statusEl.innerHTML = `<div class="alert alert-danger">Erro inesperado ao enviar a avaliação.</div>`;
+                }
+            }
+        });
+    }
 });

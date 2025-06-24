@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\LessonStatusEnum;
 use App\Enums\ProfileEnum;
+use App\Models\Feedback;
 use App\Models\Information;
 use App\Models\Lesson;
 use App\Models\Specialty;
@@ -54,8 +55,18 @@ class WebController extends Controller
 
     public function class(Lesson $lesson)
     {
+        $user = Auth::user();
+        $feedback = null;
+
+        if ($user) {
+            $feedback = Feedback::where('lesson_id', $lesson->id)
+                ->where('user_id', $user->id)
+                ->first();
+        }
+
         return view('web.class', [
             'lesson' => $lesson,
+            'feedback' => $feedback,
         ]);
     }
 

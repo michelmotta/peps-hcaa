@@ -4,6 +4,7 @@ use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DoubtController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\LessonController;
@@ -51,6 +52,9 @@ Route::name('web.')->group(function () {
         Route::post('/aula/{lesson}/quiz/submit-answer', [QuizController::class, 'submitAnswer'])->name('quiz.submitAnswer');
         Route::post('/aula/{lesson}/quiz/clear-session', [QuizController::class, 'clearSession'])->name('quiz.clearSession');
         Route::get('/certificates/{lesson}', [QuizController::class, 'generateCertificate'])->name('certificates.generate');
+
+        //Feedback Routes
+        Route::post('/aula/{lesson}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
     });
 });
 
