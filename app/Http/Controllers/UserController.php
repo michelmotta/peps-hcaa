@@ -58,7 +58,7 @@ class UserController extends Controller
             return redirect()
                 ->route('dashboard.users.index')
                 ->with('success', 'O usuário foi cadastrado com sucesso!');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect()
                 ->back()
                 ->with('error', 'Ocorreu um erro ao cadastrar o usuário: ' . $e->getMessage());
@@ -99,14 +99,12 @@ class UserController extends Controller
 
             $user->update(Arr::except($validatedData, ['profiles']));
 
-            if ($request->filled('profiles')) {
-                $user->profiles()->sync($request->input('profiles'));
-            }
+            $user->profiles()->sync($request->input('profiles', []));
 
             return redirect()
                 ->route('dashboard.users.index')
                 ->with('success', 'O usuário foi atualizado com sucesso!');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect()
                 ->back()
                 ->with('error', 'Ocorreu um erro ao atualizar o usuário: ' . $e->getMessage());
