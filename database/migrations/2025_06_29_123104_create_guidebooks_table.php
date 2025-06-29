@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('specialties', function (Blueprint $table) {
+        Schema::create('guidebooks', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('file_id')->nullable()->constrained('files')->nullOnDelete();
-            $table->foreignId('parent_id')->nullable()->constrained('specialties')->nullOnDelete();
+            $table->string('title');
+            $table->longText('description');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('specialties');
+        Schema::dropIfExists('guidebooks');
     }
 };

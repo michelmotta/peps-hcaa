@@ -299,7 +299,7 @@
                                 <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.libraries.*') ? 'collapsed' : '' }}"
                                     href="#!" data-bs-toggle="collapse" data-bs-target="#library"
                                     aria-expanded="false" aria-controls="library">
-                                    <i data-feather="book" class="nav-icon me-3 icon-xs"></i>
+                                    <i data-feather="file-text" class="nav-icon me-3 icon-xs"></i>
                                     Biblioteca
                                 </a>
 
@@ -342,6 +342,29 @@
                                 </div>
                             </li>
                         @endcan
+                        <!-- Nav item -->
+                        <li class="nav-item">
+                            <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.guidebooks.*') ? 'collapsed' : '' }}"
+                                href="#!" data-bs-toggle="collapse" data-bs-target="#guidebooks"
+                                aria-expanded="false" aria-controls="guidebooks">
+                                <i data-feather="book" class="nav-icon me-3 icon-xs"></i>
+                                Manuais
+                            </a>
+                            <div id="guidebooks"
+                                class="collapse {{ request()->routeIs('dashboard.guidebooks.*') ? 'show' : '' }}"
+                                data-bs-parent="#sideNavbar">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.*') && !request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
+                                            href="{{ route('dashboard.guidebooks.index') }}">Gerenciar</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
+                                            href="{{ route('dashboard.guidebooks.create') }}">Novo</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>

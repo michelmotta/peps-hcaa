@@ -23,7 +23,7 @@
                     <div class="card-header">
                         <div class="row g-2 align-items-center">
                             <div class="col-md-9 d-grid d-lg-block ms-auto text-start">
-                                <h3 class="mb-0">Lista de usuários</h3>
+                                <h3 class="mb-0">Usuários</h3>
                             </div>
                             <div class="col-md-3">
                                 <form method="GET" action="{{ route('dashboard.users.index') }}">
@@ -106,6 +106,7 @@
                                                         <span>Edit</span>
                                                     </div>
                                                 </a>
+                                                {{-- 
                                                 @if ($user->id !== Auth::id())
                                                     <button type="button"
                                                         class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip text-danger"
@@ -124,6 +125,7 @@
                                                         @method('DELETE')
                                                     </form>
                                                 @endif
+                                                --}}
                                             </td>
                                         </tr>
                                     @endforeach

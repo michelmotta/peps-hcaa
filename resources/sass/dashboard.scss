@@ -120,6 +120,11 @@
 
 .ql-editor {
     min-height: 150px;
+
+    img {
+        margin: 0 auto !important;
+        width: 100% !important;
+    }
 }
 
 .alert {
@@ -181,4 +186,15 @@ legend {
 
 .navbar-vertical .navbar-nav .nav .nav-item .nav-link:before {
     background-color: #00ff05;
+}
+
+.switch-large {
+    cursor: pointer;
+}
+
+.manual-body {
+    img {
+        margin: 0 auto !important;
+        width: 100% !important;
+    }
 }

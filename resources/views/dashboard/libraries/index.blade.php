@@ -26,7 +26,7 @@
                     <div class="card-header">
                         <div class="row g-2 align-items-center">
                             <div class="col-md-9 d-grid d-lg-block ms-auto text-start">
-                                <h3 class="mb-0">Lista de Arquivos</h3>
+                                <h3 class="mb-0">Arquivos</h3>
                             </div>
                             <div class="col-md-3">
                                 <form method="GET" action="{{ route('dashboard.libraries.index') }}">
@@ -42,6 +42,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Título</th>
+                                        <th>Arquivo</th>
                                         <th class="text-center">Tipo</th>
                                         <th class="text-center">Tamanho</th>
                                         <th class="text-center">Cadastrado Por</th>
@@ -51,10 +52,16 @@
                                 <tbody>
                                     @foreach ($libraries as $library)
                                         <tr>
-                                            <td>{{ $library->title }}</td>
+                                            <td>
+                                                <i data-feather="file" class="icon-xs me-3"></i>
+                                                {{ $library->title }}
+                                            </td>
+                                            <td>{{ $library->file->name }}</td>
                                             <td class="text-center">{{ $library->file->extension }}</td>
                                             <td class="text-center">{{ $library->file->size_in_mb }}</td>
-                                            <td class="text-center">{{ $library->user->name }}</td>
+                                            <td class="text-center">
+                                                <span class="badge badge-primary-soft">{{ $library->user->name }}</span>
+                                            </td>
                                             <td class="text-center">
                                                 <a href="{{ asset('storage/' . $library->file->path) }}"
                                                     class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"

@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -27,21 +28,28 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password'], 'active' => true])) {
-            $request->session()->regenerate();
+        $user = User::where('username', $credentials['username'])->first();
 
-            $user = Auth::user()->load('profiles');
-
-            session(['user_profiles' => $user->profiles->pluck('name')->toArray()]);
-
-            if ($user->hasAnyProfile(['Coordenador', 'Professor'])) {
-                return redirect()->intended('dashboard');
-            }
-
-            return redirect()->intended('minhas-aulas');
+        if (!$user) {
+            return back()->with('error', 'O usuário informado está incorreto.');
         }
 
-        return back()->with('error', 'Usuário inativo ou as credenciais não conferem.');
+        if (!$user->active) {
+            return back()->with('error', 'O usuário informado está inativo. Entre em contato com o coordenador.');
+        }
+
+        if (!Hash::check($credentials['password'], $user->password)) {
+            return back()->with('error', 'A senha informada está incorreta.');
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        $user->load('profiles');
+
+        return $user->hasAnyProfile(['Coordenador', 'Professor'])
+            ? redirect()->intended('dashboard')
+            : redirect()->intended('minhas-aulas');
     }
 
     /**

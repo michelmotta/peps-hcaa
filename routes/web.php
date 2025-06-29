@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DoubtController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\GuidebookController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\LessonController;
@@ -61,7 +62,7 @@ Route::name('web.')->group(function () {
 
 
 
-// Dashboard Routes (only Coordenador or Professor)
+// Dashboard Routes (Coordenador or Professor)
 Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoordenadorOrProfessor'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::get('/users/ajax', [UserController::class, 'searchUser'])->name('search-user');
@@ -72,8 +73,9 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
     Route::resource('lessons.topics', TopicController::class);
     Route::resource('lessons.students', LessonUserController::class);
     Route::resource('lessons.doubts', DoubtController::class);
+    Route::resource('guidebooks', GuidebookController::class);
 
-    // Dashboard Routes (only Coordenador)
+    // Dashboard Routes (Coordenador only)
     Route::middleware('can:isCoordenador')->group(function () {
         Route::post('users/{user}/active', [UserController::class, 'toggleActiveUser'])->name('users.active');
         Route::resource('suggestions', SuggestionController::class);

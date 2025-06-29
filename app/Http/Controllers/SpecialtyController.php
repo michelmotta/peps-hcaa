@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateSpecialtyRequest;
 use App\Models\File;
 use App\Models\Specialty;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SpecialtyController extends Controller
@@ -14,15 +15,32 @@ class SpecialtyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = request('q')
-            ? Specialty::search(request('q'))->query(fn($q) => $q->orderByDesc('id'))
-            : Specialty::query()->orderByDesc('id');
+        $searchTerm = $request->input('q');
 
-        return view('dashboard.specialties.index', [
-            'specialties' => $query->paginate(20)->withQueryString(),
-        ]);
+        if ($searchTerm) {
+            $searchResults = Specialty::search($searchTerm)->get();
+
+            $parentIds = $searchResults->pluck('parent_id')->filter()->unique();
+            $matchedIds = $searchResults->pluck('id');
+
+            $finalParentIds = $matchedIds->merge($parentIds)->unique();
+
+            $specialties = Specialty::with('children')
+                ->whereIn('id', $finalParentIds)
+                ->whereNull('parent_id')
+                ->orderByDesc('id')
+                ->paginate(20)
+                ->withQueryString();
+        } else {
+            $specialties = Specialty::with('children')
+                ->whereNull('parent_id')
+                ->orderByDesc('id')
+                ->paginate(20);
+        }
+
+        return view('dashboard.specialties.index', compact('specialties'));
     }
 
     /**
@@ -46,17 +64,18 @@ class SpecialtyController extends Controller
                 $validatedData['file_id'] = $file->id;
             }
 
-            $validatedData['user_id'] = Auth::id();
+            $specialty = Specialty::create($validatedData);
 
-            Specialty::create($validatedData);
+            if ($request->filled('subspecialties')) {
+                foreach ($request->input('subspecialties') as $sub) {
+                    $specialty->children()->create(['name' => $sub]);
+                }
+            }
 
-            return redirect()
-                ->route('dashboard.specialties.index')
+            return redirect()->route('dashboard.specialties.index')
                 ->with('success', 'A especialidade foi cadastrada com sucesso!');
         } catch (Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Ocorreu um erro ao cadastrar a especialidade: ' . $e->getMessage());
+            return back()->with('error', 'Erro ao cadastrar: ' . $e->getMessage());
         }
     }
 
@@ -94,13 +113,19 @@ class SpecialtyController extends Controller
 
             $specialty->update($validatedData);
 
-            return redirect()
-                ->route('dashboard.specialties.index')
+            // Remover subespecialidades antigas e adicionar novas
+            $specialty->children()->delete();
+
+            if ($request->filled('subspecialties')) {
+                foreach ($request->input('subspecialties') as $sub) {
+                    $specialty->children()->create(['name' => $sub]);
+                }
+            }
+
+            return redirect()->route('dashboard.specialties.index')
                 ->with('success', 'A especialidade foi atualizada com sucesso!');
         } catch (Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Ocorreu um erro ao atualizar a especialidade: ' . $e->getMessage());
+            return back()->with('error', 'Erro ao atualizar: ' . $e->getMessage());
         }
     }
 
@@ -110,11 +135,12 @@ class SpecialtyController extends Controller
     public function destroy(Specialty $specialty)
     {
         try {
+            $specialty->children()->delete();
             $specialty->delete();
 
             return redirect()
                 ->route('dashboard.specialties.index')
-                ->with('success', 'A especialidade foi apagada com sucesso!');
+                ->with('success', 'A especialidade e suas subespecialidades foram apagadas com sucesso!');
         } catch (Exception $e) {
             return redirect()
                 ->back()

@@ -1,7 +1,7 @@
 @csrf
 <section>
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-12">
             <div class="mb-3">
                 <label for="user_id" class="form-label">Estudante</label>
                 <select id="user-select" class="form-control" name="user_id">

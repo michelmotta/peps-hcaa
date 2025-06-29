@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 
 class Specialty extends Model
@@ -18,25 +19,21 @@ class Specialty extends Model
      */
     protected $fillable = [
         'name',
-        'description',
         'file_id',
-        'user_id',
+        'parent_id',
     ];
-
 
     /**
      * Convert the model instance to an array for indexing/search.
-     *
-     * Returns an array of attributes that should be indexed by the search engine.
-     * Used by the `Searchable` trait.
      *
      * @return array<string, mixed>
      */
     public function toSearchableArray()
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
+            'parent_id' => $this->parent_id,
         ];
     }
 
@@ -52,15 +49,13 @@ class Specialty extends Model
         return $this->belongsTo(File::class, 'file_id');
     }
 
-    /**
-     * Get the user who created the specialty.
-     *
-     * Defines an inverse one-to-many relationship to User.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, Specialty>
-     */
-    public function user()
+    public function parent()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Specialty::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Specialty::class, 'parent_id');
     }
 }

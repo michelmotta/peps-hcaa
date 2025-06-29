@@ -699,3 +699,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const addButton = document.getElementById('add-subspecialty');
+    const wrapper = document.getElementById('subspecialties-wrapper');
+
+    if (addButton && wrapper) {
+        addButton.addEventListener('click', () => {
+            const div = document.createElement('div');
+            div.classList.add('input-group', 'mb-2', 'subspecialty-item');
+            div.innerHTML = `
+                <input type="text" name="subspecialties[]" class="form-control" placeholder="Subespecialidade" required>
+                <button class="btn btn-outline-danger remove-subspecialty" type="button">×</button>
+            `;
+            wrapper.appendChild(div);
+        });
+
+        wrapper.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-subspecialty')) {
+                e.target.closest('.subspecialty-item').remove();
+            }
+        });
+    }
+});

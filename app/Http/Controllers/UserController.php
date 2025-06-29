@@ -49,6 +49,8 @@ class UserController extends Controller
                 $validatedData['file_id'] = $file->id;
             }
 
+            $validatedData['active'] = true;
+
             $user = User::create(Arr::except($validatedData, ['profiles']));
 
             if ($request->filled('profiles')) {
