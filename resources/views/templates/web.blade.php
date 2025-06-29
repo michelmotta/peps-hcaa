@@ -65,7 +65,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('web.informations') }}">
+                                <a class="nav-link" href="{{ route('web.library') }}">
                                     <i class="bi bi-book"></i> Biblioteca
                                 </a>
                             </li>

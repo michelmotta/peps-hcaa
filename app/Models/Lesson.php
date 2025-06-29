@@ -117,6 +117,16 @@ class Lesson extends Model
     }
 
     /**
+     * Get the doubts that belong to this lesson.
+     *
+     * @return HasMany<Doubt>
+     */
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class, 'lesson_id');
+    }
+
+    /**
      * Get the total duration of all videos in the lesson topics.
      *
      * @return string

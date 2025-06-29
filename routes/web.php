@@ -9,6 +9,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\LessonUserController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SpecialtyController;
 use App\Http\Controllers\SuggestionController;
@@ -81,5 +82,6 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
         Route::resource('users', UserController::class);
         Route::resource('quizzes', QuizController::class);
         Route::resource('histories', HistoryController::class);
+        Route::resource('libraries', LibraryController::class);
     });
 });

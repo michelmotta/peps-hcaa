@@ -57,4 +57,14 @@ class File extends Model
             throw new Exception("Não foi possível salvar o arquivo: " . $e->getMessage());
         }
     }
+
+    /**
+     * Retorna o tamanho do arquivo em megabytes com duas casas decimais.
+     *
+     * @return string
+     */
+    public function getSizeInMbAttribute(): string
+    {
+        return number_format($this->size / 1048576, 2) . ' MB';
+    }
 }

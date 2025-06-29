@@ -46,6 +46,9 @@
                                         <th scope="col" class="text-center">Tópicos</th>
                                         <th scope="col" class="text-center">Inscrições</th>
                                         <th scope="col" class="text-center">Dúvidas</th>
+                                        @can('isProfessor')
+                                            <th scope="col" class="text-center">Feedbacks</th>
+                                        @endcan
                                         @can('isCoordenador')
                                             <th scope="col" class="text-center">Professor(a)</th>
                                         @endcan
@@ -92,8 +95,16 @@
                                             <td class="text-center">
                                                 <a href="{{ route('dashboard.lessons.doubts.index', $lesson->id) }}">
                                                     <span class="item-content">
-                                                        <i class="icon-xs" data-feather="message-circle"></i>
+                                                        <i class="icon-xs" data-feather="help-circle"></i>
                                                         ({{ $lesson->doubts->count() }})
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="#">
+                                                    <span class="item-content">
+                                                        <i class="icon-xs" data-feather="message-circle"></i>
+                                                        ({{ $lesson->feedbacks->count() }})
                                                     </span>
                                                 </a>
                                             </td>
@@ -129,7 +140,8 @@
                                                         class="d-inline">
                                                         @csrf
                                                         <input type="hidden" name="status_id" value="2">
-                                                        <button class="btn btn-ghost btn-icon btn-sm rounded-circle text-primary"
+                                                        <button
+                                                            class="btn btn-ghost btn-icon btn-sm rounded-circle text-primary"
                                                             type="submit" title="Solicitar publicação"
                                                             data-bs-toggle="tooltip">
                                                             <i data-feather="send" class="icon-xs"></i>
@@ -142,7 +154,8 @@
                                                         class="d-inline">
                                                         @csrf
                                                         <input type="hidden" name="status_id" value="3">
-                                                        <button class="btn btn-ghost btn-icon btn-sm rounded-circle text-success"
+                                                        <button
+                                                            class="btn btn-ghost btn-icon btn-sm rounded-circle text-success"
                                                             type="submit" title="Publicar" data-bs-toggle="tooltip">
                                                             <i data-feather="check-circle" class="icon-xs"></i>
                                                         </button>
@@ -154,7 +167,8 @@
                                                         class="d-inline">
                                                         @csrf
                                                         <input type="hidden" name="status_id" value="2">
-                                                        <button class="btn btn-ghost btn-icon btn-sm rounded-circle text-danger"
+                                                        <button
+                                                            class="btn btn-ghost btn-icon btn-sm rounded-circle text-danger"
                                                             type="submit" title="Despublicar" data-bs-toggle="tooltip">
                                                             <i data-feather="x-circle" class="icon-xs"></i>
                                                         </button>

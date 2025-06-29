@@ -421,6 +421,7 @@
                             <section class="avaliacao-section">
                                 <h2 class="text-center mb-4">Avaliação da Aula</h2>
                                 <div id="avaliacao-wrapper">
+                                    <p class="text-center">Contribua com a melhoria da qualidade desta aula. Aqui você pode sugerir melhorias e dar um feedback diretamenta ao professor. Essa avaliação ficará visível apenas para você e o professor.</p>
                                     @if ($feedback === null)
                                         <div id="avaliacao-status" class="mb-4"></div>
                                         <form id="avaliacao-form" data-lesson-id="{{ $lesson->id }}"

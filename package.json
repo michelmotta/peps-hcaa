@@ -21,6 +21,7 @@
         "jquery": "^3.7.1",
         "owl.carousel": "^2.3.4",
         "plyr": "^3.7.8",
+        "sortablejs": "^1.15.6",
         "sweetalert2": "^11.6.13",
         "tom-select": "^2.4.3"
     }

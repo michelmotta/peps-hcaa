@@ -296,6 +296,30 @@
                             </li>
                             <!-- Nav item -->
                             <li class="nav-item">
+                                <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.libraries.*') ? 'collapsed' : '' }}"
+                                    href="#!" data-bs-toggle="collapse" data-bs-target="#library"
+                                    aria-expanded="false" aria-controls="library">
+                                    <i data-feather="book" class="nav-icon me-3 icon-xs"></i>
+                                    Biblioteca
+                                </a>
+
+                                <div id="library"
+                                    class="collapse {{ request()->routeIs('dashboard.libraries.*') ? 'show' : '' }}"
+                                    data-bs-parent="#sideNavbar">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.libraries.*') && !request()->routeIs('dashboard.libraries.create') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.libraries.index') }}">Gerenciar</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.libraries.create') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.libraries.create') }}">Novo</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!-- Nav item -->
+                            <li class="nav-item">
                                 <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.users.*') ? 'collapsed' : '' }}"
                                     href="#!" data-bs-toggle="collapse" data-bs-target="#navecommerce"
                                     aria-expanded="false" aria-controls="navecommerce">

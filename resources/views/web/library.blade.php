@@ -2,7 +2,7 @@
 @section('content')
     <section>
         <div class="content-title">
-            <h1>Biblioteca</h1>
+            <h1>Biblioteca Digital</h1>
             <p class="sub-title">Artigos e publicações recentes</p>
         </div>
     </section>

@@ -125,7 +125,7 @@ class LessonController extends Controller
      */
     public function destroy(Lesson $lesson)
     {
-        // Professores só podem editar suas próprias aulas
+        // Professores só podem excluir suas próprias aulas
         if (!Gate::allows('isCoordenador') && $lesson->user_id !== Auth::id()) {
             return redirect()
                 ->back()

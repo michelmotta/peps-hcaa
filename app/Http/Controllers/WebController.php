@@ -158,6 +158,11 @@ class WebController extends Controller
         ]);
     }
 
+    public function library()
+    {
+        return view('web.library');
+    }
+
     public function suggestionCreate(Request $request)
     {
         try {

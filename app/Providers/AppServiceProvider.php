@@ -16,11 +16,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
-    protected $policies = [
-        Lesson::class => LessonPolicy::class,
-        User::class => UserPolicy::class,
-    ];
-
     /**
      * Register any application services.
      */
