@@ -78,7 +78,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('dashboard.users.edit', ['user' => $user, 'profiles' => Profile::all()]);
+        $user->load('profiles');
+        $profiles = Profile::all();
+
+        return view('dashboard.users.edit', compact('user', 'profiles'));
     }
 
     /**

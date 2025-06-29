@@ -7,15 +7,17 @@
                     <h3 class="form-label">Atribuir Perfil</h3>
                     <div class="form-check d-flex align-items-center justify-content-center flex-wrap gap-4">
                         @foreach ($profiles as $profile)
+                            @php
+                                $selectedProfiles = collect(
+                                    old('profiles', isset($user) ? $user->profiles->pluck('id')->toArray() : []),
+                                );
+                            @endphp
+
                             <label for="profile_{{ $profile->id }}" class="role-card">
                                 <input type="checkbox" id="profile_{{ $profile->id }}" name="profiles[]"
                                     value="{{ $profile->id }}"
                                     class="form-check-input @error('profiles') is-invalid @enderror"
-                                    @isset($user)
-                                    @if (in_array($profile->id, $user->profiles->pluck('id')->toArray()))
-                                        checked
-                                    @endif
-                                @endisset>
+                                    {{ $selectedProfiles->contains($profile->id) ? 'checked' : '' }}>
                                 <span class="form-check-label">{{ $profile->name }}</span>
                             </label>
                         @endforeach
@@ -48,7 +50,7 @@
                 <label for="email" class="form-label">E-mail</label>
                 <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
                     placeholder="Digite seu e-mail" name="email"
-                    value="@if(isset($user)){{ $user->email }}@else{{ old('email') }}@endif"
+                    value="@if (isset($user)){{ $user->email }}@else{{ old('email') }}@endif"
                     required>
                 @error('email')
                     <span class="invalid-feedback" role="alert">
@@ -145,9 +147,8 @@
         <div class="col-md-12">
             <div class="mt-2 mb-4">
                 <label class="form-label">Biografia</label>
-                <div id="editor">@if (isset($user)){!! $user->biography !!}@else{!! old('biography') !!}@endif</div>
-                <input type="hidden" name="biography" id="biography"
-                    value="@if(isset($user)){{ $user->biography }}@else{{ old('biography') }}@endif">
+                <div id="editor">@if(isset($user)){!! $user->biography !!}@else{!! old('biography') !!}@endif</div>
+                <input type="hidden" name="biography" id="biography" value="@if(isset($user)){{ $user->biography }}@else{{ old('biography') }}@endif">
             </div>
         </div>
     </div>
