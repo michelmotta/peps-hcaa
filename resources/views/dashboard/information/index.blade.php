@@ -38,7 +38,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive table-card">
-                            <table class="table mb-0 text-nowrap table-centered">
+                            <table class="table mb-0 text-nowrap table-centered table-hover">
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col">Título</th>

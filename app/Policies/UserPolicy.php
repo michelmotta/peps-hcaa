@@ -77,4 +77,9 @@ class UserPolicy
     {
         return $user->hasAnyProfile(['Coordenador', 'Professor']);
     }
+
+    public function isOnlyProfessor(User $user): bool
+    {
+        return $user->hasOnlyProfessorProfile();
+    }
 }

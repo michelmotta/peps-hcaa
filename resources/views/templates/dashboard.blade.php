@@ -20,9 +20,9 @@
         integrity="sha512-/k658G6UsCvbkGRB3vPXpsPHgWeduJwiWGPCGS14IQw3xpr63AEMdA8nMYG2gmYkXitQxDTn6iiK/2fD4T87qA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplebar/6.3.0/simplebar.min.js"
-        integrity="sha512-YumGHjm0sYk55Xdh6t6Uo/mHqBhDBNrW46HZKSBwkjq3X1Knnj7e3UUom2SE9zPpfjlTyJqSHnd4No1ca156cQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplebar/6.3.1/simplebar.min.css"
+        integrity="sha512-rptDreZF629VL73El0GaBEH9tlYEKDJFUr+ysb+9whgSGbwYfGGA61dVtQFL0qC8/SZv/EQFW5JtwEFf+8zKYg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Theme CSS -->
     @vite(['resources/css/theme.min.css', 'resources/sass/dashboard.scss'])
@@ -68,67 +68,6 @@
                     @endif
                     <ul
                         class="navbar-nav navbar-right-wrap ms-lg-auto d-flex nav-top-wrap align-items-center ms-4 ms-lg-0">
-                        <li class="dropdown stopevent ms-2">
-                            <a class="btn btn-ghost btn-icon rounded-circle" href="#!" role="button"
-                                id="dropdownNotification" data-bs-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false">
-                                <i class="icon-xs" data-feather="bell"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end"
-                                aria-labelledby="dropdownNotification">
-                                <div>
-                                    <div
-                                        class="border-bottom px-3 pt-2 pb-3 d-flex justify-content-between align-items-center">
-                                        <p class="mb-0 text-dark fw-medium fs-4">Notifications</p>
-                                        <a href="#!" class="text-muted">
-                                            <span>
-                                                <i class="me-1 icon-xs" data-feather="settings"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <div data-simplebar style="height: 250px">
-                                        <!-- List group -->
-                                        <ul class="list-group list-group-flush notification-list-scroll">
-                                            <!-- List group item -->
-                                            <li class="list-group-item bg-light">
-                                                <a href="#!" class="text-muted">
-                                                    <h5 class="mb-1">Rishi Chopra</h5>
-                                                    <p class="mb-0">Mauris blandit erat id nunc blandit, ac eleifend
-                                                        dolor pretium.</p>
-                                                </a>
-                                            </li>
-                                            <!-- List group item -->
-                                            <li class="list-group-item">
-                                                <a href="#!" class="text-muted">
-                                                    <h5 class="mb-1">Neha Kannned</h5>
-                                                    <p class="mb-0">Proin at elit vel est condimentum elementum id in
-                                                        ante. Maecenas et sapien metus.</p>
-                                                </a>
-                                            </li>
-                                            <!-- List group item -->
-                                            <li class="list-group-item">
-                                                <a href="#!" class="text-muted">
-                                                    <h5 class="mb-1">Nirmala Chauhan</h5>
-                                                    <p class="mb-0">Morbi maximus urna lobortis elit sollicitudin
-                                                        sollicitudieget elit vel pretium.</p>
-                                                </a>
-                                            </li>
-                                            <!-- List group item -->
-                                            <li class="list-group-item">
-                                                <a href="#!" class="text-muted">
-                                                    <h5 class="mb-1">Sina Ray</h5>
-                                                    <p class="mb-0">Sed aliquam augue sit amet mauris volutpat
-                                                        hendrerit sed nunc eu diam.</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="border-top px-3 py-2 text-center">
-                                        <a href="#!" class="text-inherit">View all Notifications</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
                         <!-- List -->
                         <li class="dropdown ms-2">
                             <a class="rounded-circle" href="#!" role="button" id="dropdownUser"
@@ -223,26 +162,53 @@
                                 </ul>
                             </div>
                         </li>
+                        <!-- Nav item -->
+                        <li class="nav-item">
+                            <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.suggestions.*') ? 'collapsed' : '' }}"
+                                href="#!" data-bs-toggle="collapse" data-bs-target="#suggestion"
+                                aria-expanded="false" aria-controls="specialty">
+                                <i data-feather="message-circle" class="nav-icon me-3 icon-xs"></i>
+                                Sugestões
+                            </a>
+                            <div id="suggestion"
+                                class="collapse {{ request()->routeIs('dashboard.suggestions.*') ? 'show' : '' }}"
+                                data-bs-parent="#sideNavbar">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link has-arrow {{ request()->routeIs('dashboard.suggestions.*') && !request()->routeIs('dashboard.suggestions.create') ? 'menu-active' : '' }}"
+                                            href="{{ route('dashboard.suggestions.index') }}">Gerenciar</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link has-arrow {{ request()->routeIs('dashboard.suggestions.create') ? 'menu-active' : '' }}"
+                                            href="{{ route('dashboard.suggestions.create') }}">Novo</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
                         @can('isCoordenador')
                             <!-- Nav item -->
                             <li class="nav-item">
-                                <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.suggestions.*') ? 'collapsed' : '' }}"
-                                    href="#!" data-bs-toggle="collapse" data-bs-target="#suggestion"
-                                    aria-expanded="false" aria-controls="specialty">
-                                    <i data-feather="message-circle" class="nav-icon me-3 icon-xs"></i>
-                                    Sugestões
+                                <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.guidebooks.*') ? 'collapsed' : '' }}"
+                                    href="#!" data-bs-toggle="collapse" data-bs-target="#guidebooks"
+                                    aria-expanded="false" aria-controls="guidebooks">
+                                    <i data-feather="pie-chart" class="nav-icon me-3 icon-xs"></i>
+                                    Relatórios
                                 </a>
-                                <div id="suggestion"
-                                    class="collapse {{ request()->routeIs('dashboard.suggestions.*') ? 'show' : '' }}"
+                                <div id="guidebooks"
+                                    class="collapse {{ request()->routeIs('dashboard.guidebooks.*') ? 'show' : '' }}"
                                     data-bs-parent="#sideNavbar">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.suggestions.*') && !request()->routeIs('dashboard.suggestions.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.suggestions.index') }}">Gerenciar</a>
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.*') && !request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.guidebooks.index') }}">Relatório 1</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.suggestions.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.suggestions.create') }}">Novo</a>
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.guidebooks.create') }}">Relatório 2</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.guidebooks.create') }}">Relatório 3</a>
                                         </li>
                                     </ul>
                                 </div>

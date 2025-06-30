@@ -73,12 +73,12 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
     Route::resource('lessons.topics', TopicController::class);
     Route::resource('lessons.students', LessonUserController::class);
     Route::resource('lessons.doubts', DoubtController::class);
-    Route::resource('guidebooks', GuidebookController::class);
+    Route::resource('suggestions', SuggestionController::class);
+    Route::resource('guidebooks', GuidebookController::class);    
 
     // Dashboard Routes (Coordenador only)
     Route::middleware('can:isCoordenador')->group(function () {
         Route::post('users/{user}/active', [UserController::class, 'toggleActiveUser'])->name('users.active');
-        Route::resource('suggestions', SuggestionController::class);
         Route::resource('information', InformationController::class);
         Route::resource('specialties', SpecialtyController::class);
         Route::resource('users', UserController::class);

@@ -19,13 +19,20 @@ class WebController extends Controller
     public function index()
     {
         return view('web.index', [
-            'specialties' => Specialty::with('file')->get(),
-            'lessons' => Lesson::with('file')->where('lesson_status', LessonStatusEnum::PUBLICADA->value)->latest()->take(4)->get(),
+            'specialties' => Specialty::with('file')
+                ->whereNull('parent_id')
+                ->orderBy('name')
+                ->get(),
+            'lessons' => Lesson::with('file')
+                ->where('lesson_status', LessonStatusEnum::PUBLICADA->value)
+                ->latest()
+                ->take(4)
+                ->get(),
             'teachersCount' => User::whereHas('profiles', function ($q) {
                 $q->where('profiles.id', ProfileEnum::PROFESSOR->value);
-            })->with('profiles')->count(),
-            'studentsCount' => User::get()->count(),
-            'lessonsCount' => Lesson::where('lesson_status', LessonStatusEnum::PUBLICADA->value)->get()->count(),
+            })->count(),
+            'studentsCount' => User::count(),
+            'lessonsCount' => Lesson::where('lesson_status', LessonStatusEnum::PUBLICADA->value)->count(),
         ]);
     }
 

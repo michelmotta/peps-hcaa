@@ -72,7 +72,7 @@
                             @foreach ($specialties as $specialty)
                                 <a href="{{ route('web.classes', ['specialty_id' => $specialty->id]) }}">
                                     <div class="item">
-                                        <img src="{{ asset('storage/' . $specialty->file->path) }}" alt="">
+                                        <img src="{{ asset('storage/' . optional($specialty->file)->path ?? 'images/default-specialty.jpg') }}" alt="">
                                         <h4>{{ $specialty->name }}</h4>
                                     </div>
                                 </a>

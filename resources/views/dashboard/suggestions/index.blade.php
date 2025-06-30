@@ -26,7 +26,7 @@
                     <div class="card-header">
                         <div class="row g-2 align-items-center">
                             <div class="col-md-9 d-grid d-lg-block ms-auto text-start">
-                                <h3 class="mb-0">Lista de sugestões</h3>
+                                <h3 class="mb-0">Sugestões</h3>
                             </div>
                             <div class="col-md-3">
                                 <form method="GET" action="{{ route('dashboard.suggestions.index') }}">
@@ -43,7 +43,6 @@
                                     <tr>
                                         <th scope="col">Título</th>
                                         <th scope="col" class="text-center">Votos</th>
-                                        <th scope="col" class="text-center">Porcentagem de Votos</th>
                                         <th scope="col" class="text-center">Autor</th>
                                         <th scope="col" class="text-center">Publicação</th>
                                         <th scope="col" class="text-center">Ações</th>
@@ -52,52 +51,44 @@
                                 <tbody>
                                     @foreach ($suggestions as $suggestion)
                                         <tr>
-                                            <td>
-                                                <a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#modal-{{ $suggestion->id }}">{{ $suggestion->name }}</a>
-                                            </td>
-                                            <td class="text-center">{{ $suggestion->votes }}</td>
-                                            <td class="text-center">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-auto" style="height: 6px;">
-                                                        <div class="progress-bar bg-success" role="progressbar"
-                                                            style="width: {{ number_format(($suggestion->votes / $totalVotes) * 100, 1) }}%;"
-                                                            aria-valuenow="{{ number_format(($suggestion->votes / $totalVotes) * 100, 1) }}"
-                                                            aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <div class="ms-2">
-                                                        <span>{{ number_format(($suggestion->votes / $totalVotes) * 100, 1) }}%</span>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                            <td>{{ $suggestion->name }}</td>
+                                            <td class="text-center">{{ $suggestion->votes }} |
+                                                {{ number_format(($suggestion->votes / $totalVotes) * 100, 1) }}%</td>
                                             <td class="text-center">
                                                 <span class="badge badge-primary-soft">{{ $suggestion->user->name }}</span>
                                             </td>
                                             <td class="text-center">{{ $suggestion->created_at_formatted }}</td>
                                             <td class="text-center">
-                                                <a href="{{ route('dashboard.suggestions.edit', $suggestion) }}"
+                                                <button data-bs-toggle="modal" data-bs-target="#modal-{{ $suggestion->id }}"
                                                     class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
-                                                    data-template="editTwo" title="Editar" data-bs-toggle="tooltip">
-                                                    <i data-feather="edit" class="icon-xs"></i>
-                                                    <div id="editTwo" class="d-none">
-                                                        <span>Edit</span>
-                                                    </div>
-                                                </a>
-                                                <button type="button"
-                                                    class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip text-danger"
-                                                    data-template="trashOne"
-                                                    onclick="confirmDelete('delete-item-{{ $suggestion->id }}')" title="Apagar" data-bs-toggle="tooltip">
-                                                    <i data-feather="trash-2" class="icon-xs"></i>
-                                                    <div id="trashOne" class="d-none">
-                                                        <span>Delete</span>
-                                                    </div>
+                                                    title="Visualizar" data-bs-toggle="tooltip">
+                                                    <i data-feather="eye" class="nav-icon icon-xs"></i>
                                                 </button>
-                                                <form class="d-none" id="delete-item-{{ $suggestion->id }}" method="POST"
-                                                    action="{{ route('dashboard.suggestions.destroy', $suggestion) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
+                                                @can('isCoordenador')
+                                                    <a href="{{ route('dashboard.suggestions.edit', $suggestion) }}"
+                                                        class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                                                        data-template="editTwo" title="Editar" data-bs-toggle="tooltip">
+                                                        <i data-feather="edit" class="icon-xs"></i>
+                                                        <div id="editTwo" class="d-none">
+                                                            <span>Edit</span>
+                                                        </div>
+                                                    </a>
+                                                    <button type="button"
+                                                        class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip text-danger"
+                                                        data-template="trashOne"
+                                                        onclick="confirmDelete('delete-item-{{ $suggestion->id }}')"
+                                                        title="Apagar" data-bs-toggle="tooltip">
+                                                        <i data-feather="trash-2" class="icon-xs"></i>
+                                                        <div id="trashOne" class="d-none">
+                                                            <span>Delete</span>
+                                                        </div>
+                                                    </button>
+                                                    <form class="d-none" id="delete-item-{{ $suggestion->id }}" method="POST"
+                                                        action="{{ route('dashboard.suggestions.destroy', $suggestion) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                @endcan
                                             </td>
                                         </tr>
                                         <div class="modal fade" id="modal-{{ $suggestion->id }}" tabindex="-1"

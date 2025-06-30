@@ -39,10 +39,7 @@ class SuggestionController extends Controller
     public function store(StoreSuggestionRequest $request)
     {
         try {
-            $validatedData = $request->validate([
-                'name' => 'required|max:255',
-                'description' => 'required',
-            ]);
+            $validatedData = $request->validated();
 
             $validatedData['user_id'] = Auth::id();
 

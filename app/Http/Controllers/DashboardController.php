@@ -3,20 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ProfileEnum;
+use App\Models\Doubt;
+use App\Models\Lesson;
 use App\Models\Suggestion;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        $suggestionsCount = Suggestion::count();
+        $unansweredQuestionsCount = Doubt::where('answered', false)->count();
+
+        if ($user->hasAnyProfile(['Coordenador'])) {
+            $classesCount = Lesson::count();
+
+            $studentsCount = User::whereHas('subscribedLessons')->distinct()->count();
+        } elseif ($user->hasAnyProfile(['Professor'])) {
+            $classesCount = $user->createdLessons()->count();
+
+            $studentsCount = User::whereHas('subscribedLessons', function ($q) use ($user) {
+                $q->where('lessons.user_id', $user->id);
+            })->distinct()->count();
+        } else {
+            $classesCount = 0;
+            $studentsCount = 0;
+        }
+
         return view('dashboard.index', [
-            'teachersCount' => User::whereHas('profiles', function ($q) { $q->where('profiles.id', ProfileEnum::PROFESSOR->value); })->with('profiles')->count(),
-            'studentsCount' => User::all()->count(),
-            'suggestionsCount' => Suggestion::all()->count(),
-            'suggestions' => Suggestion::query()->orderByDesc('votes')->paginate(20)->withQueryString(),
-            'totalVotes' => Suggestion::sum('votes')
+            'studentsCount' => $studentsCount,
+            'suggestionsCount' => $suggestionsCount,
+            'classesCount' => $classesCount,
+            'unansweredQuestionsCount' => $unansweredQuestionsCount,
         ]);
     }
 }

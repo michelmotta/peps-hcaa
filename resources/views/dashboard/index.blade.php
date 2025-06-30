@@ -11,7 +11,7 @@
                             <h3 class="text-white mb-0">Seja bem-vindo(a), {{ Auth::user()->name }}</h3>
                             <small class="text-white">{{ Auth::user()->profiles->pluck('name')->implode(' | ') }}</small>
                         </div>
-                        
+
                     </div>
                 </div>
 
@@ -39,7 +39,11 @@
                         <!-- heading -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <h3 class="mb-0">Aulas Publicadas</h3>
+                                <h3 class="mb-0">
+                                    @can('isOnlyProfessor', auth()->user())
+                                        Minhas
+                                    @endcan Aulas
+                                </h3>
                             </div>
                             <div class="icon-shape icon-md bg-primary-soft text-primary rounded-2">
                                 <i data-feather="youtube" height="20" width="20"></i>
@@ -47,7 +51,15 @@
                         </div>
                         <!-- project number -->
                         <div class="lh-1">
-                            <h1 class="mb-1 fw-bold text-center">100+</h1>
+                            <h1 class="mb-1 fw-bold text-center">{{ $classesCount }}</h1>
+                        </div>
+                        <div class="text-center mt-5">
+                            <a href="{{ route('dashboard.lessons.index') }}" class="btn btn-outline-primary">
+                                Acessar
+                                @can('isOnlyProfessor', auth()->user())
+                                    Minhas
+                                @endcan Aulas
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -60,7 +72,40 @@
                         <!-- heading -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <h3 class="mb-0">Estudantes</h3>
+                                <h3 class="mb-0">Novas Perguntas</h3>
+                            </div>
+                            <div class="icon-shape icon-md bg-primary-soft text-primary rounded-2">
+                                <i data-feather="message-circle" height="20" width="20"></i>
+                            </div>
+                        </div>
+                        <!-- project number -->
+                        <div class="lh-1">
+                            <h1 class="mb-1 fw-bold text-center">{{ $unansweredQuestionsCount }}</h1>
+                        </div>
+                        <div class="text-center mt-5">
+                            <a href="{{ route('dashboard.lessons.index') }}" class="btn btn-outline-primary">
+                                Acessar
+                                @can('isOnlyProfessor', auth()->user())
+                                    Minhas
+                                @endcan Aulas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-12 col-12 mb-5">
+                <!-- card -->
+                <div class="card h-100 card-lift">
+                    <!-- card body -->
+                    <div class="card-body">
+                        <!-- heading -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h3 class="mb-0">
+                                    @can('isOnlyProfessor', auth()->user())
+                                        Meus
+                                    @endcan Alunos
+                                </h3>
                             </div>
                             <div class="icon-shape icon-md bg-primary-soft text-primary rounded-2">
                                 <i data-feather="users" height="20" width="20"></i>
@@ -70,26 +115,13 @@
                         <div class="lh-1">
                             <h1 class="mb-1 fw-bold text-center">{{ $studentsCount }}</h1>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-6 col-md-12 col-12 mb-5">
-                <!-- card -->
-                <div class="card h-100 card-lift">
-                    <!-- card body -->
-                    <div class="card-body">
-                        <!-- heading -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <h3 class="mb-0">Professores</h3>
-                            </div>
-                            <div class="icon-shape icon-md bg-primary-soft text-primary rounded-2">
-                                <i data-feather="user" height="20" width="20"></i>
-                            </div>
-                        </div>
-                        <!-- project number -->
-                        <div class="lh-1">
-                            <h1 class="mb-1 fw-bold text-center">{{ $teachersCount }}</h1>
+                        <div class="text-center mt-5">
+                            <a href="{{ route('dashboard.lessons.index') }}" class="btn btn-outline-primary">
+                                Visualizar
+                                @can('isOnlyProfessor', auth()->user())
+                                    Meus
+                                @endcan Alunos
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -111,6 +143,11 @@
                         <!-- project number -->
                         <div class="lh-1">
                             <h1 class="mb-1 fw-bold text-center">{{ $suggestionsCount }}</h1>
+                        </div>
+                        <div class="text-center mt-5">
+                            <a href="{{ route('dashboard.suggestions.index') }}" class="btn btn-outline-primary">
+                                Visualizar Sugestões
+                            </a>
                         </div>
                     </div>
                 </div>
