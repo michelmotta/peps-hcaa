@@ -1840,3 +1840,26 @@ footer,
         }
     }
 }
+
+.status-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    z-index: 10;
+    padding: 0.4rem 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.status-banner.finished {
+    background-color: #198754;
+}
+
+.status-banner.in-progress {
+    background-color: #ffc107;
+    color: #212529;
+}

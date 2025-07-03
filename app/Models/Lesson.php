@@ -75,11 +75,11 @@ class Lesson extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function students()
+    public function subscriptions()
     {
         return $this->belongsToMany(User::class)
             ->using(LessonUser::class)
-            ->withPivot(['score', 'finished', 'finished_at'])
+            ->withPivot(['score', 'finished', 'finished_at', 'created_at'])
             ->withTimestamps();
     }
 
@@ -124,6 +124,11 @@ class Lesson extends Model
     public function feedbacks()
     {
         return $this->hasMany(Feedback::class, 'lesson_id');
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class, 'lesson_id');
     }
 
     /**

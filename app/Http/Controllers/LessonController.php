@@ -165,4 +165,18 @@ class LessonController extends Controller
                 ->with('error', 'Ocorreu um erro ao alterar o status da aula: ' . $e->getMessage());
         }
     }
+
+    public function searchLesson(Request $request)
+    {
+        $search = request('q');
+
+        $lessons = Lesson::search($search)
+            ->take(10)
+            ->get();
+
+        return $lessons->map(fn($lesson) => [
+            'value' => $lesson->id,
+            'text'  => $lesson->name,
+        ])->values();
+    }
 }

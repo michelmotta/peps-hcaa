@@ -467,25 +467,5 @@ class QuizController extends Controller
             return $this->responseError('Ocorreu um erro ao limpar a sessão do quiz.', 500);
         }
     }
-
-    public function generateCertificate(Lesson $lesson)
-    {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
-        if (!Gate::allows('generateCertificate', $lesson)) {
-            abort(403, 'Você não tem permissão para gerar este certificado.');
-        }
-
-        $lesson = $user->subscribedLessons()->where('lessons.id', $lesson->id)->firstOrFail();
-
-        $pdf = Pdf::loadView('web.includes.certificate', [
-            'user' => $user,
-            'lesson' => $lesson,
-            'date' => now()->translatedFormat('d \\d\\e F \\d\\e Y'),
-        ])
-            ->setPaper('a4', 'landscape');;
-
-        return $pdf->download('certificado-' . $lesson->id . '.pdf');
-    }
+    
 }

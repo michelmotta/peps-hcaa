@@ -30,9 +30,9 @@ class LessonUserController extends Controller
             })
             ->orderByDesc('id');
 
-        $students = $query->paginate(20)->withQueryString();
+        $subscriptions = $query->paginate(20)->withQueryString();
 
-        return view('dashboard.students.index', compact('lesson', 'students'));
+        return view('dashboard.subscriptions.index', compact('lesson', 'subscriptions'));
     }
 
     /**
@@ -40,7 +40,7 @@ class LessonUserController extends Controller
      */
     public function create(Lesson $lesson)
     {
-        return view('dashboard.students.create', ['lesson' => $lesson]);
+        return view('dashboard.subscriptions.create', ['lesson' => $lesson]);
     }
 
     /**
@@ -54,7 +54,7 @@ class LessonUserController extends Controller
             LessonUser::create($validatedData);
 
             return redirect()
-                ->route('dashboard.lessons.students.index', $lesson)
+                ->route('dashboard.lessons.subscriptions.index', $lesson)
                 ->with('success', 'A inscrição foi cadastrada com sucesso!');
         } catch (Exception $e) {
             return redirect()
@@ -74,23 +74,23 @@ class LessonUserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Lesson $lesson, LessonUser $student)
+    public function edit(Lesson $lesson, LessonUser $subscription)
     {
-        return view('dashboard.students.edit', ['student' => $student, 'lesson' => $lesson]);
+        return view('dashboard.subscriptions.edit', ['lesson' => $lesson, 'subscription' => $subscription]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLessonUserRequest $request, Lesson $lesson, LessonUser $student)
+    public function update(UpdateLessonUserRequest $request, Lesson $lesson, LessonUser $subscription)
     {
         try {
             $validatedData = $request->validated();
 
-            $student->update($validatedData);
+            $subscription->update($validatedData);
 
             return redirect()
-                ->route('dashboard.lessons.students.index', $lesson)
+                ->route('dashboard.lessons.subscriptions.index', $lesson)
                 ->with('success', 'A inscrição foi atualizada com sucesso!');
         } catch (Exception $e) {
             return redirect()
@@ -102,13 +102,13 @@ class LessonUserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Lesson $lesson, LessonUser $student)
+    public function destroy(Lesson $lesson, LessonUser $subscription)
     {
         try {
-            $student->delete();
+            $subscription->delete();
 
             return redirect()
-                ->route('dashboard.lessons.students.index', $lesson)
+                ->route('dashboard.lessons.subscriptions.index', $lesson)
                 ->with('success', 'A inscrição foi apagada com sucesso!');
         } catch (Exception $e) {
             return redirect()
@@ -126,9 +126,9 @@ class LessonUserController extends Controller
             return redirect()->back()->with('error', 'Você precisa estar logado para se inscrever nessa aula!');
         }
 
-        if (!$user->subscribedLessons()->where('lesson_id', $lesson->id)->exists()) {
+        if (!$user->subscriptions()->where('lesson_id', $lesson->id)->exists()) {
 
-            $user->subscribedLessons()->attach($lesson->id);
+            $user->subscriptions()->attach($lesson->id);
 
             return redirect()->back()->with('success', 'Inscrição realizada com sucesso!');
         }

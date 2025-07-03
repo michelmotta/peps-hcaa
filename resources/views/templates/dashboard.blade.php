@@ -153,11 +153,17 @@
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
                                         <a class="nav-link has-arrow {{ request()->routeIs('dashboard.lessons.*') && !request()->routeIs('dashboard.lessons.create') ? 'menu-active' : '' }}"
-                                            href="{{ route('dashboard.lessons.index') }}">Gerenciar</a>
+                                            href="{{ route('dashboard.lessons.index') }}">
+                                            <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                            Gerenciar
+                                        </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link has-arrow {{ request()->routeIs('dashboard.lessons.create') ? 'menu-active' : '' }}"
-                                            href="{{ route('dashboard.lessons.create') }}">Nova</a>
+                                            href="{{ route('dashboard.lessons.create') }}">
+                                            <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                            Nova
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -176,11 +182,17 @@
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
                                         <a class="nav-link has-arrow {{ request()->routeIs('dashboard.suggestions.*') && !request()->routeIs('dashboard.suggestions.create') ? 'menu-active' : '' }}"
-                                            href="{{ route('dashboard.suggestions.index') }}">Gerenciar</a>
+                                            href="{{ route('dashboard.suggestions.index') }}">
+                                            <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                            Gerenciar
+                                        </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link has-arrow {{ request()->routeIs('dashboard.suggestions.create') ? 'menu-active' : '' }}"
-                                            href="{{ route('dashboard.suggestions.create') }}">Novo</a>
+                                            href="{{ route('dashboard.suggestions.create') }}">
+                                            <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                            Novo
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -188,27 +200,29 @@
                         @can('isCoordenador')
                             <!-- Nav item -->
                             <li class="nav-item">
-                                <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.guidebooks.*') ? 'collapsed' : '' }}"
-                                    href="#!" data-bs-toggle="collapse" data-bs-target="#guidebooks"
-                                    aria-expanded="false" aria-controls="guidebooks">
+                                <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.reports.*') ? 'collapsed' : '' }}"
+                                    href="#!" data-bs-toggle="collapse" data-bs-target="#reports"
+                                    aria-expanded="false" aria-controls="reports">
                                     <i data-feather="pie-chart" class="nav-icon me-3 icon-xs"></i>
                                     Relatórios
                                 </a>
-                                <div id="guidebooks"
-                                    class="collapse {{ request()->routeIs('dashboard.guidebooks.*') ? 'show' : '' }}"
+                                <div id="reports"
+                                    class="collapse {{ request()->routeIs('dashboard.reports.*') ? 'show' : '' }}"
                                     data-bs-parent="#sideNavbar">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.*') && !request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.guidebooks.index') }}">Relatório 1</a>
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.reports.students') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.reports.students') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Estudantes
+                                            </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.guidebooks.create') }}">Relatório 2</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.guidebooks.create') }}">Relatório 3</a>
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.reports.lessons') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.reports.lessons') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Aulas
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -227,11 +241,17 @@
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.specialties.*') && !request()->routeIs('dashboard.specialties.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.specialties.index') }}">Gerenciar</a>
+                                                href="{{ route('dashboard.specialties.index') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Gerenciar
+                                            </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.specialties.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.specialties.create') }}">Novo</a>
+                                                href="{{ route('dashboard.specialties.create') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Novo
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -251,11 +271,17 @@
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.information.*') && !request()->routeIs('dashboard.information.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.information.index') }}">Gerenciar</a>
+                                                href="{{ route('dashboard.information.index') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Gerenciar
+                                            </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.information.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.information.create') }}">Novo</a>
+                                                href="{{ route('dashboard.information.create') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Novo
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -275,11 +301,17 @@
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.libraries.*') && !request()->routeIs('dashboard.libraries.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.libraries.index') }}">Gerenciar</a>
+                                                href="{{ route('dashboard.libraries.index') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Gerenciar
+                                            </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.libraries.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.libraries.create') }}">Novo</a>
+                                                href="{{ route('dashboard.libraries.create') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Novo
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -298,11 +330,17 @@
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.users.*') && !request()->routeIs('dashboard.users.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.users.index') }}">Gerenciar</a>
+                                                href="{{ route('dashboard.users.index') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Gerenciar
+                                            </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.users.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.users.create') }}">Novo</a>
+                                                href="{{ route('dashboard.users.create') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Novo
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -322,11 +360,17 @@
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
                                         <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.*') && !request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
-                                            href="{{ route('dashboard.guidebooks.index') }}">Gerenciar</a>
+                                            href="{{ route('dashboard.guidebooks.index') }}">
+                                            <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                            Gerenciar
+                                        </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebooks.create') ? 'menu-active' : '' }}"
-                                            href="{{ route('dashboard.guidebooks.create') }}">Novo</a>
+                                            href="{{ route('dashboard.guidebooks.create') }}">
+                                            <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                            Novo
+                                        </a>
                                     </li>
                                 </ul>
                             </div>

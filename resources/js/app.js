@@ -94,9 +94,10 @@ function initQuillSync() {
 }
 
 function initTomSelect() {
-    const select = document.querySelector('#user-select');
+    const userSelect = document.querySelector('#user-select');
+    const lessonSelect = document.querySelector('#lesson-select');
 
-    if (select) {
+    if (userSelect) {
         new TomSelect('#user-select', {
             valueField: 'value',
             labelField: 'text',
@@ -106,6 +107,22 @@ function initTomSelect() {
             load: (query, callback) => {
                 if (!query.length) return callback();
                 axios.get('/dashboard/users/ajax?q=' + encodeURIComponent(query))
+                    .then(response => callback(response.data))
+                    .catch(() => callback());
+            }
+        });
+    }
+
+    if (lessonSelect) {
+        new TomSelect('#lesson-select', {
+            valueField: 'value',
+            labelField: 'text',
+            searchField: 'text',
+            placeholder: 'Pesquisar aula',
+            preload: false,
+            load: (query, callback) => {
+                if (!query.length) return callback();
+                axios.get('/dashboard/lessons/ajax?q=' + encodeURIComponent(query))
                     .then(response => callback(response.data))
                     .catch(() => callback());
             }

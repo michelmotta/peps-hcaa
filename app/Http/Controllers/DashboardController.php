@@ -22,11 +22,11 @@ class DashboardController extends Controller
         if ($user->hasAnyProfile(['Coordenador'])) {
             $classesCount = Lesson::count();
 
-            $studentsCount = User::whereHas('subscribedLessons')->distinct()->count();
+            $studentsCount = User::whereHas('subscriptions')->distinct()->count();
         } elseif ($user->hasAnyProfile(['Professor'])) {
             $classesCount = $user->createdLessons()->count();
 
-            $studentsCount = User::whereHas('subscribedLessons', function ($q) use ($user) {
+            $studentsCount = User::whereHas('subscriptions', function ($q) use ($user) {
                 $q->where('lessons.user_id', $user->id);
             })->distinct()->count();
         } else {

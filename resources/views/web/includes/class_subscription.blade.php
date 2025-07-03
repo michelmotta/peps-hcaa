@@ -42,7 +42,7 @@
                                 </span>
                                 <span>
                                     <i class="bi bi-mortarboard me-1"></i>
-                                    {{ $lesson->students->count() }} Estudantes
+                                    {{ $lesson->subscriptions->count() }} Estudantes
                                 </span>
                             </div>
                             <div class="faqs mt-5">

@@ -12,6 +12,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\LessonUserController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SpecialtyController;
 use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\TopicController;
@@ -53,7 +54,7 @@ Route::name('web.')->group(function () {
         Route::get('/aula/{lesson}/quiz/next-question', [QuizController::class, 'getNextQuestion'])->name('quiz.nextQuestion');
         Route::post('/aula/{lesson}/quiz/submit-answer', [QuizController::class, 'submitAnswer'])->name('quiz.submitAnswer');
         Route::post('/aula/{lesson}/quiz/clear-session', [QuizController::class, 'clearSession'])->name('quiz.clearSession');
-        Route::get('/certificates/{lesson}', [QuizController::class, 'generateCertificate'])->name('certificates.generate');
+        Route::get('/certificates/{lesson}', [WebController::class, 'generateCertificate'])->name('certificates.generate');
 
         //Feedback Routes
         Route::post('/aula/{lesson}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
@@ -66,12 +67,13 @@ Route::name('web.')->group(function () {
 Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoordenadorOrProfessor'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::get('/users/ajax', [UserController::class, 'searchUser'])->name('search-user');
+    Route::get('/lessons/ajax', [LessonController::class, 'searchLesson'])->name('search-lesson');
     Route::resource('lessons', LessonController::class);
     Route::post('lessons/{lesson}/change-status', [LessonController::class, 'changeStatus'])->name('lessons.change-status');
     Route::post('lessons/attachments/upload', [TopicController::class, 'attachmentsUpload'])->name('attachments.upload');
     Route::post('lessons/attachments/delete', [TopicController::class, 'attachmentsDelete'])->name('attachments.delete');
     Route::resource('lessons.topics', TopicController::class);
-    Route::resource('lessons.students', LessonUserController::class);
+    Route::resource('lessons.subscriptions', LessonUserController::class);
     Route::resource('lessons.doubts', DoubtController::class);
     Route::resource('suggestions', SuggestionController::class);
     Route::resource('guidebooks', GuidebookController::class);    
@@ -85,5 +87,8 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
         Route::resource('quizzes', QuizController::class);
         Route::resource('histories', HistoryController::class);
         Route::resource('libraries', LibraryController::class);
+
+        Route::get('reports/students', [ReportController::class, 'reportByStudent'])->name('reports.students');
+        Route::get('reports/lessons', [ReportController::class, 'reportByLesson'])->name('reports.lessons');
     });
 });

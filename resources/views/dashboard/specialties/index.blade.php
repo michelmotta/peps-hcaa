@@ -1,6 +1,3 @@
-@php
-    use Illuminate\Support\Str;
-@endphp
 @extends('templates.dashboard')
 @section('content')
     <div class="bg-primary rounded-3 mt-n6 mx-n4">

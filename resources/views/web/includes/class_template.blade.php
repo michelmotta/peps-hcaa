@@ -4,9 +4,27 @@
             <div class="row g-4">
                 @foreach ($lessons as $lesson)
                     <div class="col-md-6">
-                        <div class="row class-card g-0 align-items-stretch bg-white overflow-hidden mb-4">
+                        <div
+                            class="row class-card g-0 align-items-stretch bg-white overflow-hidden mb-4 position-relative">
                             <div class="col-md-4">
                                 <div class="thumbnail position-relative h-100 overflow-hidden">
+                                    @auth
+                                        @php
+                                            $subscription = $lesson->subscriptions->first();
+                                        @endphp
+
+                                        @if ($subscription)
+                                            <div
+                                                class="status-banner {{ $subscription->pivot->finished ? 'finished' : 'in-progress' }}">
+                                                @if ($subscription->pivot->finished)
+                                                    <i class="bi bi-check-circle-fill me-1"></i> Concluído
+                                                @else
+                                                    <i class="bi bi-hourglass-split me-1"></i> Em andamento
+                                                @endif
+                                            </div>
+                                        @endif
+                                    @endauth
+
                                     <img src="{{ asset('storage/' . $lesson->file->path) }}" alt="Imagem da aula"
                                         class="img-fluid w-100 h-100 object-fit-cover">
                                 </div>

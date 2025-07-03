@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
-                    <a href="{{ route('dashboard.lessons.students.index', $lesson) }}" class="btn btn-primary btn-md mb-5">
+                    <a href="{{ route('dashboard.lessons.subscriptions.index', $lesson) }}" class="btn btn-primary btn-md mb-5">
                         <i data-feather="arrow-left" class="nav-icon me-2 icon-xs"></i>
                         Voltar
                     </a>
@@ -29,10 +29,10 @@
                         <div class="card-body">
                             <div class="mt-4">
                                 <form method="POST"
-                                    action="{{ route('dashboard.lessons.students.update', [$lesson, $student]) }}"
+                                    action="{{ route('dashboard.lessons.subscriptions.update', [$lesson, $subscription]) }}"
                                     enctype="multipart/form-data">
                                     @method('PATCH')
-                                    @include('dashboard.students.includes.form', ['edit' => true])
+                                    @include('dashboard.subscriptions.includes.form', ['edit' => true])
                                 </form>
                             </div>
                         </div>

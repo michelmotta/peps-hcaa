@@ -18,21 +18,21 @@
                 </span>
                 <span>
                     <i class="bi bi-mortarboard me-1"></i>
-                    {{ $lesson->students->count() }} Estudantes
+                    {{ $lesson->subscriptions->count() }} Estudantes
                 </span>
             </div>
         </div>
     </section>
 
     @auth
-        @if ($user && $user->subscribedLessons->contains($lesson->id))
-            @include('web.includes.class_dashboard') {{-- already subscribed --}}
+        @if (auth()->user()?->subscriptions->contains('id', $lesson->id))
+            @include('web.includes.class_dashboard')
         @else
-            @include('web.includes.class_subscription') {{-- not subscribed yet --}}
+            @include('web.includes.class_subscription')
         @endif
     @endauth
 
     @guest
-        @include('web.includes.class_subscription') {{-- show subscribe prompt to guests --}}
+        @include('web.includes.class_subscription')
     @endguest
 @endsection

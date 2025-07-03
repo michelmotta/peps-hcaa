@@ -85,10 +85,10 @@
                                                 </a>
                                             </td>
                                             <td class="text-center">
-                                                <a href="{{ route('dashboard.lessons.students.index', $lesson->id) }}">
+                                                <a href="{{ route('dashboard.lessons.subscriptions.index', $lesson->id) }}">
                                                     <span class="item-content">
                                                         <i class="icon-xs" data-feather="users"></i>
-                                                        ({{ $lesson->students->count() }})
+                                                        ({{ $lesson->subscriptions->count() }})
                                                     </span>
                                                 </a>
                                             </td>

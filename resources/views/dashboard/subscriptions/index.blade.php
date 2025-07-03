@@ -20,7 +20,7 @@
                     Voltar
                 </a>
                 <div class="d-grid d-lg-block ms-auto text-end mb-5">
-                    <a href="{{ route('dashboard.lessons.students.create', $lesson) }}" class="btn btn-primary btn-lg">
+                    <a href="{{ route('dashboard.lessons.subscriptions.create', $lesson) }}" class="btn btn-primary btn-lg">
                         <i data-feather="plus" class="nav-icon me-2 icon-xs"></i>
                         Nova Inscrição
                     </a>
@@ -34,7 +34,7 @@
                                 <h3 class="mb-0">Lista de inscrições</h3>
                             </div>
                             <div class="col-md-3">
-                                <form method="GET" action="{{ route('dashboard.lessons.students.index', $lesson) }}">
+                                <form method="GET" action="{{ route('dashboard.lessons.subscriptions.index', $lesson) }}">
                                     <input type="search" class="form-control w-100" name="q" style="height: 50px"
                                         value="{{ request('q') }}" placeholder="Pesquisar estudantes...">
                                 </form>
@@ -55,29 +55,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($students as $student)
+                                    @foreach ($subscriptions as $subscription)
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div>
-                                                        <a href="{{ asset('storage/' . $student->user->file->path) }}"
+                                                        <a href="{{ asset('storage/' . $subscription->user->file->path) }}"
                                                             data-fancybox>
                                                             <img class="avatar-md avatar rounded-circle"
-                                                                src="{{ asset('storage/' . $student->user->file->path) }}"
+                                                                src="{{ asset('storage/' . $subscription->user->file->path) }}"
                                                                 alt="">
                                                         </a>
                                                     </div>
                                                     <div class="ms-3 lh-1">
-                                                        <h5 class="mb-1">{{ $student->user->name }}</h5>
-                                                        <p class="mb-0">{{ $student->user->email }}</p>
+                                                        <h5 class="mb-1">{{ $subscription->user->name }}</h5>
+                                                        <p class="mb-0">{{ $subscription->user->email }}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                {{ $student->created_at_formatted }}
+                                                {{ $subscription->created_at_formatted }}
                                             </td>
                                             <td class="text-center">
-                                                @if ($student->finished)
+                                                @if ($subscription->finished)
                                                     <span class="badge bg-success">
                                                         <i data-feather="check-circle" class="icon-xs me-1"></i>
                                                         Concluído
@@ -90,13 +90,13 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                {{ $student->finished_at_formatted }}
+                                                {{ $subscription->finished_at_formatted }}
                                             </td>
                                             <td class="text-center">
-                                                {{ $student->score }}
+                                                {{ $subscription->score }}
                                             </td>
                                             <td class="text-center">
-                                                <a href="{{ route('dashboard.lessons.students.edit', [$lesson, $student]) }}"
+                                                <a href="{{ route('dashboard.lessons.subscriptions.edit', [$lesson, $subscription]) }}"
                                                     class="btn btn-ghost btn-icon btn-sm rounded-circle"
                                                     data-template="editTwo" title="Editar" data-bs-toggle="tooltip">
                                                     <i data-feather="edit" class="icon-xs"></i>
@@ -105,12 +105,12 @@
                                                 <button type="button"
                                                     class="btn btn-ghost btn-icon btn-sm rounded-circle text-danger"
                                                     data-template="trashOne"
-                                                    onclick="confirmDelete('delete-item-{{ $student->id }}')"
+                                                    onclick="confirmDelete('delete-item-{{ $subscription->id }}')"
                                                     title="Apagar" data-bs-toggle="tooltip">
                                                     <i data-feather="trash-2" class="icon-xs"></i>
                                                 </button>
-                                                <form class="d-none" id="delete-item-{{ $student->id }}" method="POST"
-                                                    action="{{ route('dashboard.lessons.students.destroy', [$lesson, $student]) }}">
+                                                <form class="d-none" id="delete-item-{{ $subscription->id }}" method="POST"
+                                                    action="{{ route('dashboard.lessons.subscriptions.destroy', [$lesson, $subscription]) }}">
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>
@@ -122,7 +122,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        {{ $students->links() }}
+                        {{ $subscriptions->links() }}
                     </div>
                 </div>
             </div>

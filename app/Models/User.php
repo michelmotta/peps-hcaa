@@ -134,11 +134,11 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Lesson>
      */
-    public function subscribedLessons()
+    public function subscriptions()
     {
         return $this->belongsToMany(Lesson::class)
             ->using(LessonUser::class)
-            ->withPivot(['score', 'finished', 'finished_at'])
+            ->withPivot(['id', 'score', 'finished', 'finished_at'])
             ->withTimestamps();
     }
 
@@ -185,5 +185,15 @@ class User extends Authenticatable
     public function hasOnlyProfessorProfile()
     {
         return $this->profiles->count() === 1 && $this->profiles->first()->name === 'Professor';
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class, 'user_id');
+    }
+
+    public function isTeacherOf(Lesson $lesson): bool
+    {
+        return $lesson->teacher->id === $this->id;
     }
 }

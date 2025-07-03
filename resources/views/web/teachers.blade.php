@@ -25,7 +25,7 @@
                                 <p>{{ $teacher->expertise }}</p>
                                 <hr>
                                 <div class="meta-info">
-                                    <span><i class="bi bi-mortarboard"></i> {{ $teacher->createdLessons->flatMap->students->unique('id')->count() }} Estudantes</span>
+                                    <span><i class="bi bi-mortarboard"></i> {{ $teacher->createdLessons->flatMap->subscriptions->unique('id')->count() }} Estudantes</span>
                                     <span><i class="bi bi-journal-text"></i> {{ $teacher->createdLessons->count() }} Aulas</span>
                                 </div>
                                 <a href="{{ route('web.teacher', $teacher->id) }}" class="read-more-btn">

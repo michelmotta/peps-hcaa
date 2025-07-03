@@ -140,7 +140,7 @@
                                                             </span>
                                                             <span>
                                                                 <i class="bi bi-mortarboard me-1"></i>
-                                                                {{ $lesson->students->count() }} Estudantes
+                                                                {{ $lesson->subscriptions->count() }} Estudantes
                                                             </span>
                                                         </div>
                                                         <div class="faqs mt-5">
@@ -333,7 +333,7 @@
                             <section class="avaliacao-section">
                                 <div class="container text-center pt-5 pb-5">
                                     @if (Gate::allows('finishedLesson', $lesson))
-                                        <h2 class="mb-3">Você já finalizou a avaliação desta aula!</h2>
+                                        <h2 class="mb-3">Você já finalizou o quiz desta aula!</h2>
                                         <p class="mb-4">Seu certificado está disponível na aba Certificado.</p>
                                     @else
                                         <h2 class="mb-3">Quiz de Avaliação do Aprendizado</h2>

@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
-                    <a href="{{ route('dashboard.lessons.students.index', $lesson) }}" class="btn btn-primary btn-md mb-5">
+                    <a href="{{ route('dashboard.lessons.subscriptions.index', $lesson) }}" class="btn btn-primary btn-md mb-5">
                         <i data-feather="arrow-left" class="nav-icon me-2 icon-xs"></i>
                         Voltar
                     </a>
@@ -28,9 +28,9 @@
                         <!-- Card body -->
                         <div class="card-body">
                             <div class="mt-4">
-                                <form method="POST" action="{{ route('dashboard.lessons.students.store', $lesson) }}"
+                                <form method="POST" action="{{ route('dashboard.lessons.subscriptions.store', $lesson) }}"
                                     enctype="multipart/form-data">
-                                    @include('dashboard.students.includes.form')
+                                    @include('dashboard.subscriptions.includes.form')
                                 </form>
                             </div>
                         </div>

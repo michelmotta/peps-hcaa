@@ -67,7 +67,7 @@ class LessonPolicy
 
     public function finishedLesson(User $user, Lesson $lesson): bool
     {
-        return $user->subscribedLessons()
+        return $user->subscriptions()
             ->where('lesson_id', $lesson->id)
             ->wherePivot('finished', true)
             ->exists();
