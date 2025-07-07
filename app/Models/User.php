@@ -196,4 +196,30 @@ class User extends Authenticatable
     {
         return $lesson->teacher->id === $this->id;
     }
+
+    /**
+     * Get only the student's completed subscriptions (lessons).
+     */
+    public function completedSubscriptions()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_user')->wherePivot('finished', true);
+    }
+
+    /**
+     * Get only the student's pending subscriptions (lessons).
+     */
+    public function pendingSubscriptions()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_user')->wherePivot('finished', false);
+    }
+
+    public function logins()
+    {
+        return $this->hasMany(UserLogin::class);
+    }
+
+    public function lastLogin()
+    {
+        return $this->hasOne(UserLogin::class)->latestOfMany();
+    }
 }

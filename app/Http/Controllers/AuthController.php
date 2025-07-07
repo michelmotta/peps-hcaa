@@ -7,6 +7,7 @@ use App\Http\Requests\StorePerfilRequest;
 use App\Http\Requests\UpdatePerfilRequest;
 use App\Models\File;
 use App\Models\User;
+use App\Models\UserLogin;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,6 +45,12 @@ class AuthController extends Controller
 
         Auth::login($user);
         $request->session()->regenerate();
+
+        UserLogin::create([
+            'user_id' => $user->id,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->header('User-Agent'),
+        ]);
 
         $user->load('profiles');
 

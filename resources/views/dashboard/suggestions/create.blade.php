@@ -2,7 +2,7 @@
 @section('content')
     <section>
         <div class="bg-primary rounded-3 mt-n6 mx-n4">
-            <div class="mb-5 p-10">
+            <div class="p-10">
                 <h1 class="mb-0 text-white text-center ">
                     <i data-feather="message-circle" class="nav-icon me-2 icon-md"></i>
                     Gerenciar Sugestões

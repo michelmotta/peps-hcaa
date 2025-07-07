@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-primary rounded-3 mt-n6 mx-n4">
-        <div class="mb-5 p-10">
+        <div class="p-10">
             <h1 class="mb-0 text-white text-center">
                 <i data-feather="pie-chart" class="nav-icon me-2 icon-md"></i>
                 Relatório por Aula
@@ -126,7 +126,6 @@
                             <p class="text-center text-muted">Selecione uma aula para ver o relatório.</p>
                         @endif
                     </div>
-
                     <div class="card-footer">
                         @if ($subscriptions->isNotEmpty())
                             {{ $subscriptions->links() }}

@@ -163,4 +163,23 @@ class UserController extends Controller
             'text'  => $user->name,
         ])->values();
     }
+
+    public function searchProfessor(Request $request)
+    {
+        $search = request('q');
+
+        $teachers = User::search($search)
+            ->query(function ($eloquentBuilder) {
+                $eloquentBuilder->whereHas('profiles', function ($query) {
+                    $query->where('name', 'Professor');
+                });
+            })
+            ->take(10)
+            ->get();
+
+        return $teachers->map(fn($teacher) => [
+            'value' => $teacher->id,
+            'text'  => $teacher->name,
+        ])->values();
+    }
 }

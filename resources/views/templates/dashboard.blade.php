@@ -116,7 +116,7 @@
                     <!-- Brand logo -->
                     <a class="navbar-brand text-center" href="{{ route('dashboard.index') }}">
                         <img src="{{ asset('images/logo.png') }}"
-                            alt="dash ui - bootstrap 5 admin dashboard template" />
+                            alt="Logo" />
                     </a>
                     <!-- Navbar nav -->
                     <ul class="navbar-nav flex-column" id="sideNavbar">
@@ -215,6 +215,13 @@
                                                 href="{{ route('dashboard.reports.students') }}">
                                                 <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
                                                 Estudantes
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.reports.teachers') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.reports.teachers') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Professores
                                             </a>
                                         </li>
                                         <li class="nav-item">

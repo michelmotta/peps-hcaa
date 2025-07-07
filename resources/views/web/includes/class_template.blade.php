@@ -9,11 +9,7 @@
                             <div class="col-md-4">
                                 <div class="thumbnail position-relative h-100 overflow-hidden">
                                     @auth
-                                        @php
-                                            $subscription = $lesson->subscriptions->first();
-                                        @endphp
-
-                                        @if ($subscription)
+                                        @if ($subscription = $lesson->subscriptions->first())
                                             <div
                                                 class="status-banner {{ $subscription->pivot->finished ? 'finished' : 'in-progress' }}">
                                                 @if ($subscription->pivot->finished)

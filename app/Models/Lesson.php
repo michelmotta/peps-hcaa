@@ -83,6 +83,11 @@ class Lesson extends Model
             ->withTimestamps();
     }
 
+    public function completedSubscriptions()
+    {
+        return $this->belongsToMany(User::class, 'lesson_user')->wherePivot('finished', true);
+    }
+
     /**
      * Get the user associated with the specialty.
      *
@@ -129,6 +134,14 @@ class Lesson extends Model
     public function certificates()
     {
         return $this->hasMany(Certificate::class, 'lesson_id');
+    }
+
+    /**
+     * Get only the answered doubts for this lesson.
+     */
+    public function answeredDoubts()
+    {
+        return $this->hasMany(Doubt::class)->where('answered', true);
     }
 
     /**

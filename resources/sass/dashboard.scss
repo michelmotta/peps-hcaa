@@ -52,7 +52,23 @@
 }
 
 .bg-primary {
-    background: #133b6a !important;
+  position: relative;
+  overflow: hidden;
+  background-color: #133b6a !important;
+  background-image: linear-gradient(315deg, #133b6a 0%, #2a6f97 74%) !important;
+  z-index: -1;
+  margin-bottom: 20px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
 }
 
 .card-footer {
@@ -196,5 +212,230 @@ legend {
     img {
         margin: 0 auto !important;
         width: 100% !important;
+    }
+}
+
+.student-profile-card {
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    margin-bottom: 30px;
+
+    /* Header section with compact padding */
+    .profile-header {
+        background-color: #133b6a;
+        background-image: linear-gradient(315deg, #133b6a 0%, #2a6f97 74%);
+        padding: 10px;
+        position: relative;
+        text-align: center;
+
+        .profile-header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .profile-photo-wrapper {
+            position: relative;
+            margin-bottom: 0.75rem;
+        }
+
+        .profile-photo {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-name {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 0.1rem;
+            font-size: 1.25rem;
+        }
+
+        .profile-email {
+            color: #fff;
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 0px;
+        }
+    }
+
+    /* Card body content */
+    .profile-body {
+        padding: 2rem;
+
+        .section-title {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Icon-based info list */
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 17px 0;
+            border-bottom: 1px solid #f0f0f0;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .feather {
+                width: 18px;
+                height: 18px;
+                margin-right: 1rem;
+                color: #133b6a;
+            }
+
+            span {
+                color: #6c757d;
+            }
+
+            strong,
+            .badge {
+                margin-left: auto;
+                font-weight: 500;
+                color: #343a40;
+            }
+        }
+    }
+
+    /* Statistics cards */
+    .stat-card {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        text-align: center;
+
+        .feather {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 0.5rem;
+            color: #6c757d;
+        }
+
+        .stat-count {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #133b6a;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+    }
+
+    /* Export button */
+    .export-btn {
+        background-color: #133b6a;
+        border-color: #133b6a;
+        font-weight: 500;
+        padding: 0.75rem;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: #0f2e53;
+        }
+
+        .feather {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+    }
+}
+
+.profile-card {
+    color: #fff;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+
+    .profile-body {
+        padding: 2rem;
+    }
+
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #fff;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .profile-name {
+        font-weight: 700;
+        margin-bottom: 0.1rem;
+        font-size: 1.5rem;
+        color: #FFF;
+    }
+
+    .profile-email {
+        color: #6c757d;
+        font-size: 1rem;
+        color: #FFF;
+    }
+
+    .section-title {
+        font-weight: 600;
+        color: #343a40;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        color: #FFF;
+    }
+
+    .stat-card {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        text-align: center;
+
+        .feather {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 0.5rem;
+            color: #6c757d;
+        }
+
+        .stat-count {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #133b6a;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
     }
 }

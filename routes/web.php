@@ -67,6 +67,7 @@ Route::name('web.')->group(function () {
 Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoordenadorOrProfessor'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::get('/users/ajax', [UserController::class, 'searchUser'])->name('search-user');
+    Route::get('/professors/ajax', [UserController::class, 'searchProfessor'])->name('search-professor');
     Route::get('/lessons/ajax', [LessonController::class, 'searchLesson'])->name('search-lesson');
     Route::resource('lessons', LessonController::class);
     Route::post('lessons/{lesson}/change-status', [LessonController::class, 'changeStatus'])->name('lessons.change-status');
@@ -76,7 +77,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
     Route::resource('lessons.subscriptions', LessonUserController::class);
     Route::resource('lessons.doubts', DoubtController::class);
     Route::resource('suggestions', SuggestionController::class);
-    Route::resource('guidebooks', GuidebookController::class);    
+    Route::resource('guidebooks', GuidebookController::class);
 
     // Dashboard Routes (Coordenador only)
     Route::middleware('can:isCoordenador')->group(function () {
@@ -89,6 +90,9 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
         Route::resource('libraries', LibraryController::class);
 
         Route::get('reports/students', [ReportController::class, 'reportByStudent'])->name('reports.students');
+        Route::get('reports/students/export', [ReportController::class, 'exportStudentsPdf'])->name('reports.students.export');
+        Route::get('reports/teachers', [ReportController::class, 'reportByTeacher'])->name('reports.teachers');
+        Route::get('reports/teachers/export', [ReportController::class, 'exportTeachersPdf'])->name('reports.teachers.export');
         Route::get('reports/lessons', [ReportController::class, 'reportByLesson'])->name('reports.lessons');
     });
 });

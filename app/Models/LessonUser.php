@@ -28,6 +28,17 @@ class LessonUser extends Pivot
     ];
 
     /**
+     * The attributes that should be cast.
+     * This is the crucial part that fixes your problem.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'finished' => 'boolean',
+        'finished_at' => 'datetime',
+    ];
+
+    /**
      * Get the user associated with the pivot.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, LessonUser>

@@ -95,14 +95,27 @@ function initQuillSync() {
 
 function initTomSelect() {
     const userSelect = document.querySelector('#user-select');
-    const lessonSelect = document.querySelector('#lesson-select');
+    const professorSelect = document.querySelector('#professor-select');
+
+    const tomSelectPtBr = {
+        render: {
+            loading: function() {
+                return '<div class="p-2 text-muted">Carregando...</div>';
+            },
+
+            no_results: function() {
+                return '<div class="p-2 text-muted">Nenhum resultado encontrado.</div>';
+            }
+        }
+    };
 
     if (userSelect) {
         new TomSelect('#user-select', {
+            ...tomSelectPtBr,
             valueField: 'value',
             labelField: 'text',
             searchField: 'text',
-            placeholder: 'Pesquisar estudante',
+            placeholder: 'Pesquisar pelo nome',
             preload: false,
             load: (query, callback) => {
                 if (!query.length) return callback();
@@ -113,16 +126,17 @@ function initTomSelect() {
         });
     }
 
-    if (lessonSelect) {
-        new TomSelect('#lesson-select', {
+    if (professorSelect) {
+        new TomSelect('#professor-select', {
+            ...tomSelectPtBr,
             valueField: 'value',
             labelField: 'text',
             searchField: 'text',
-            placeholder: 'Pesquisar aula',
+            placeholder: 'Pesquisar pelo nome',
             preload: false,
             load: (query, callback) => {
                 if (!query.length) return callback();
-                axios.get('/dashboard/lessons/ajax?q=' + encodeURIComponent(query))
+                axios.get('/dashboard/professors/ajax?q=' + encodeURIComponent(query))
                     .then(response => callback(response.data))
                     .catch(() => callback());
             }

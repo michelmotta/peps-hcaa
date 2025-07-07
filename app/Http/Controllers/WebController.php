@@ -21,16 +21,24 @@ class WebController extends Controller
 {
     public function index()
     {
+        $lessons = Lesson::with('file')
+            ->where('lesson_status', LessonStatusEnum::PUBLICADA->value)
+            ->latest()
+            ->take(4)
+            ->get();
+
+        if (Auth::check()) {
+            $lessons->load(['subscriptions' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }]);
+        }
+
         return view('web.index', [
             'specialties' => Specialty::with('file')
                 ->whereNull('parent_id')
                 ->orderBy('name')
                 ->get(),
-            'lessons' => Lesson::with('file')
-                ->where('lesson_status', LessonStatusEnum::PUBLICADA->value)
-                ->latest()
-                ->take(4)
-                ->get(),
+            'lessons' => $lessons,
             'teachersCount' => User::whereHas('profiles', function ($q) {
                 $q->where('profiles.id', ProfileEnum::PROFESSOR->value);
             })->count(),
@@ -113,34 +121,31 @@ class WebController extends Controller
     {
         $search = $request->query('q');
         $specialtyId = $request->query('specialty_id');
-        $userId = Auth::id();
 
-        $baseQuery = function ($query) use ($specialtyId, $userId) {
-            $query->with([
-                'file',
-                'specialty',
-                'topics',
-                'teacher.file',
-            ]);
+        $query = Lesson::query()
+            ->with(['file', 'specialty', 'topics', 'teacher.file'])
+            ->where('lesson_status', LessonStatusEnum::PUBLICADA->value)
+            ->orderByDesc('id');
 
-            if ($userId) {
-                $query->with(['subscriptions' => fn($q) => $q->where('users.id', $userId)]);
-            }
+        if ($specialtyId) {
+            $query->where('specialty_id', $specialtyId);
+        }
 
-            $query->where('lesson_status', LessonStatusEnum::PUBLICADA->value)
-                ->orderByDesc('id');
+        if ($search) {
+            $lessonIds = Lesson::search($search)->keys();
+            $query->whereIn('id', $lessonIds);
+        }
 
-            if ($specialtyId) {
-                $query->where('specialty_id', $specialtyId);
-            }
-        };
+        $lessons = $query->paginate(15)->withQueryString();
 
-        $query = $search
-            ? Lesson::search($search)->query($baseQuery)
-            : Lesson::query()->tap($baseQuery);
+        if (Auth::check()) {
+            $lessons->load(['subscriptions' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }]);
+        }
 
         return view('web.classes', [
-            'lessons' => $query->paginate(15)->withQueryString(),
+            'lessons' => $lessons,
         ]);
     }
 
