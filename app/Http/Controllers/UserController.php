@@ -24,7 +24,7 @@ class UserController extends Controller
             : User::query()->orderByDesc('id');
 
         return view('dashboard.users.index', [
-            'users' => $query->paginate(20)->withQueryString(),
+            'users' => $query->paginate(15)->withQueryString(),
         ]);
     }
 
@@ -33,7 +33,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('dashboard.users.create', ['profiles' => Profile::get()]);
+        return view('dashboard.users.create', ['profiles' => Profile::get(), 'user' => null]);
     }
 
     /**

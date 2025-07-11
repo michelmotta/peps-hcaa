@@ -18,29 +18,29 @@ class SpecialtyController extends Controller
     public function index(Request $request)
     {
         $searchTerm = $request->input('q');
+        $selectedId = $request->input('selected');
 
         if ($searchTerm) {
-            $searchResults = Specialty::search($searchTerm)->get();
+            $ids = Specialty::search($searchTerm)
+                ->where('parent_id', null)
+                ->keys();
 
-            $parentIds = $searchResults->pluck('parent_id')->filter()->unique();
-            $matchedIds = $searchResults->pluck('id');
-
-            $finalParentIds = $matchedIds->merge($parentIds)->unique();
-
-            $specialties = Specialty::with('children')
-                ->whereIn('id', $finalParentIds)
-                ->whereNull('parent_id')
-                ->orderByDesc('id')
-                ->paginate(20)
-                ->withQueryString();
+            $query = Specialty::with('file')->whereIn('id', $ids);
         } else {
-            $specialties = Specialty::with('children')
-                ->whereNull('parent_id')
-                ->orderByDesc('id')
-                ->paginate(20);
+            $query = Specialty::with('file')->whereNull('parent_id');
+        }
+        $specialties = $query->orderByDesc('id')->paginate(15)->withQueryString();
+
+        $selectedSpecialty = null;
+        if ($selectedId) {
+            $selectedSpecialty = Specialty::with('children', 'file')->find($selectedId);
+        } elseif ($specialties->isNotEmpty()) {
+            if (is_null($selectedId) && is_null($searchTerm)) {
+                return redirect()->route('dashboard.specialties.index', ['selected' => $specialties->first()->id]);
+            }
         }
 
-        return view('dashboard.specialties.index', compact('specialties'));
+        return view('dashboard.specialties.index', compact('specialties', 'selectedSpecialty'));
     }
 
     /**
@@ -57,20 +57,21 @@ class SpecialtyController extends Controller
     public function store(StoreSpecialtyRequest $request)
     {
         try {
-            $validatedData = $request->validated();
+            $dados = $request->validated();
 
+            // Upload do arquivo, se houver
             if ($request->hasFile('file')) {
-                $file = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/specialties');
-                $validatedData['file_id'] = $file->id;
+                $arquivo = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/specialties');
+                $dados['file_id'] = $arquivo->id;
             }
 
-            $specialty = Specialty::create($validatedData);
+            $specialty = Specialty::create($dados);
 
-            if ($request->filled('subspecialties')) {
-                foreach ($request->input('subspecialties') as $sub) {
-                    $specialty->children()->create(['name' => $sub]);
-                }
-            }
+            collect(json_decode($request->input('subspecialties', '[]'), true))
+                ->pluck('value')
+                ->filter()
+                ->unique()
+                ->each(fn($nome) => $specialty->children()->create(['name' => $nome]));
 
             return redirect()->route('dashboard.specialties.index')
                 ->with('success', 'A especialidade foi cadastrada com sucesso!');
@@ -101,26 +102,30 @@ class SpecialtyController extends Controller
     public function update(UpdateSpecialtyRequest $request, Specialty $specialty)
     {
         try {
-            $validatedData = $request->validated();
+            $dados = $request->validated();
 
+            // Atualiza ou substitui o arquivo
             if ($request->hasFile('file')) {
-                if ($specialty->file) {
-                    $specialty->file->delete();
-                }
-                $file = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/specialties');
-                $validatedData['file_id'] = $file->id;
+                $specialty->file?->delete();
+                $arquivo = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/specialties');
+                $dados['file_id'] = $arquivo->id;
             }
 
-            $specialty->update($validatedData);
+            $specialty->update($dados);
 
-            // Remover subespecialidades antigas e adicionar novas
-            $specialty->children()->delete();
+            $novasTags = collect(json_decode($request->input('subspecialties', '[]'), true))
+                ->pluck('value')
+                ->filter()
+                ->unique()
+                ->values();
 
-            if ($request->filled('subspecialties')) {
-                foreach ($request->input('subspecialties') as $sub) {
-                    $specialty->children()->create(['name' => $sub]);
-                }
-            }
+            $tagsAtuais = $specialty->children->pluck('name');
+
+            $specialty->children()->whereIn('name', $tagsAtuais->diff($novasTags))->delete();
+
+            $novasTags->diff($tagsAtuais)->each(function ($tag) use ($specialty) {
+                $specialty->children()->create(['name' => $tag]);
+            });
 
             return redirect()->route('dashboard.specialties.index')
                 ->with('success', 'A especialidade foi atualizada com sucesso!');

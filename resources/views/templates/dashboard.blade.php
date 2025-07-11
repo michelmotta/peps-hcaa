@@ -265,36 +265,6 @@
                             </li>
                             <!-- Nav item -->
                             <li class="nav-item">
-                                <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.information.*') ? 'collapsed' : '' }}"
-                                    href="#!" data-bs-toggle="collapse" data-bs-target="#information"
-                                    aria-expanded="false" aria-controls="information">
-                                    <i data-feather="info" class="nav-icon me-3 icon-xs"></i>
-                                    Informações
-                                </a>
-
-                                <div id="information"
-                                    class="collapse {{ request()->routeIs('dashboard.information.*') ? 'show' : '' }}"
-                                    data-bs-parent="#sideNavbar">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.information.*') && !request()->routeIs('dashboard.information.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.information.index') }}">
-                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
-                                                Gerenciar
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.information.create') ? 'menu-active' : '' }}"
-                                                href="{{ route('dashboard.information.create') }}">
-                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
-                                                Novo
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <!-- Nav item -->
-                            <li class="nav-item">
                                 <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.libraries.*') ? 'collapsed' : '' }}"
                                     href="#!" data-bs-toggle="collapse" data-bs-target="#library"
                                     aria-expanded="false" aria-controls="library">
@@ -362,7 +332,7 @@
                                 Manuais
                             </a>
                             <div id="guidebooks"
-                                class="collapse {{ request()->routeIs('dashboard.guidebooks.*') ? 'show' : '' }}"
+                                class="collapse {{ request()->routeIs('dashboard.guidebooks.*') ? 'show' : '' }} {{ request()->routeIs('dashboard.guidebook-categories.*') ? 'show' : '' }}"
                                 data-bs-parent="#sideNavbar">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
@@ -377,6 +347,13 @@
                                             href="{{ route('dashboard.guidebooks.create') }}">
                                             <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
                                             Novo
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link has-arrow {{ request()->routeIs('dashboard.guidebook-categories.*') ? 'menu-active' : '' }}"
+                                            href="{{ route('dashboard.guidebook-categories.index') }}">
+                                            <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                            Categorias
                                         </a>
                                     </li>
                                 </ul>

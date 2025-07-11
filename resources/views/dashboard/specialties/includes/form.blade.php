@@ -1,60 +1,61 @@
 @csrf
 <section>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="name" class="form-label">Especialidade Principal</label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
-                    value="{{ old('name', $specialty->name ?? '') }}" required>
-                @error('name')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                @enderror
-            </div>
-        </div>
+    <div class="row g-4 d-flex align-items-start">
+        {{-- COLUNA ESQUERDA --}}
+        <div class="col-lg-7 h-100">
+            <fieldset class="h-100">
+                <legend class="h5 mb-4">Detalhes da Especialidade</legend>
 
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="file" class="form-label">Imagem Destaque</label>
-                <input type="file" class="form-control @error('file') is-invalid @enderror" name="file">
-                <small class="d-block">Formatos permitidos: JPG|JPEG|PNG|GIF. Tamanho máximo: 2MB</small>
-                @error('file')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                @enderror
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="mb-3">
-                <label class="form-label">Subespecialidades</label>
-                <div id="subspecialties-wrapper">
-                    @if (old('subspecialties'))
-                        @foreach (old('subspecialties') as $sub)
-                            <div class="input-group mb-2 subspecialty-item">
-                                <input type="text" name="subspecialties[]" class="form-control"
-                                    value="{{ $sub }}" placeholder="Subespecialidade" required>
-                                <button class="btn btn-outline-danger remove-subspecialty" type="button">×</button>
-                            </div>
-                        @endforeach
-                    @elseif (!empty($specialty->children))
-                        @foreach ($specialty->children as $child)
-                            <div class="input-group mb-2 subspecialty-item">
-                                <input type="text" name="subspecialties[]" class="form-control"
-                                    value="{{ $child->name }}" placeholder="Subespecialidade" required>
-                                <button class="btn btn-outline-danger remove-subspecialty" type="button">×</button>
-                            </div>
-                        @endforeach
-                    @endif
+                <div class="mb-4">
+                    <label for="name" class="form-label">Nome</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
+                        name="name" value="{{ old('name', $specialty->name ?? '') }}" required>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
-                <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="add-subspecialty">
-                    + Adicionar Subespecialidade
-                </button>
-            </div>
+
+                <div>
+                    <label for="subspecialties" class="form-label">Subespecialidades</label>
+                    <input type="text" id="subspecialties" name="subspecialties" class="form-control"
+                        value="{{ old('subspecialties', isset($specialty) ? $specialty->children->pluck('name')->implode(',') : '') }}">
+                    <small class="form-text text-muted mt-2">
+                        Digite e pressione enter ou vírgula para adicionar uma nova subespecialidade.
+                    </small>
+                </div>
+            </fieldset>
+        </div>
+
+        {{-- COLUNA DIREITA --}}
+        <div class="col-lg-5 h-100">
+            <fieldset class="h-100 w-100 d-flex flex-column justify-content-center align-items-center text-center">
+                <legend class="h5 mb-4">Imagem de Destaque</legend>
+
+                <img id="image-preview"
+                    src="{{ isset($specialty->file) ? asset('storage/' . $specialty->file->path) : 'https://placehold.co/300x150.png?text=Selecione+uma+Imagem' }}"
+                    alt="Prévia da imagem" class="img-fluid rounded shadow-sm mb-3 @error('file') is-invalid @enderror"
+                    style="max-height: 250px;">
+
+                <input type="file" name="file" id="file" class="d-none @error('file') is-invalid @enderror">
+
+                <label for="file" class="btn btn-outline-secondary mb-2">
+                    <i data-feather="upload" class="me-1"></i>
+                    {{ isset($specialty->file) ? 'Alterar Imagem' : 'Selecionar Imagem' }}
+                </label>
+
+                <small class="text-muted">JPG, PNG, GIF. Máximo 2MB.</small>
+
+                @error('file')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </fieldset>
         </div>
     </div>
 
+    {{-- BOTÃO DE SUBMISSÃO --}}
     <div class="text-center mt-4">
-        <button type="submit" class="btn btn-primary btn-lg">
-            <i data-feather="save" class="me-2 icon-xs"></i> Salvar
+        <button type="submit" class="btn btn-primary btn-lg px-5">
+            Salvar Alterações
         </button>
     </div>
 </section>

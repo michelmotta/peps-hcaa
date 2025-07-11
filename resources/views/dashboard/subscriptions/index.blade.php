@@ -31,7 +31,7 @@
                     <div class="card-header">
                         <div class="row g-2 align-items-center">
                             <div class="col-md-9 d-grid d-lg-block ms-auto text-start">
-                                <h3 class="mb-0">Lista de inscrições</h3>
+                                <h3 class="mb-0">Estudante Inscritos</h3>
                             </div>
                             <div class="col-md-3">
                                 <form method="GET" action="{{ route('dashboard.lessons.subscriptions.index', $lesson) }}">

@@ -5,7 +5,7 @@
             <div class="p-10">
                 <h1 class="mb-0 text-white text-center ">
                     <i data-feather="info" class="nav-icon me-2 icon-md"></i>
-                    Gerenciar Informações
+                    Gerenciar Categorias de Manuais
                 </h1>
             </div>
         </div>
@@ -18,15 +18,14 @@
                         <div class="card-header">
                             <h4 class="mb-0 fs-3">
                                 <i data-feather="chevrons-right" class="me-2 icon-xs"></i>
-                                Editar Informação
+                                Nova Categoria
                             </h4>
                         </div>
                         <!-- Card body -->
                         <div class="card-body">
                             <div class="mt-4">
-                                <form method="POST" action="{{ route('dashboard.information.update', $information) }}">
-                                    @method('PATCH')
-                                    @include('dashboard.information.includes.form', ['edit' => true])
+                                <form method="POST" action="{{ route('dashboard.guidebook-categories.store') }}">
+                                    @include('dashboard.guidebook-categories.includes.form')
                                 </form>
                             </div>
                         </div>

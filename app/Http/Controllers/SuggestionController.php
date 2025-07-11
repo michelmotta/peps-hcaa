@@ -6,6 +6,7 @@ use App\Http\Requests\StoreSuggestionRequest;
 use App\Http\Requests\UpdateSuggestionRequest;
 use App\Models\Suggestion;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SuggestionController extends Controller
@@ -13,15 +14,20 @@ class SuggestionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = request('q')
-            ? Suggestion::search(request('q'))->query(fn($q) => $q->orderByDesc('votes'))
-            : Suggestion::query()->orderByDesc('votes');
+        $search = $request->input('q');
+
+        $query = $search
+            ? Suggestion::search($search)->query(fn($q) => $q->with('user.file'))
+            : Suggestion::with('user.file')->orderByDesc('votes');
+
+        $suggestions = $query->paginate(15)->withQueryString();
 
         return view('dashboard.suggestions.index', [
-            'suggestions' => $query->paginate(20)->withQueryString(),
-            'totalVotes' => Suggestion::sum('votes')
+            'suggestions' => $suggestions,
+            'totalVotes' => Suggestion::sum('votes'),
+            'startRank' => ($suggestions->currentPage() - 1) * $suggestions->perPage(),
         ]);
     }
 

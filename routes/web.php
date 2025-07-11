@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DoubtController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\GuidebookCategoryController;
 use App\Http\Controllers\GuidebookController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\InformationController;
@@ -78,11 +79,11 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
     Route::resource('lessons.doubts', DoubtController::class);
     Route::resource('suggestions', SuggestionController::class);
     Route::resource('guidebooks', GuidebookController::class);
+    Route::resource('guidebook-categories', GuidebookCategoryController::class);
 
     // Dashboard Routes (Coordenador only)
     Route::middleware('can:isCoordenador')->group(function () {
         Route::post('users/{user}/active', [UserController::class, 'toggleActiveUser'])->name('users.active');
-        Route::resource('information', InformationController::class);
         Route::resource('specialties', SpecialtyController::class);
         Route::resource('users', UserController::class);
         Route::resource('quizzes', QuizController::class);
@@ -94,5 +95,6 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
         Route::get('reports/teachers', [ReportController::class, 'reportByTeacher'])->name('reports.teachers');
         Route::get('reports/teachers/export', [ReportController::class, 'exportTeachersPdf'])->name('reports.teachers.export');
         Route::get('reports/lessons', [ReportController::class, 'reportByLesson'])->name('reports.lessons');
+        Route::get('reports/lessons/export', [ReportController::class, 'exportLessonsPdf'])->name('reports.lessons.export');
     });
 });

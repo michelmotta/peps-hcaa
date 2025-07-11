@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\GuidebookEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -18,7 +19,16 @@ class Guidebook extends Model
      */
     protected $fillable = [
         'title',
-        'description'
+        'type',
+        'description',
+        'guidebook_category_id',
+    ];
+
+    /**
+     * This tells Laravel to treat the 'type' column as a GuidebookType Enum.
+     */
+    protected $casts = [
+        'type' => GuidebookEnum::class,
     ];
 
     /**
@@ -35,5 +45,13 @@ class Guidebook extends Model
             'title' => $this->title,
             'description' => $this->description,
         ];
+    }
+
+    /**
+     * Get the category that the guidebook belongs to.
+     */
+    public function category()
+    {
+        return $this->belongsTo(GuidebookCategory::class, 'guidebook_category_id');
     }
 }

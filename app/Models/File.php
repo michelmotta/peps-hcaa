@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Imagick;
 
 class File extends Model
 {
@@ -21,6 +22,7 @@ class File extends Model
     protected $fillable = [
         'name',
         'path',
+        'thumbnail_path',
         'mime_type',
         'size',
         'extension',
@@ -40,21 +42,58 @@ class File extends Model
      * @param string $disk The storage disk to use (default 'public').
      * @return \App\Models\File The created file instance.
      */
-    public static function uploadSingleFile(UploadedFile $file, ?int $userId = null, string $directory = 'uploads/files', string $disk = 'public'): self
+    public static function uploadSingleFile(UploadedFile $file, ?int $userId = null, string $directory = 'uploads/files', bool $generateThumbnail = false, string $disk = 'public'): self
     {
         try {
             $path = $file->store($directory, $disk);
+            $thumbnailPath = null;
+
+            if ($generateThumbnail && $file->getClientMimeType() === 'application/pdf') {
+                $thumbnailPath = self::createPdfThumbnail($path, $disk);
+            }
 
             return self::create([
                 'name' => $file->getClientOriginalName(),
                 'path' => $path,
+                'thumbnail_path' => $thumbnailPath,
                 'mime_type' => $file->getClientMimeType(),
                 'size' => $file->getSize(),
                 'extension' => $file->extension(),
                 'user_id' => $userId,
             ]);
         } catch (Exception $e) {
+            if (isset($path) && Storage::disk($disk)->exists($path)) {
+                Storage::disk($disk)->delete($path);
+            }
             throw new Exception("Não foi possível salvar o arquivo: " . $e->getMessage());
+        }
+    }
+
+    private static function createPdfThumbnail(string $pdfPath, string $disk): ?string
+    {
+        try {
+            $imagick = new Imagick();
+            // The '[0]' specifies that we want to render the first page of the PDF.
+            $imagick->readImage(Storage::disk($disk)->path($pdfPath) . '[0]');
+            $imagick->setImageFormat('png');
+            
+            // Define the path for the thumbnail
+            $thumbnailFilename = pathinfo($pdfPath, PATHINFO_FILENAME) . '.png';
+            $thumbnailDirectory = 'uploads/library/thumbnails';
+            $fullThumbnailPath = $thumbnailDirectory . '/' . $thumbnailFilename;
+
+            // Save the thumbnail to the public disk
+            Storage::disk($disk)->put($fullThumbnailPath, $imagick->getImageBlob());
+
+            $imagick->clear();
+            $imagick->destroy();
+
+            return $fullThumbnailPath;
+        } catch (Exception $e) {
+            // Log the error or handle it as needed, but don't block the main file upload.
+            // For example: \Log::error('Failed to create PDF thumbnail: ' . $e->getMessage());
+            dd($e->getMessage());
+            return null;
         }
     }
 

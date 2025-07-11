@@ -199,4 +199,82 @@ class ReportController extends Controller
 
         return $pdf->stream($fileName);
     }
+
+    public function reportByLesson(Request $request)
+    {
+        $lesson = null;
+        $students = collect();
+
+        $validated = $request->validate([
+            'lesson_id' => 'nullable|integer|exists:lessons,id',
+        ]);
+
+        if (isset($validated['lesson_id'])) {
+            $lesson = Lesson::with([
+                'teacher',
+                'specialty',
+                'file',
+                'topics',
+            ])
+                ->withCount([
+                    'subscriptions',
+                    'completedSubscriptions',
+                ])
+                ->withAvg('subscriptions as average_score', 'lesson_user.score')
+                ->find($validated['lesson_id']);
+
+            if ($lesson) {
+                $students = $lesson->subscriptions()
+                    ->with('file')
+                    ->latest()
+                    ->paginate(10);
+            }
+        }
+
+        return view('dashboard.reports.report_lesson', [
+            'lesson'   => $lesson,
+            'students' => $students,
+        ]);
+    }
+
+    public function exportLessonsPdf(Request $request)
+    {
+        // 1. Validate that a lesson_id was provided in the request
+        $validated = $request->validate([
+            'lesson_id' => 'required|integer|exists:lessons,id',
+        ]);
+
+        // 2. Find the lesson using the validated ID
+        $lesson = Lesson::with([
+            'teacher',
+            'specialty',
+            'file',
+            'topics',
+        ])
+            ->withCount([
+                'subscriptions',
+                'completedSubscriptions',
+            ])
+            ->withAvg('subscriptions as average_score', 'lesson_user.score')
+            ->find($validated['lesson_id']);
+
+        // This check is good practice, though validation helps prevent this
+        if (!$lesson) {
+            return redirect()->back()->with('error', 'Aula não encontrada para exportação.');
+        }
+
+        // 3. Get all students for the PDF
+        $students = $lesson->subscriptions()->with('file')->latest()->get();
+
+        // 4. Load the PDF view
+        $pdf = PDF::loadView('dashboard.reports.report_lesson_pdf', [
+            'lesson'   => $lesson,
+            'students' => $students,
+        ]);
+
+        // 5. Create a filename and download
+        $fileName = 'relatorio-' . Str::slug($lesson->name) . '.pdf';
+
+        return $pdf->stream($fileName);
+    }
 }

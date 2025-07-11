@@ -3,8 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
-class UpdateInformationRequest extends FormRequest
+class UpdateGuidebookCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +24,8 @@ class UpdateInformationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'published' => 'required',
+            'name' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:255',
         ];
     }
 }

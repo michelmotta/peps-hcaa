@@ -116,7 +116,7 @@
                                             <td class="text-center">
                                                 @if ($lesson->lesson_status === LessonStatusEnum::RASCUNHO->value)
                                                     <span class="badge bg-warning">
-                                                        <i data-feather="info" class="icon-xs me-1"></i>
+                                                        <i data-feather="edit-3" class="icon-xs me-1"></i>
                                                         {{ LessonStatusEnum::getLessonStatusNameById($lesson->lesson_status) }}
                                                     </span>
                                                 @endif

@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('guidebooks', function (Blueprint $table) {
+        Schema::create('guidebook_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('type');
-            $table->longText('description');
-            $table->foreignId('guidebook_category_id')->constrained('guidebook_categories')->nullOnDelete();
+            $table->string('name');
+            $table->string('icon')->default('book-open');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('guidebooks');
+        Schema::dropIfExists('guidebook_categories');
     }
 };

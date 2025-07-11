@@ -5,21 +5,34 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreGuidebookRequest;
 use App\Http\Requests\UpdateGuidebookRequest;
 use App\Models\Guidebook;
+use App\Models\GuidebookCategory;
 use Exception;
+use Illuminate\Http\Request;
 
 class GuidebookController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = request('q')
-            ? Guidebook::search(request('q'))->query(fn($q) => $q->orderByDesc('id'))
-            : Guidebook::query()->orderByDesc('id');
+        $categories = GuidebookCategory::orderBy('name')->get();
+
+        if ($request->filled('q')) {
+            $guidebooksQuery = Guidebook::search($request->q);
+        } else {
+            $guidebooksQuery = Guidebook::query()->latest();
+        }
+
+        if ($request->filled('category_id')) {
+            $guidebooksQuery->where('guidebook_category_id', $request->category_id);
+        }
+
+        $guidebooks = $guidebooksQuery->paginate(10)->withQueryString();
 
         return view('dashboard.guidebooks.index', [
-            'guidebooks' => $query->paginate(20)->withQueryString(),
+            'categories' => $categories,
+            'guidebooks' => $guidebooks,
         ]);
     }
 
@@ -28,7 +41,11 @@ class GuidebookController extends Controller
      */
     public function create()
     {
-        return view('dashboard.guidebooks.create');
+        $categories = GuidebookCategory::orderBy('name')->get();
+        return view('dashboard.guidebooks.create', [
+            'guidebook' => null,
+            'categories' => $categories,
+        ]);
     }
 
     /**
@@ -63,7 +80,11 @@ class GuidebookController extends Controller
      */
     public function edit(Guidebook $guidebook)
     {
-        return view('dashboard.guidebooks.edit', ['guidebook' => $guidebook]);
+        $categories = GuidebookCategory::orderBy('name')->get();
+        return view('dashboard.guidebooks.edit', [
+            'guidebook' => $guidebook,
+            'categories' => $categories,
+        ]);
     }
 
     /**

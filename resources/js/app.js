@@ -19,9 +19,11 @@ import { initQuizEditor } from './quiz-editor';
 import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
 
+import Tagify from '@yaireo/tagify';
+import '@yaireo/tagify/dist/tagify.css';
+
 // ─── Fancybox Init ───────────────────────────────────────────────────────────
 Fancybox.bind('[data-fancybox]');
-
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 window.confirmDelete = function (formId) {
@@ -44,6 +46,7 @@ window.confirmDelete = function (formId) {
 
 // ─── Dom Ready ───────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    initTagfy();
     initQuillSync();
     initTomSelect();
     initDateMasks();
@@ -66,6 +69,29 @@ function feedbackAlert() {
         setTimeout(() => {
             alert.classList.add('alert-visible');
         }, 200);
+    }
+}
+
+function initTagfy() {
+    const tagifyInput = document.querySelector('#subspecialties');
+    if (tagifyInput) {
+        new Tagify(tagifyInput);
+    }
+
+    const fileInput = document.getElementById('file');
+    const imagePreview = document.getElementById('image-preview');
+
+    if (fileInput && imagePreview) {
+        fileInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
     }
 }
 
@@ -96,14 +122,15 @@ function initQuillSync() {
 function initTomSelect() {
     const userSelect = document.querySelector('#user-select');
     const professorSelect = document.querySelector('#professor-select');
+    const lessonSelect = document.querySelector('#lesson-select');
 
     const tomSelectPtBr = {
         render: {
-            loading: function() {
+            loading: function () {
                 return '<div class="p-2 text-muted">Carregando...</div>';
             },
 
-            no_results: function() {
+            no_results: function () {
                 return '<div class="p-2 text-muted">Nenhum resultado encontrado.</div>';
             }
         }
@@ -137,6 +164,23 @@ function initTomSelect() {
             load: (query, callback) => {
                 if (!query.length) return callback();
                 axios.get('/dashboard/professors/ajax?q=' + encodeURIComponent(query))
+                    .then(response => callback(response.data))
+                    .catch(() => callback());
+            }
+        });
+    }
+
+    if (lessonSelect) {
+        new TomSelect('#lesson-select', {
+            ...tomSelectPtBr,
+            valueField: 'value',
+            labelField: 'text',
+            searchField: 'text',
+            placeholder: 'Pesquisar pelo nome da aula',
+            preload: false,
+            load: (query, callback) => {
+                if (!query.length) return callback();
+                axios.get('/dashboard/lessons/ajax?q=' + encodeURIComponent(query))
                     .then(response => callback(response.data))
                     .catch(() => callback());
             }

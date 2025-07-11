@@ -23,6 +23,8 @@ class StoreGuidebookRequest extends FormRequest
     {
         return [
             'title' => 'required|max:255',
+            'type' => 'required',
+            'guidebook_category_id' => 'required',
             'description' => 'required'
         ];
     }

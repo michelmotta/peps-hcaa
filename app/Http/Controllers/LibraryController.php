@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateLibraryRequest;
 use App\Models\File;
 use App\Models\Library;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LibraryController extends Controller
@@ -14,7 +15,7 @@ class LibraryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = request('q')
             ? Library::search(request('q'))->query(fn($q) => $q->orderByDesc('id'))
@@ -42,7 +43,7 @@ class LibraryController extends Controller
             $validatedData = $request->validated();
 
             if ($request->hasFile('file')) {
-                $file = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/library');
+                $file = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/library', true);
                 $validatedData['file_id'] = $file->id;
             }
 
@@ -88,7 +89,7 @@ class LibraryController extends Controller
                 if ($library->file) {
                     $library->file->delete();
                 }
-                $file = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/specialties');
+                $file = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/library', true);
                 $validatedData['file_id'] = $file->id;
             }
 

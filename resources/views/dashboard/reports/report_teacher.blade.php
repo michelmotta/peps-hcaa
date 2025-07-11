@@ -1,6 +1,7 @@
 @php
     use App\Enums\LessonStatusEnum;
 @endphp
+
 @extends('templates.dashboard')
 @section('content')
     {{-- Page Title --}}
@@ -12,14 +13,14 @@
             </h1>
         </div>
     </div>
+
     <div class="container-fluid">
+        {{-- ✅ Filter Section with Date Inputs --}}
         <div class="row mb-4 justify-content-center">
             <div class="col-lg-10">
                 <div class="card p-4 shadow-sm">
                     <form method="GET" action="{{ route('dashboard.reports.teachers') }}">
                         <div class="row g-3 align-items-end">
-
-                            {{-- Teacher Selector --}}
                             <div class="col-md-5">
                                 <label for="professor-select" class="form-label fw-semibold">Professor</label>
                                 <select id="professor-select" class="form-control" name="teacher_id" required
@@ -29,21 +30,17 @@
                                     @endif
                                 </select>
                             </div>
-
-                            {{-- Date Range Filter --}}
                             <div class="col-md-5">
                                 <label class="form-label fw-semibold">Filtrar por Período de Criação da Aula</label>
                                 <div class="input-group">
                                     <span class="input-group-text">De</span>
-                                    <input type="date" id="start_date" name="start_date" class="form-control"
+                                    <input type="date" name="start_date" class="form-control"
                                         value="{{ request('start_date') }}">
                                     <span class="input-group-text">Até</span>
-                                    <input type="date" id="end_date" name="end_date" class="form-control"
+                                    <input type="date" name="end_date" class="form-control"
                                         value="{{ request('end_date') }}">
                                 </div>
                             </div>
-
-                            {{-- Submit Button --}}
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-primary w-100">
                                     <i data-feather="search" class="icon-xs"></i>
@@ -55,56 +52,77 @@
                 </div>
             </div>
         </div>
+
         @if ($teacher)
             <div class="row justify-content-center">
                 <div class="col-lg-10 mb-5">
-                    <div class="profile-card bg-primary">
-                        <div class="profile-body text-center">
-                            <img src="{{ $teacher->file ? asset('storage/' . $teacher->file->path) : asset('images/default_user.png') }}"
-                                alt="Foto" class="profile-photo">
-                            <h2 class="profile-name">{{ $teacher->name }}</h2>
-                            <p class="profile-email mb-4">{{ $teacher->email }}</p>
-                            <hr>
-                            <h5 class="section-title mt-4">Estatísticas Gerais</h5>
-                            <div class="row g-3">
-                                <div class="col">
-                                    <div class="stat-card"><i data-feather="users"></i><span
-                                            class="stat-count">{{ $stats['total_students'] }}</span><span
-                                            class="stat-label">Alunos</span></div>
+                    
+                    <div class="card shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">Informações do Professor</h3>
+                            <a href="{{ route('dashboard.reports.teachers.export', request()->query()) }}" target="_blank" class="btn btn-primary">
+                                <i data-feather="download" class="icon-xs me-1"></i>Exportar Relatório
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 text-center">
+                                    <img src="{{ $teacher->file?->path ? asset('storage/' . $teacher->file->path) : asset('images/default_user.png') }}"
+                                        alt="Foto do Professor" class="img-fluid rounded-circle"
+                                        style="width: 150px; height: 150px; object-fit: cover;">
                                 </div>
-                                <div class="col">
-                                    <div class="stat-card">
-                                        <i data-feather="book-open"></i>
-                                        <span class="stat-count">{{ $stats['created_lessons_count'] }}</span>
-                                        <span class="stat-label">Aulas Criadas</span>
+                                <div class="col-md-10">
+                                    <h2 class="mb-1">{{ $teacher->name }}</h2>
+                                    <p class="text-muted mb-1">
+                                        <i data-feather="mail" class="icon-xs me-1"></i>
+                                        {{ $teacher->email }}
+                                    </p>
+                                     <p class="text-muted mb-0">
+                                        <i data-feather="award" class="icon-xs me-1"></i>
+                                        Especialidade: {{ $teacher->expertise ?? 'Não informada' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-top">
+                            <div class="row g-3">
+                                <div class="col-md col-6">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-shape icon-lg bg-light-primary text-primary rounded-2 me-3"><i data-feather="users"></i></div>
+                                        <div><h4 class="mb-0">{{ $stats['total_students'] }}</h4><p class="mb-0 text-muted">Alunos</p></div>
                                     </div>
                                 </div>
-
-                                <div class="col">
-                                    <div class="stat-card"><i data-feather="edit-3"></i><span
-                                            class="stat-count">{{ $stats['status_counts'][LessonStatusEnum::RASCUNHO->value] ?? 0 }}</span><span
-                                            class="stat-label">Aulas em Rascunho</span></div>
+                                <div class="col-md col-6">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-shape icon-lg bg-light-secondary text-secondary rounded-2 me-3"><i data-feather="book-open"></i></div>
+                                        <div><h4 class="mb-0">{{ $stats['created_lessons_count'] }}</h4><p class="mb-0 text-muted">Aulas Criadas</p></div>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <div class="stat-card"><i data-feather="pause-circle"></i><span
-                                            class="stat-count">{{ $stats['status_counts'][LessonStatusEnum::AGUARDANDO_PUBLICACAO->value] ?? 0 }}</span><span
-                                            class="stat-label">Aulas Aguardando</span></div>
+                                <div class="col-md col-6">
+                                     <div class="d-flex align-items-center">
+                                        <div class="icon-shape icon-lg bg-light-success text-success rounded-2 me-3"><i data-feather="check-circle"></i></div>
+                                        <div><h4 class="mb-0">{{ $stats['status_counts'][LessonStatusEnum::PUBLICADA->value] ?? 0 }}</h4><p class="mb-0 text-muted">Publicadas</p></div>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <div class="stat-card"><i data-feather="globe"></i><span
-                                            class="stat-count">{{ $stats['status_counts'][LessonStatusEnum::PUBLICADA->value] ?? 0 }}</span><span
-                                            class="stat-label">Aulas Publicadas</span></div>
+                                <div class="col-md col-6">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-shape icon-lg bg-light-warning text-warning rounded-2 me-3"><i data-feather="edit-3"></i></div>
+                                        <div><h4 class="mb-0">{{ $stats['status_counts'][LessonStatusEnum::RASCUNHO->value] ?? 0 }}</h4><p class="mb-0 text-muted">Rascunhos</p></div>
+                                    </div>
+                                </div>
+                                 <div class="col-md col-12">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-shape icon-lg bg-light-info text-info rounded-2 me-3"><i data-feather="clock"></i></div>
+                                        <div><h4 class="mb-0">{{ $stats['status_counts'][LessonStatusEnum::AGUARDANDO_PUBLICACAO->value] ?? 0 }}</h4><p class="mb-0 text-muted">Aguardando</p></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="card mt-4 shadow-sm">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-header">
                             <h3 class="details-title mb-0">Histórico de Aulas</h3>
-                            <a href="{{ route('dashboard.reports.teachers.export', request()->query()) }}" target="_blank"
-                                class="btn btn-outline-primary">
-                                <i data-feather="download" class="icon-xs me-1"></i>Exportar PDF
-                            </a>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -126,12 +144,7 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <div>
-                                                            <a href="{{ asset('storage/' . $lesson->file->path) }}"
-                                                                data-fancybox>
-                                                                <img class="avatar-md avatar rounded-circle"
-                                                                    src="{{ asset('storage/' . $lesson->file->path) }}"
-                                                                    alt="{{ $lesson->name }}">
-                                                            </a>
+                                                            <img class="avatar-md avatar rounded-circle" src="{{ $lesson->file?->path ? asset('storage/' . $lesson->file->path) : asset('images/default_lesson.png') }}" alt="{{ $lesson->name }}">
                                                         </div>
                                                         <div class="ms-3 lh-1">
                                                             <h5 class="mb-1">{{ $lesson->name }}</h5>
@@ -139,51 +152,42 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="text-center">{{ $lesson->created_at_formatted }}</td>
+                                                <td class="text-center">{{ $lesson->created_at->format('d/m/Y') }}</td>
                                                 <td class="text-center">
                                                     @if ($lesson->lesson_status === LessonStatusEnum::RASCUNHO->value)
-                                                        <span class="badge bg-warning">
-                                                            <i data-feather="info" class="icon-xs me-1"></i>
-                                                            {{ LessonStatusEnum::getLessonStatusNameById($lesson->lesson_status) }}
-                                                        </span>
-                                                    @endif
-                                                    @if ($lesson->lesson_status === LessonStatusEnum::AGUARDANDO_PUBLICACAO->value)
-                                                        <span class="badge bg-info">
-                                                            <i data-feather="clock" class="icon-xs me-1"></i>
-                                                            {{ LessonStatusEnum::getLessonStatusNameById($lesson->lesson_status) }}
-                                                        </span>
-                                                    @endif
-                                                    @if ($lesson->lesson_status === LessonStatusEnum::PUBLICADA->value)
-                                                        <span class="badge bg-success">
-                                                            <i data-feather="check-circle" class="icon-xs me-1"></i>
-                                                            {{ LessonStatusEnum::getLessonStatusNameById($lesson->lesson_status) }}
-                                                        </span>
+                                                        <span class="badge bg-warning"><i data-feather="edit-3" class="icon-xs me-1"></i>Rascunho</span>
+                                                    @elseif ($lesson->lesson_status === LessonStatusEnum::AGUARDANDO_PUBLICACAO->value)
+                                                        <span class="badge bg-info"><i data-feather="clock" class="icon-xs me-1"></i>Aguardando</span>
+                                                    @else
+                                                        <span class="badge bg-success"><i data-feather="check-circle" class="icon-xs me-1"></i>Publicada</span>
                                                     @endif
                                                 </td>
-                                                <td class="text-center">{{ $lesson->topics->count() }}</td>
-                                                <td class="text-center">{{ $lesson->workload }}</td>
+                                                <td class="text-center">{{ $lesson->topics_count }}</td>
+                                                <td class="text-center">{{ $lesson->workload }}h</td>
                                                 <td class="text-center">{{ $lesson->subscriptions_count }}</td>
-                                                <td class="text-center">
-                                                    {{ $lesson->average_score ? number_format($lesson->average_score, 1) : '-' }}
-                                                </td>
+                                                <td class="text-center">{{ $lesson->average_score ? number_format($lesson->average_score, 1) : '-' }}</td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="8" class="text-center py-4 text-muted">Nenhuma aula
-                                                    encontrada para este professor.</td>
+                                                <td colspan="7" class="text-center py-4 text-muted">Nenhuma aula encontrada para este professor no período selecionado.</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <div class="card-footer border-0">
-                            @if ($lessons->isNotEmpty())
+                        @if ($lessons->isNotEmpty())
+                            <div class="card-footer border-0">
                                 {{ $lessons->links() }}
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
+            </div>
+        @else
+             <div class="text-center mt-8">
+                <i data-feather="users" class="icon-xl text-muted"></i>
+                <h4 class="text-muted mt-2">Selecione um professor para ver o relatório.</h4>
             </div>
         @endif
     </div>
