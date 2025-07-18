@@ -23,7 +23,6 @@ class Lesson extends Model
         'workload',
         'file_id',
         'user_id',
-        'specialty_id'
     ];
 
     /**
@@ -89,19 +88,6 @@ class Lesson extends Model
     }
 
     /**
-     * Get the user associated with the specialty.
-     *
-     * This method defines a one-to-many relationship between the `Specialty` model 
-     * and the `User` model. A specialty is associated with one user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function specialty()
-    {
-        return $this->belongsTo(Specialty::class, 'specialty_id');
-    }
-
-    /**
      * Get the topics that belong to this lesson.
      *
      * @return HasMany<Topic>
@@ -142,6 +128,11 @@ class Lesson extends Model
     public function answeredDoubts()
     {
         return $this->hasMany(Doubt::class)->where('answered', true);
+    }
+
+    public function specialties()
+    {
+        return $this->belongsToMany(Specialty::class, 'lesson_specialty');
     }
 
     /**

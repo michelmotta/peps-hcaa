@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('lesson_status')->default(1);
             $table->foreignId('file_id')->constrained('files')->nullOnDelete();
             $table->foreignId('user_id')->constrained('users')->nullOnDelete();
-            $table->foreignId('specialty_id')->constrained('specialties')->nullOnDelete();
             $table->timestamps();
         });
     }

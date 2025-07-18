@@ -64,14 +64,19 @@
                                 <div class="col-md-10">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                @foreach ($lesson->specialties as $specialty)
+                                                    <a href="#"
+                                                        class="badge bg-light text-dark text-decoration-none fw-normal">
+                                                        <i class="bi bi-tag me-1"></i>
+                                                        {{ $specialty->name }}
+                                                    </a>
+                                                @endforeach
+                                            </div>
                                             <h2 class="mb-1">{{ $lesson->name }}</h2>
                                             <p class="text-muted mb-1">
                                                 <i data-feather="briefcase" class="icon-xs me-1"></i>
                                                 Professor: {{ $lesson->teacher?->name ?? 'N/A' }}
-                                            </p>
-                                            <p class="text-muted mb-0">
-                                                <i data-feather="tag" class="icon-xs me-1"></i>
-                                                Especialidade: {{ $lesson->specialty?->name ?? 'N/A' }}
                                             </p>
                                         </div>
                                         <div>

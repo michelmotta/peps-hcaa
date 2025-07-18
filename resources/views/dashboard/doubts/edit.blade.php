@@ -5,7 +5,7 @@
             <div class="p-10">
                 <h1 class="mb-0 text-white text-center ">
                     <i data-feather="message-circle" class="nav-icon me-2 icon-md"></i>
-                    Gerenciar Sugestões
+                    Dúvida da Aula: {{ $lesson->name }}
                 </h1>
             </div>
         </div>
@@ -18,7 +18,7 @@
                         <div class="card-header">
                             <h4 class="mb-0 fs-3">
                                 <i data-feather="chevrons-right" class="me-2 icon-xs"></i>
-                                Editar Sugestão
+                                Editar Dúvida
                             </h4>
                         </div>
                         <!-- Card body -->

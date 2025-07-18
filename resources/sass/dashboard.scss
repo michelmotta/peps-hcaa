@@ -477,27 +477,21 @@ legend {
     border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-/* Special colors for Top 3 */
 .rank-badge.rank-1 {
     background-color: #ffc107;
     color: #343a40;
 }
 
-/* Gold */
 .rank-badge.rank-2 {
     background-color: #ced4da;
     color: #343a40;
 }
 
-/* Silver */
 .rank-badge.rank-3 {
     background-color: #cd7f32;
 }
 
-/* Bronze */
-/* Default color for other ranks */
 .rank-badge.rank-other {
     background-color: #6c757d;
 }
 
-/* Grey */

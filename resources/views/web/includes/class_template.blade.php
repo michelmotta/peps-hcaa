@@ -26,44 +26,59 @@
                                 </div>
                             </div>
                             <div class="col-md-8">
-                                <div class="class-infos h-100 d-flex flex-column justify-content-between">
+                                <div class="class-infos h-100 d-flex flex-column justify-content-between p-4">
+
+                                    {{-- Top content block --}}
                                     <div>
+                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                            @foreach ($lesson->specialties as $specialty)
+                                                <a href="#"
+                                                    class="badge bg-light text-dark text-decoration-none fw-normal">
+                                                    <i class="bi bi-tag me-1"></i>
+                                                    {{ $specialty->name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+
                                         <h4>{{ $lesson->name }}</h4>
-                                        <div style="text-align: justify">
+
+                                        <div class="mb-3">
                                             {!! Str::limit(strip_tags($lesson->description), 120) !!}
                                         </div>
-                                        <div
-                                            class="card-author d-flex align-items-center justify-content-center gap-3 mt-4 flex-wrap text-center">
+
+                                        {{-- MODIFIED: Added professor's expertise --}}
+                                        <div class="card-author text-center mb-3">
                                             <a href="{{ route('web.teacher', $lesson->id) }}"
-                                                class="d-flex align-items-center gap-2 text-decoration-none text-reset">
+                                                class="d-inline-flex align-items-center gap-3 text-decoration-none text-reset">
                                                 <img src="{{ asset('storage/' . $lesson->teacher->file->path) }}"
-                                                    alt="{{ $lesson->teacher->name }}" width="40"
+                                                    alt="{{ $lesson->teacher->name }}" width="40" height="40"
                                                     class="rounded-circle">
-                                                <span>{{ $lesson->teacher->name }}</span>
+                                                <div class="text-start">
+                                                    <p class="mb-0 fw-bold">{{ $lesson->teacher->name }}</p>
+                                                    <small class="text-muted">{{ $lesson->teacher->expertise }}</small>
+                                                </div>
                                             </a>
                                         </div>
                                     </div>
-                                    <div
-                                        class="class-meta d-flex justify-content-center gap-4 small text-muted text-center">
-                                        <span>
-                                            <i class="bi bi-bookmark"></i>
-                                            {{ $lesson->specialty->name }}
-                                        </span>
-                                        <span>
-                                            <i class="bi bi-clock me-1"></i>
-                                            {{ $lesson->workload }} Horas
-                                        </span>
-                                        <span>
-                                            <i class="bi bi-list-check me-1"></i>
-                                            {{ $lesson->topics->count() }} tópicos
-                                        </span>
-                                    </div>
-                                    <hr>
-                                    <div class="text-center">
-                                        <a href="{{ route('web.class', $lesson->id) }}"
-                                            class="btn fw-bold read-more-btn">
-                                            <i class="bi bi-journal-text me-1"></i> Ver Aula
-                                        </a>
+
+                                    <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                                        <div class="class-meta d-flex gap-4 small text-muted">
+                                            <span>
+                                                <i class="bi bi-clock me-1"></i>
+                                                {{ $lesson->workload }} Horas
+                                            </span>
+                                            <span>
+                                                <i class="bi bi-list-check me-1"></i>
+                                                {{ $lesson->topics->count() }} tópicos
+                                            </span>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <a href="{{ route('web.class', $lesson->id) }}"
+                                                class="btn fw-bold read-more-btn">
+                                                <i class="bi bi-journal-text me-1"></i> Ver Aula
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

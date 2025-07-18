@@ -1,6 +1,5 @@
 @extends('templates.dashboard')
 @section('content')
-    {{-- Page Header --}}
     <div class="bg-primary rounded-3 mt-n6 mx-n4">
         <div class="p-10">
             <h1 class="mb-0 text-white text-center">
@@ -9,9 +8,7 @@
             </h1>
         </div>
     </div>
-
     <div class="container-fluid">
-        {{-- Standalone Card for Actions and Search --}}
         <div class="card shadow-sm mb-4 mt-4">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">Usuários</h3>
@@ -32,76 +29,110 @@
                 </div>
             </div>
         </div>
-
-        {{-- Grid of User Cards --}}
         <div class="row g-4">
             @forelse ($users as $user)
-                {{-- User Card Column --}}
-                <div class="col-xl-3 col-lg-4 col-md-6 col-12">
-                    {{-- ✅ Added position-relative to the card --}}
-                    <div class="card h-100 shadow-sm position-relative">
+                <div class="col-lg-6">
+                    <div class="card h-100 shadow-sm overflow-hidden">
+                        <div class="row g-0 h-100">
 
-                        {{-- ✅ Moved the toggle form here and positioned it --}}
-                        @if ($user->id !== Auth::id())
-                            <form id="activeForm-{{ $user->id }}"
-                                action="{{ route('dashboard.users.active', $user->id) }}" method="POST"
-                                class="position-absolute top-0 end-0 p-3"
-                                title="{{ $user->active ? 'Desativar' : 'Ativar' }}">
-                                @csrf
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        style="transform: scale(1.5);" {{ $user->active ? 'checked' : '' }}
-                                        onchange="this.form.submit()">
+                            <div
+                                class="col-md-3 d-flex flex-column align-items-center justify-content-center p-3 {{ $user->active ? 'bg-success-soft' : 'bg-dark-soft' }}">
+                                <a href="{{ asset('storage/' . $user->file->path) }}"
+                                    data-fancybox="user-{{ $user->id }}">
+                                    <img src="{{ asset('storage/' . $user->file->path) }}"
+                                        alt="Avatar de {{ $user->name }}"
+                                        class="img-fluid rounded-circle border border-2 border-white"
+                                        style="width: 80px; height: 80px; object-fit: cover;">
+                                </a>
+                                <div class="mt-3 text-center">
+                                    @if ($user->id !== Auth::id())
+                                        <form id="activeForm-{{ $user->id }}"
+                                            action="{{ route('dashboard.users.active', $user->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-check form-switch"
+                                                title="{{ $user->active ? 'Desativar' : 'Ativar' }}">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    style="transform: scale(1.5);" {{ $user->active ? 'checked' : '' }}
+                                                    onchange="this.form.submit()">
+                                            </div>
+                                            <small class="text-muted">{{ $user->active ? 'Ativo' : 'Inativo' }}</small>
+                                        </form>
+                                    @else
+                                        <span class="badge bg-white text-dark border">Você</span>
+                                    @endif
                                 </div>
-                            </form>
-                        @endif
-
-                        <div class="card-body text-center d-flex flex-column">
-                            {{-- Avatar --}}
-                            <div class="mb-3">
-                                <a href="{{ asset('storage/' . $user->file->path) }}" data-fancybox>
-                                    <img src="{{ asset('storage/' . $user->file->path) }}" class="avatar-xl rounded-circle"
-                                        alt="Avatar de {{ $user->name }}">
-                                </a>
                             </div>
-
-                            {{-- User Info --}}
-                            <h4 class="mb-1">{{ $user->name }}</h4>
-                            <p class="text-muted small mb-2">{{ $user->email }}</p>
-
-                            {{-- Status Badge --}}
-                            <div>
-                                @if ($user->active)
-                                    <span class="badge bg-success-soft text-success mb-3">Ativo</span>
-                                @else
-                                    <span class="badge bg-danger-soft text-danger mb-3">Inativo</span>
-                                @endif
+                            <div class="col-md-9">
+                                <div class="card-body d-flex flex-column h-100 py-4 pe-4">
+                                    <div class="flex-grow-1">
+                                        <h4 class="card-title fw-bold mb-1" style="font-size: 1.4rem;">{{ $user->name }}
+                                        </h4>
+                                        <p class="card-text small text-muted">{{ $user->expertise }}</p>
+                                        <p class="card-text small text-muted mb-2">
+                                            <a href="mailto:{{ $user->email }}"
+                                                class="text-reset">{{ $user->email }}</a>
+                                        </p>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach ($user->profiles as $profile)
+                                                <span
+                                                    class="badge badge-primary-soft fw-normal">{{ $profile->name }}</span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 pt-3 border-top">
+                                        <div class="row align-items-center">
+                                            <div class="col-6">
+                                                <p class="small text-muted mb-0">
+                                                    <i data-feather="calendar" class="icon-xs me-1"></i>
+                                                    Usuário desde {{ $user->created_at->format('d/m/Y') }}
+                                                </p>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <a href="#" class="btn btn-ghost btn-icon btn-sm rounded-circle"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#loginHistoryModal-{{ $user->id }}"
+                                                    title="Histórico de Login" data-bs-toggle="tooltip">
+                                                    <i data-feather="clock" class="icon-xs"></i>
+                                                </a>
+                                                <a href="{{ route('dashboard.users.edit', $user->id) }}"
+                                                    class="btn btn-ghost btn-icon btn-sm rounded-circle" title="Editar"
+                                                    data-bs-toggle="tooltip">
+                                                    <i data-feather="edit" class="icon-xs"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
-                            {{-- Profiles/Roles --}}
-                            <div class="mb-3">
-                                @foreach ($user->profiles as $profile)
-                                    <span class="badge badge-primary-soft">{{ $profile->name }}</span>
-                                @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="loginHistoryModal-{{ $user->id }}" tabindex="-1"
+                    aria-labelledby="loginHistoryModalLabel-{{ $user->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="loginHistoryModalLabel-{{ $user->id }}">Últimos 5 Logins de
+                                    {{ $user->name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
-
-                            {{-- Spacer to push actions to the bottom --}}
-                            <div class="flex-grow-1"></div>
-
-                            {{-- Actions Footer --}}
-                            <div class="d-flex justify-content-center align-items-center pt-3 border-top">
-                                {{-- The edit button is now centered by itself --}}
-                                <a href="{{ route('dashboard.users.edit', $user->id) }}"
-                                    class="btn btn-ghost btn-icon btn-sm rounded-circle" title="Editar"
-                                    data-bs-toggle="tooltip">
-                                    <i data-feather="edit" class="icon-xs"></i>
-                                </a>
+                            <div class="modal-body">
+                                <ul class="list-group list-group-flush">
+                                    @forelse($user->logins as $login)
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>{{ $login->created_at->format('d/m/Y \à\s H:i') }}</span>
+                                            <span class="text-muted">{{ $login->ip_address }}</span>
+                                        </li>
+                                    @empty
+                                        <li class="list-group-item text-center">Nenhum login registrado.</li>
+                                    @endforelse
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             @empty
-                {{-- Empty State Message --}}
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body text-center py-5">
@@ -113,7 +144,6 @@
                 </div>
             @endforelse
         </div>
-        {{-- Pagination --}}
         @if ($users->isNotEmpty() && $users->hasPages())
             <div class="card card-pagination shadow-sm mt-4">
                 <div class="card-body">

@@ -58,4 +58,9 @@ class Specialty extends Model
     {
         return $this->hasMany(Specialty::class, 'parent_id');
     }
+
+    public function lessons()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_specialty');
+    }
 }

@@ -3,85 +3,73 @@
 namespace Database\Seeders;
 
 use App\Models\Specialty;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class SpecialtySeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $now = Carbon::now();
-
-        // 1. Especialidades principais (com file_id)
-        $principais = [
-            'Cardiologia' => 1,
-            'Pediatria' => 2,
-            'Ortopedia' => 3,
-            'Dermatologia' => 4,
-            'Ginecologia' => 5,
-            'Neurologia' => 6,
-            'Psiquiatria' => 7,
-            'Oftalmologia' => 8,
+        $parents = [
+            ['name' => 'Cardiologia', 'file_id' => 1],
+            ['name' => 'Pediatria', 'file_id' => 2],
+            ['name' => 'Ortopedia', 'file_id' => 3],
+            ['name' => 'Dermatologia', 'file_id' => 4],
+            ['name' => 'Neurologia', 'file_id' => 5],
+            ['name' => 'Ginecologia', 'file_id' => 6],
+            ['name' => 'Psiquiatria', 'file_id' => 7],
+            ['name' => 'Oftalmologia', 'file_id' => 8],
         ];
 
-        $map = [];
+        $parentMap = [];
 
-        foreach ($principais as $nome => $fileId) {
-            $especialidade = Specialty::create([
-                'name' => $nome,
-                'file_id' => $fileId,
+        foreach ($parents as $parentData) {
+            $parent = Specialty::create([
+                'name' => $parentData['name'],
+                'file_id' => $parentData['file_id'],
                 'parent_id' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ]);
-
-            $map[$nome] = $especialidade->id;
+            $parentMap[$parent->name] = $parent->id;
         }
 
-        // 2. Subespecialidades (sem file_id)
-        $subs = [
+        $children = [
             'Cardiologia' => [
                 'Cardiologia Intervencionista',
                 'Eletrofisiologia Cardíaca',
+                'Ecocardiografia',
             ],
             'Pediatria' => [
                 'Neonatologia',
                 'Pediatria do Desenvolvimento',
+                'Endocrinologia Pediátrica',
             ],
             'Ortopedia' => [
                 'Ortopedia Pediátrica',
                 'Cirurgia da Coluna',
+                'Traumatologia Esportiva',
             ],
             'Dermatologia' => [
                 'Dermatologia Estética',
                 'Dermatologia Oncológica',
-            ],
-            'Ginecologia' => [
-                'Ginecologia Endócrina',
-                'Ginecologia Oncológica',
+                'Dermatopatologia',
             ],
             'Neurologia' => [
                 'Neurologia Vascular',
                 'Epileptologia',
-            ],
-            'Psiquiatria' => [
-                'Psiquiatria da Infância',
-                'Psiquiatria Geriátrica',
-            ],
-            'Oftalmologia' => [
-                'Retina e Vítreo',
-                'Córnea e Doenças Externas',
+                'Neurofisiologia Clínica',
             ],
         ];
 
-        foreach ($subs as $pai => $subNomes) {
-            foreach ($subNomes as $sub) {
+        foreach ($children as $parentName => $childNames) {
+            $parentId = $parentMap[$parentName];
+
+            foreach ($childNames as $childName) {
                 Specialty::create([
-                    'name' => $sub,
-                    'file_id' => null, // subespecialidades sem imagem
-                    'parent_id' => $map[$pai],
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                    'name' => $childName,
+                    'file_id' => null,
+                    'parent_id' => $parentId,
                 ]);
             }
         }

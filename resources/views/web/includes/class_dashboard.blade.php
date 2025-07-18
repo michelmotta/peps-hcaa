@@ -121,10 +121,15 @@
                                                                 <h3 class="titulo-curso mb-0">{{ $lesson->name }}</h3>
                                                             </div>
                                                         </div>
-                                                        <h5>
-                                                            <i class="bi bi-bookmark"></i>
-                                                            {{ $lesson->specialty->name }}
-                                                        </h5>
+                                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                                            @foreach ($lesson->specialties as $specialty)
+                                                                <a href="#"
+                                                                    class="badge bg-light text-dark text-decoration-none fw-normal">
+                                                                    <i class="bi bi-tag me-1"></i>
+                                                                    {{ $specialty->name }}
+                                                                </a>
+                                                            @endforeach
+                                                        </div>
                                                         <div class="mt-3 text-muted">
                                                             {!! $lesson->description !!}
                                                         </div>
@@ -421,7 +426,9 @@
                             <section class="avaliacao-section">
                                 <h2 class="text-center mb-4">Avaliação da Aula</h2>
                                 <div id="avaliacao-wrapper">
-                                    <p class="text-center">Contribua com a melhoria da qualidade desta aula. Aqui você pode sugerir melhorias e dar um feedback diretamenta ao professor. Essa avaliação ficará visível apenas para você e o professor.</p>
+                                    <p class="text-center">Contribua com a melhoria da qualidade desta aula. Aqui você
+                                        pode sugerir melhorias e dar um feedback diretamenta ao professor. Essa
+                                        avaliação ficará visível apenas para você e o professor.</p>
                                     @if ($feedback === null)
                                         <div id="avaliacao-status" class="mb-4"></div>
                                         <form id="avaliacao-form" data-lesson-id="{{ $lesson->id }}"
@@ -475,4 +482,3 @@
         </div>
     </div>
 </section>
-

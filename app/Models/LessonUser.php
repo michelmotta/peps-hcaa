@@ -121,4 +121,21 @@ class LessonUser extends Pivot
             return Carbon::now()->format('Y-m-d');
         }
     }
+
+    /**
+     * Get the score normalized to a 0-10 scale, or "-" if not set.
+     *
+     * @param  int|null  $value
+     * @return string
+     */
+    public function getScoreAttribute($value): string
+    {
+        if (is_null($value)) {
+            return "-";
+        }
+
+        $normalizedScore = $value / 10.0;
+
+        return number_format($normalizedScore, 1, ',', '');
+    }
 }

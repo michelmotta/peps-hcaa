@@ -19,9 +19,20 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = request('q')
-            ? User::search(request('q'))->query(fn($q) => $q->orderByDesc('id'))
-            : User::query()->orderByDesc('id');
+        $relations = [
+            'file',
+            'profiles',
+            'logins' => fn($q) => $q->latest()->limit(5),
+        ];
+
+        $searchTerm = $request->input('q');
+
+        $query = $searchTerm
+            ? User::search($searchTerm)
+            ->query(fn($q) => $q->with($relations)->orderByDesc('id'))
+            : User::query()
+            ->with($relations)
+            ->orderByDesc('id');
 
         return view('dashboard.users.index', [
             'users' => $query->paginate(15)->withQueryString(),

@@ -123,12 +123,18 @@ class WebController extends Controller
         $specialtyId = $request->query('specialty_id');
 
         $query = Lesson::query()
-            ->with(['file', 'specialty', 'topics', 'teacher.file'])
+            ->with(['file', 'specialties', 'topics', 'teacher.file'])
             ->where('lesson_status', LessonStatusEnum::PUBLICADA->value)
             ->orderByDesc('id');
 
         if ($specialtyId) {
-            $query->where('specialty_id', $specialtyId);
+            $ids = Specialty::where('parent_id', $specialtyId)
+                ->orWhere('id', $specialtyId)
+                ->pluck('id');
+
+            $query->whereHas('specialties', function ($q) use ($ids) {
+                $q->whereIn('specialties.id', $ids);
+            });
         }
 
         if ($search) {

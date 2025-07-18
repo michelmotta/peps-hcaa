@@ -45,7 +45,7 @@ class ReportController extends Controller
                 ])
                 ->findOrFail($studentId);
 
-            $subscriptionsQuery = $student->subscriptions()->with(['file', 'specialty', 'teacher']);
+            $subscriptionsQuery = $student->subscriptions()->with(['file', 'specialties', 'teacher']);
             $dateFilters($subscriptionsQuery);
 
             $completedWorkloadQuery = $student->subscriptions()->where('lesson_user.finished', true);
@@ -89,7 +89,7 @@ class ReportController extends Controller
         $dateFilters($completedWorkloadQuery);
         $completedWorkload = $completedWorkloadQuery->sum('lessons.workload');
 
-        $subscriptionsQuery = $student->subscriptions()->with(['file', 'specialty', 'teacher']);
+        $subscriptionsQuery = $student->subscriptions()->with(['file', 'specialties', 'teacher']);
         $dateFilters($subscriptionsQuery);
         $subscriptions = $subscriptionsQuery->get();
 
@@ -142,7 +142,7 @@ class ReportController extends Controller
                 $stats['total_students'] = LessonUser::whereIn('lesson_id', $filteredLessonIds)->distinct('user_id')->count();
                 $stats['status_counts'] = $statusCounts;
 
-                $lessons = $lessonsQuery->with(['specialty', 'file'])
+                $lessons = $lessonsQuery->with(['specialties', 'file'])
                     ->withCount(['subscriptions', 'completedSubscriptions'])
                     ->withAvg('subscriptions as average_score', 'lesson_user.score')
                     ->latest()
@@ -164,7 +164,7 @@ class ReportController extends Controller
         $lessonIds = Lesson::where('user_id', $teacher->id)->pluck('id');
 
         $lessonsQuery = Lesson::whereIn('id', $lessonIds)
-            ->with(['specialty', 'topics'])
+            ->with(['specialties', 'topics'])
             ->withCount('subscriptions');
 
         if ($request->filled('start_date')) {
@@ -212,7 +212,7 @@ class ReportController extends Controller
         if (isset($validated['lesson_id'])) {
             $lesson = Lesson::with([
                 'teacher',
-                'specialty',
+                'specialties',
                 'file',
                 'topics',
             ])
@@ -239,15 +239,13 @@ class ReportController extends Controller
 
     public function exportLessonsPdf(Request $request)
     {
-        // 1. Validate that a lesson_id was provided in the request
         $validated = $request->validate([
             'lesson_id' => 'required|integer|exists:lessons,id',
         ]);
 
-        // 2. Find the lesson using the validated ID
         $lesson = Lesson::with([
             'teacher',
-            'specialty',
+            'specialties',
             'file',
             'topics',
         ])
@@ -258,21 +256,17 @@ class ReportController extends Controller
             ->withAvg('subscriptions as average_score', 'lesson_user.score')
             ->find($validated['lesson_id']);
 
-        // This check is good practice, though validation helps prevent this
         if (!$lesson) {
             return redirect()->back()->with('error', 'Aula não encontrada para exportação.');
         }
 
-        // 3. Get all students for the PDF
         $students = $lesson->subscriptions()->with('file')->latest()->get();
 
-        // 4. Load the PDF view
         $pdf = PDF::loadView('dashboard.reports.report_lesson_pdf', [
             'lesson'   => $lesson,
             'students' => $students,
         ]);
 
-        // 5. Create a filename and download
         $fileName = 'relatorio-' . Str::slug($lesson->name) . '.pdf';
 
         return $pdf->stream($fileName);

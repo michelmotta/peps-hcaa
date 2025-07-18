@@ -1,7 +1,9 @@
 @php
     use Illuminate\Support\Str;
+    use App\Enums\LessonStatusEnum;
 @endphp
 @extends('templates.dashboard')
+
 @section('content')
     <div class="bg-primary rounded-3 mt-n6 mx-n4">
         <div class="p-10">
@@ -12,117 +14,103 @@
         </div>
     </div>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <a href="{{ route('dashboard.lessons.index') }}" class="btn btn-primary btn-md mb-5">
-                    <i data-feather="arrow-left" class="nav-icon me-2 icon-xs"></i>
-                    Voltar
-                </a>
-                <div class="d-grid d-lg-block ms-auto text-end mb-5">
-                    <a href="{{ route('dashboard.lessons.topics.create', $lesson) }}" class="btn btn-primary btn-lg">
-                        <i data-feather="plus" class="nav-icon me-2 icon-xs"></i>
-                        Novo Topico
+        {{-- The top action bar remains the same --}}
+        <div class="card shadow-sm border-0 mb-4 mt-4">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ route('dashboard.lessons.index') }}"
+                        class="btn btn-outline-primary d-flex align-items-center">
+                        <i data-feather="arrow-left" class="nav-icon me-2 icon-xs"></i>
+                        Voltar
+                    </a>
+                    <h3 class="mb-0">Tópicos da Aula</h3>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <form method="GET" action="{{ route('dashboard.lessons.topics.index', $lesson) }}" class="mb-0">
+                        <div class="input-group">
+                            <input type="search" class="form-control" name="q" value="{{ request('q') }}"
+                                placeholder="Pesquisar tópicos...">
+                            <button class="btn btn-primary" type="submit" title="Buscar"><i data-feather="search"
+                                    class="icon-xs"></i></button>
+                        </div>
+                    </form>
+                    <a href="{{ route('dashboard.lessons.topics.create', $lesson) }}" class="btn btn-primary text-nowrap">
+                        <i data-feather="plus" class="nav-icon icon-xs"></i>
+                        <span class="ms-1">Novo Tópico</span>
                     </a>
                 </div>
             </div>
-            <div class="col-lg-12 mb-5">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-md-9 d-grid d-lg-block ms-auto text-start">
-                                <h3 class="mb-0">Tópicos da Aula: {{ $lesson->name }}</h3>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="list-group list-group-flush">
+                @forelse ($topics as $topic)
+                    <div class="list-group-item p-3">
+                        <div class="d-flex align-items-center">
+                            {{-- Thumbnail on the left --}}
+                            <a href="{{ asset('storage/' . $topic->video->path) }}" data-fancybox
+                                class="d-none d-md-block flex-shrink-0 me-3">
+                                <img src="{{ asset('storage/' . $topic->video->thumbnail_path) }}"
+                                    style="width: 160px; height: 90px; object-fit: cover;" class="rounded"
+                                    alt="Thumbnail">
+                            </a>
+
+                            {{-- Main content area --}}
+                            <div class="flex-grow-1">
+                                {{-- The title tag was changed from h5 to h4 --}}
+                                <h4 class="fw-bold mb-1">{{ $loop->iteration }}. {{ $topic->title }}</h4>
+                                <p class="text-muted small mb-2">
+                                    {!! Str::limit(strip_tags($topic->description), 120) !!}
+                                </p>
+                                {{-- Metadata --}}
+                                <div class="d-flex align-items-center gap-4 small text-muted">
+                                    <span title="Duração do Vídeo">
+                                        <i data-feather="play-circle" class="icon-sm me-1"></i>
+                                        {{ $topic->video->duration ?? 'N/A' }}
+                                    </span>
+                                    <span title="Anexos">
+                                        <i data-feather="paperclip" class="icon-sm me-1"></i>
+                                        {{ collect($topic->attachments)->count() }} Anexos
+                                    </span>
+                                    <span title="Questões">
+                                        <i data-feather="help-circle" class="icon-sm me-1"></i>
+                                        {{ collect($topic->quizzes)->count() }} Questões
+                                    </span>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <form method="GET" action="{{ route('dashboard.lessons.topics.index', $lesson) }}">
-                                    <input type="search" class="form-control w-100" name="q" style="height: 50px"
-                                        value="{{ request('q') }}" placeholder="Pesquisar tópicos...">
+
+                            {{-- Action buttons on the right --}}
+                            <div class="d-flex gap-1 ms-3">
+                                <a href="{{ route('dashboard.lessons.topics.edit', [$lesson->id, $topic->id]) }}"
+                                    class="btn btn-ghost btn-icon btn-sm rounded-circle" title="Editar">
+                                    <i data-feather="edit" class="icon-xs"></i>
+                                </a>
+                                <button type="button"
+                                    class="btn btn-ghost btn-icon btn-sm rounded-circle text-danger"
+                                    onclick="confirmDelete('delete-item-{{ $topic->id }}')" title="Apagar">
+                                    <i data-feather="trash-2" class="icon-xs"></i>
+                                </button>
+                                <form class="d-none" id="delete-item-{{ $topic->id }}" method="POST"
+                                    action="{{ route('dashboard.lessons.topics.destroy', [$lesson->id, $topic->id]) }}">
+                                    @csrf
+                                    @method('DELETE')
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive table-card">
-                            <table class="table mb-0 text-nowrap table-centered table-hover">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">Tópico</th>
-                                        <th scope="col">Descrição</th>
-                                        <th scope="col" class="text-center">Video</th>
-                                        <th scope="col" class="text-center">Anexos</th>
-                                        <th scope="col" class="text-center">Questões</th>
-                                        <th scope="col" class="text-center">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($topics as $topic)
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div>
-                                                        <a href="{{ asset('storage/' . $topic->video->path) }}"
-                                                            data-fancybox>
-                                                            <img class="avatar-md avatar rounded-circle"
-                                                                src="{{ asset('storage/' . $topic->video->thumbnail_path) }}"
-                                                                alt="">
-                                                        </a>
-                                                    </div>
-                                                    <div class="ms-3 lh-1">
-                                                        <h5 class="mb-1">{{ $topic->title }}</h5>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>{!! Str::limit(strip_tags($topic->description), 60) !!}</td>
-                                            <td class="text-center">
-                                                <a href="{{ asset('storage/' . $topic->video->path) }}" data-fancybox>
-                                                    <i data-feather="play-circle" class="icon-sm"></i>
-                                                    <span
-                                                        class="badge badge-primary-soft">{{ $topic->video->duration }}</span>
-                                                </a>
-                                            </td>
-                                            <td class="text-center">
-                                                <span
-                                                    class="badge badge-secondary-soft">{{ collect($topic->attachments)->count() }}</span>
-                                            </td>
-                                            <td class="text-center">
-                                                <span
-                                                    class="badge badge-secondary-soft">{{ collect($topic->quizzes)->count() }}</span>
-                                            </td>
-                                            <td class="text-center">
-                                                <a href="{{ route('dashboard.lessons.topics.edit', [$lesson->id, $topic->id]) }}"
-                                                    class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
-                                                    data-template="editTwo" title="Editar" data-bs-toggle="tooltip">
-                                                    <i data-feather="edit" class="icon-xs"></i>
-                                                    <div id="editTwo" class="d-none">
-                                                        <span>Edit</span>
-                                                    </div>
-                                                </a>
-                                                <button type="button"
-                                                    class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip text-danger"
-                                                    data-template="trashOne"
-                                                    onclick="confirmDelete('delete-item-{{ $topic->id }}')"
-                                                    title="Apagar" data-bs-toggle="tooltip">
-                                                    <i data-feather="trash-2" class="icon-xs"></i>
-                                                    <div id="trashOne" class="d-none">
-                                                        <span>Delete</span>
-                                                    </div>
-                                                </button>
-                                                <form class="d-none" id="delete-item-{{ $topic->id }}" method="POST"
-                                                    action="{{ route('dashboard.lessons.topics.destroy', [$lesson->id, $topic->id]) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                @empty
+                    <div class="list-group-item p-5 text-center">
+                        <i data-feather="inbox" class="icon-xl text-muted"></i>
+                        <h4 class="text-muted mt-3">Nenhum tópico encontrado</h4>
+                        <p class="text-muted mb-0">Adicione o primeiro tópico para esta aula.</p>
                     </div>
-                    <div class="card-footer">
-                        {{ $topics->links() }}
-                    </div>
-                </div>
+                @endforelse
             </div>
+            @if ($topics->isNotEmpty() && $topics->hasPages())
+                <div class="card-footer bg-transparent border-0">
+                    {{ $topics->withQueryString()->links() }}
+                </div>
+            @endif
         </div>
     </div>
 @endsection

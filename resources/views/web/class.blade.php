@@ -5,10 +5,6 @@
             <h1>{{ $lesson->name }}</h1>
             <div class="fs-6 d-flex justify-content-center gap-4 small text-muted text-center">
                 <span>
-                    <i class="bi bi-bookmark"></i>
-                    {{ $lesson->specialty->name }}
-                </span>
-                <span>
                     <i class="bi bi-clock me-1"></i>
                     {{ $lesson->workload }} Horas
                 </span>

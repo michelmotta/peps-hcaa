@@ -1,8 +1,12 @@
 @csrf
 <section>
-    <div class="card mb-5 ">
+    <div class="card mb-5 shadow-sm">
         <div class="card-header">
-            <h4 class="mb-0">Apresentação</h4>
+            {{-- Icon added here --}}
+            <h4 class="mb-0 d-flex align-items-center">
+                <i data-feather="clipboard" class="me-2"></i>
+                Apresentação
+            </h4>
         </div>
         <div class="card-body">
             <div class="row">
@@ -11,7 +15,8 @@
                         <label for="title" class="form-label">Título</label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
                             placeholder="Digite o título" name="title"
-                            value="@if(isset($topic)){{ $topic->title }}@else{{ old('title') }}@endif" required>
+                            value="@if (isset($topic)) {{ $topic->title }}@else{{ old('title') }} @endif"
+                            required>
                         @error('title')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
@@ -23,7 +28,7 @@
                 <div class="col-md-12">
                     <div class="mt-2 mb-4">
                         <label class="form-label">Resumo</label>
-                        <textarea name="resume" id="resume" class="form-control">@if(isset($topic)){{ $topic->resume }}@else{{ old('resume') }}@endif</textarea>
+                        <textarea name="resume" id="resume" class="form-control">@if (isset($topic)){{ $topic->resume }}@else{{ old('resume') }}@endif</textarea>
                         @error('resume')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
@@ -32,12 +37,17 @@
                     </div>
                 </div>
             </div>
-            </fieldset>
+            {{-- The user code had a closing fieldset tag here, which might be a typo as there's no opening tag. I'm omitting it for valid HTML. --}}
+            {{-- </fieldset> --}}
         </div>
     </div>
-    <div class="card mb-5 ">
+    <div class="card mb-5 shadow-sm">
         <div class="card-header">
-            <h4 class="mb-0">Conteúdo</h4>
+             {{-- Icon added here --}}
+            <h4 class="mb-0 d-flex align-items-center">
+                <i data-feather="book-open" class="me-2"></i>
+                Conteúdo
+            </h4>
         </div>
         <div class="card-body">
             <div class="row">
@@ -54,13 +64,14 @@
                         @enderror
                     </div>
                 </div>
-                <!-- Editor -->
                 <div class="col-md-12">
                     <div class="mb-3">
                         <label class="form-label">Conteúdo</label>
-                        <div id="editor">@if(isset($topic)){!! $topic->description !!}@else{!! old('description') !!}@endif</div>
+                        <div id="editor">
+                            @if (isset($topic)){!! $topic->description !!}@else{!! old('description') !!}@endif
+                        </div>
                         <input type="hidden" name="description" id="description"
-                            value="@if(isset($topic)){{ $topic->description }}@else{{ old('description') }}@endif">
+                            value="@if (isset($topic)) {{ $topic->description }}@else{{ old('description') }} @endif">
                         @error('description')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
@@ -71,9 +82,13 @@
             </div>
         </div>
     </div>
-    <div class="card mb-5 ">
+    <div class="card mb-5 shadow-sm">
         <div class="card-header">
-            <h4 class="mb-0">Anexos</h4>
+             {{-- Icon added here --}}
+            <h4 class="mb-0 d-flex align-items-center">
+                <i data-feather="paperclip" class="me-2"></i>
+                Anexos
+            </h4>
         </div>
         <div class="card-body">
             @php
@@ -88,9 +103,9 @@
                                     <div class="d-flex justify-content-between">
                                         <div class="d-flex align-items-center">
                                             <a href="{{ Storage::url($file['path']) }}" data-fancybox>
-                                                @if(isset($file['extension']) && in_array($file['extension'], ['.mp4', '.mov', '.avi', '.mkv']))
+                                                @if (isset($file['extension']) && in_array($file['extension'], ['.mp4', '.mov', '.avi', '.mkv']))
                                                     <i data-feather="play-circle" class="icon-xl"></i>
-                                                @elseif(isset($file['extension']) && in_array($file['extension'], ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp']))   
+                                                @elseif(isset($file['extension']) && in_array($file['extension'], ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp']))
                                                     <i data-feather="image" class="icon-xl"></i>
                                                 @else
                                                     <i data-feather="file-text" class="icon-xl"></i>
@@ -98,11 +113,16 @@
                                             </a>
                                             <div class="ms-3">
                                                 <h6 class="mb-0">{{ $file['name'] }}</h6>
-                                                <small>@if(isset($file['extension'])){{ round($file['size'] / (1024 * 1024), 2) }} MB @endif</small>
+                                                <small>
+                                                    @if (isset($file['extension']))
+                                                        {{ round($file['size'] / (1024 * 1024), 2) }} MB
+                                                    @endif
+                                                </small>
                                             </div>
                                         </div>
                                         <div>
-                                            <button type="button" class="btn btn-sm btn-outline-danger delete-btn">
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-danger delete-btn">
                                                 <i data-feather="trash-2" class="icon-xs"></i>
                                             </button>
                                         </div>
@@ -114,17 +134,26 @@
                 </div>
             @endif
             {{-- Dropzone Upload Area --}}
-            <div id="dropzone" class="dropzone border border-2 border-primary rounded bg-light p-3 mb-3"></div>
+            <div id="dropzone" class="dropzone border-2 border-dashed rounded bg-light p-4 text-center">
+                <div class="dz-message">
+                    <i data-feather="upload-cloud" class="icon-xl text-muted"></i>
+                    <h5 class="mt-2">Arraste os arquivos ou clique aqui para enviar</h5>
+                    <p class="text-muted small">Você pode adicionar múltiplos arquivos</p>
+                </div>
+            </div>
 
-            <!-- Hidden input for attachments -->
             <input type="hidden" name="attachments" id="attachments" value='@json($savedAttachments)'>
 
             <h4 class="text-center text-danger mt-5">**Não esqueça de salvar as alterações**</h4>
         </div>
     </div>
-    <div class="card mb-5 ">
+    <div class="card mb-5 shadow-sm">
         <div class="card-header">
-            <h4 class="mb-0">Questionário</h4>
+             {{-- Icon added here --}}
+            <h4 class="mb-0 d-flex align-items-center">
+                <i data-feather="check-square" class="me-2"></i>
+                Questionário
+            </h4>
         </div>
         <div class="card-body">
             <div class="text-center">
@@ -143,12 +172,12 @@
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">
                                     <i class="bi bi-gear-fill me-2 icon-xs"></i>
-                                    Configurar
+                                    Configurar Questionário
                                 </h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <h2>Configurar Questionário</h2>
                                 <div id="perguntasContainer" class="accordion mb-3"></div>
 
                                 <button type="button" class="btn btn-outline-success mb-3 mt-8"
@@ -157,7 +186,8 @@
                                     Adicionar Questão
                                 </button>
 
-                                <input type="hidden" id="avaliacaoJson" name="quiz" value="{{ old('quiz', json_encode($topic->quizzes ?? [])) }}">
+                                <input type="hidden" id="avaliacaoJson" name="quiz"
+                                    value="{{ old('quiz', json_encode($topic->quizzes ?? [])) }}">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" id="salvar-avaliacao">

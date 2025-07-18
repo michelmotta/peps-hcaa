@@ -72,7 +72,7 @@
                         <!-- heading -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <h3 class="mb-0">Novas Perguntas</h3>
+                                <h3 class="mb-0">Perguntas Pendentes</h3>
                             </div>
                             <div class="icon-shape icon-md bg-primary-soft text-primary rounded-2">
                                 <i data-feather="message-circle" height="20" width="20"></i>

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Lesson;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Specialty; // Import Specialty
 use Illuminate\Database\Seeder;
 
 class LessonSeeder extends Seeder
@@ -13,7 +13,7 @@ class LessonSeeder extends Seeder
      */
     public function run(): void
     {
-        $lessons = [
+        $lessonsData = [
             [
                 'name' => 'Emergências Cardiológicas em UTI',
                 'description' => 'Manejo intensivo de condições cardiovasculares críticas como infarto agudo do miocárdio, choque cardiogênico e arritmias graves em pacientes internados na UTI.',
@@ -21,7 +21,7 @@ class LessonSeeder extends Seeder
                 'workload' => 10,
                 'file_id' => 10,
                 'user_id' => 1,
-                'specialty_id' => 1, // Cardiologia
+                'specialties' => ['Cardiologia', 'Cardiologia Intervencionista']
             ],
             [
                 'name' => 'Cuidados Intensivos em Pediatria',
@@ -30,7 +30,7 @@ class LessonSeeder extends Seeder
                 'workload' => 20,
                 'file_id' => 11,
                 'user_id' => 2,
-                'specialty_id' => 2, // Pediatria
+                'specialties' => ['Pediatria', 'Neonatologia']
             ],
             [
                 'name' => 'Traumas Ortopédicos em Pacientes Críticos',
@@ -39,7 +39,7 @@ class LessonSeeder extends Seeder
                 'workload' => 30,
                 'file_id' => 12,
                 'user_id' => 3,
-                'specialty_id' => 3, // Ortopedia
+                'specialties' => ['Ortopedia', 'Traumatologia Esportiva']
             ],
             [
                 'name' => 'Complicações Dermatológicas em Terapia Intensiva',
@@ -48,12 +48,16 @@ class LessonSeeder extends Seeder
                 'workload' => 40,
                 'file_id' => 13,
                 'user_id' => 3,
-                'specialty_id' => 4, // Dermatologia
+                'specialties' => ['Dermatologia']
             ],
         ];
 
-        foreach ($lessons as $lesson) {
-            Lesson::create($lesson);
+        foreach ($lessonsData as $lessonData) {
+            $lesson = Lesson::create(collect($lessonData)->except('specialties')->toArray());
+
+            $specialtyIds = Specialty::whereIn('name', $lessonData['specialties'])->pluck('id');
+
+            $lesson->specialties()->attach($specialtyIds);
         }
     }
 }

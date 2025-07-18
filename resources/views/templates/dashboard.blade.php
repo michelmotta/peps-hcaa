@@ -46,26 +46,7 @@
                                 d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm.646 2.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L4.293 8 2.646 6.354a.5.5 0 0 1 0-.708zM7 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm-5 3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
                         </svg>
                     </a>
-                    <!--Navbar nav -->
-                    @if (Breadcrumbs::has())
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0">
-                                @foreach (Breadcrumbs::current() as $crumbs)
-                                    @if ($crumbs->url() && !$loop->last)
-                                        <li class="breadcrumb-item">
-                                            <a href="{{ $crumbs->url() }}">
-                                                {{ $crumbs->title() }}
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="breadcrumb-item active">
-                                            {{ $crumbs->title() }}
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ol>
-                        </nav>
-                    @endif
+                    <h1 class="fs-4 mt-2">PEPS - Programa de Educação Permanente em Saúde</h1>
                     <ul
                         class="navbar-nav navbar-right-wrap ms-lg-auto d-flex nav-top-wrap align-items-center ms-4 ms-lg-0">
                         <!-- List -->

@@ -12,14 +12,10 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
-                    <a href="{{ route('dashboard.lessons.topics.index', $lesson) }}" class="btn btn-primary btn-md mb-5">
+                    <a href="{{ route('dashboard.lessons.topics.index', $lesson) }}" class="btn btn-outline-primary btn-md mb-5">
                         <i data-feather="arrow-left" class="nav-icon me-2 icon-xs"></i>
                         Voltar
                     </a>
-                    <h4 class="mb-5 fs-3">
-                        <i data-feather="chevrons-right" class="me-2 icon-xs"></i>
-                        Editar Tópico
-                    </h4>
                     <form method="POST" action="{{ route('dashboard.lessons.topics.update', [$lesson, $topic]) }}"
                         enctype="multipart/form-data">
                         @method('PATCH')

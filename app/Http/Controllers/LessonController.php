@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LessonStatusEnum;
 use App\Http\Requests\StoreLessonRequest;
 use App\Http\Requests\UpdateLessonRequest;
+use App\Models\Doubt;
 use App\Models\File;
 use App\Models\Lesson;
 use App\Models\Specialty;
@@ -20,26 +22,50 @@ class LessonController extends Controller
      */
     public function index()
     {
-        $query = request('q')
-            ? Lesson::search(request('q'))->query(fn($q) => $q->orderByDesc('id'))
-            : Lesson::query()->orderByDesc('id');
+        $isCoordenador = Gate::allows('isCoordenador');
+        $userId = Auth::id();
 
-        // If the user is a professor, filter to only their lessons
-        if (!Gate::allows('isCoordenador')) {
-            $query->where('user_id', Auth::id());
-        }
+        $buildBaseQuery = function () use ($isCoordenador, $userId) {
+            return Lesson::query()
+                ->when(!$isCoordenador, fn($q) => $q->where('user_id', $userId));
+        };
 
-        return view('dashboard.lessons.index', [
-            'lessons' => $query->paginate(10)->withQueryString(),
-        ]);
+        $stats = [
+            'published_count' => $buildBaseQuery()->where('lesson_status', LessonStatusEnum::PUBLICADA)->count(),
+            'awaiting_count'  => $buildBaseQuery()->where('lesson_status', LessonStatusEnum::AGUARDANDO_PUBLICACAO)->count(),
+            'draft_count'     => $buildBaseQuery()->where('lesson_status', LessonStatusEnum::RASCUNHO)->count(),
+            'doubts_count'    => Doubt::whereIn('lesson_id', $buildBaseQuery()->pluck('id'))->where('answered', false)->count(),
+        ];
+
+        $specialties = Specialty::orderBy('name')->get();
+
+        $lessons = $buildBaseQuery()
+            ->when(request('status'), fn($q, $status) => $q->where('lesson_status', $status))
+            ->when(request('specialty'), function ($q, $id) {
+                $q->whereHas('specialties', fn($sub) => $sub->where('specialties.id', $id));
+            })
+            ->when(request('q'), fn($q, $term) => $q->where('name', 'like', "%{$term}%"))
+            ->with(['file', 'specialties', 'teacher.file'])
+            ->withCount(['topics', 'subscriptions', 'doubts'])
+            ->orderByDesc('id')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('dashboard.lessons.index', compact('lessons', 'stats', 'specialties'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('dashboard.lessons.create', ['specialties' => Specialty::get()]);
+        $specialties = Specialty::whereNull('parent_id')
+            ->with('children')
+            ->orderBy('name')
+            ->get();
+
+        return view('dashboard.lessons.create', ['specialties' => $specialties]);
     }
 
     /**
@@ -57,7 +83,11 @@ class LessonController extends Controller
 
             $validatedData['user_id'] = Auth::id();
 
-            Lesson::create($validatedData);
+            $lesson = Lesson::create($validatedData);
+
+            if ($request->has('specialty_ids')) {
+                $lesson->specialties()->attach($request->input('specialty_ids'));
+            }
 
             return redirect()
                 ->route('dashboard.lessons.index')
@@ -82,14 +112,25 @@ class LessonController extends Controller
      */
     public function edit(Lesson $lesson)
     {
-        // Professores só podem editar suas próprias aulas
         if (!Gate::allows('isCoordenador') && $lesson->user_id !== Auth::id()) {
             return redirect()
                 ->back()
                 ->with('error', 'Atenção! Você só pode editar suas próprias aulas.');
         }
 
-        return view('dashboard.lessons.edit', ['lesson' => $lesson, 'specialties' => Specialty::get()]);
+        $specialties = Specialty::whereNull('parent_id')
+            ->with('children')
+            ->orderBy('name')
+            ->get();
+
+        $selectedSpecialties = $lesson->specialties()->pluck('specialties.id')->toArray();
+
+        return view('dashboard.lessons.edit', [
+            'lesson' => $lesson,
+            'edit' => true,
+            'specialties' => $specialties,
+            'selectedSpecialties' => $selectedSpecialties
+        ]);
     }
 
     /**
@@ -109,6 +150,8 @@ class LessonController extends Controller
             }
 
             $lesson->update($validatedData);
+
+            $lesson->specialties()->sync($request->input('specialty_ids', []));
 
             return redirect()
                 ->route('dashboard.lessons.index')

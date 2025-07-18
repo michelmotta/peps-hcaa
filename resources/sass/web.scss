@@ -374,9 +374,8 @@ header {
                 color: $main-color !important;
                 font-weight: bold;
                 font-size: 22px;
-                margin-top: 10px;
-                margin-bottom: 20px;
-                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 10px;
             }
 
             p {
@@ -409,12 +408,11 @@ header {
                 background-color: transparent;
                 color: #133b6a;
                 border: 2px solid #133b6a;
-                padding: 8px 50px;
+                padding: 8px 15px;
                 border-radius: 10px;
-                font-size: 18px;
+                font-size: 16px;
                 text-decoration: none;
                 transition: background-color 0.3s, color 0.3s;
-                margin-bottom: 5px;
 
                 &:hover {
                     background-color: #133b6a;
@@ -423,7 +421,6 @@ header {
             }
 
             .class-meta {
-                margin-top: 20px;
 
                 span {
                     font-weight: 600 !important;

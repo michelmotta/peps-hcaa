@@ -141,7 +141,7 @@
                         </div>
                     @endforelse
                 </div>
-                @if ($guidebooks->isNotEmpty())
+                @if ($guidebooks->isNotEmpty() && $guidebooks->hasPages())
                     <div class="card card-pagination shadow-sm mt-4">
                         <div class="card-body">
                             {{ $guidebooks->withQueryString()->links() }}

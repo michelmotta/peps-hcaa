@@ -22,11 +22,12 @@ class UpdateLessonRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
-            'specialty_id' => 'required|integer',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
             'workload' => 'required|integer',
-            'description' => 'required',
+            'specialty_ids' => 'nullable|array',
+            'specialty_ids.*' => 'exists:specialties,id',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
         ];
     }
 }

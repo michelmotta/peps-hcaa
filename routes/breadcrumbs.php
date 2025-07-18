@@ -1,23 +1,35 @@
 <?php
 
-use Tabuna\Breadcrumbs\Trail;
-use Illuminate\Support\Facades\Route;
+use App\Models\Doubt;
+use App\Models\Guidebook;
+use App\Models\GuidebookCategory;
+use App\Models\History;
+use App\Models\Information;
 use App\Models\Lesson;
+use App\Models\Library;
+use App\Models\Quiz;
+use App\Models\Specialty;
+use App\Models\Suggestion;
 use App\Models\Topic;
 use App\Models\User;
-use App\Models\Suggestion;
-use App\Models\Information;
-use App\Models\Specialty;
 use Tabuna\Breadcrumbs\Breadcrumbs;
+use Tabuna\Breadcrumbs\Trail;
 
-// DASHBOARD INICIAL
+// ----------------------------------------------------------------
+// HOME
+// ----------------------------------------------------------------
 Breadcrumbs::for(
     'dashboard.index',
     fn(Trail $trail) =>
     $trail->push('Dashboard', route('dashboard.index'))
 );
 
-// LESSONS
+
+// ----------------------------------------------------------------
+// LESSONS & NESTED RESOURCES
+// ----------------------------------------------------------------
+
+// Lessons
 Breadcrumbs::for(
     'dashboard.lessons.index',
     fn(Trail $trail) =>
@@ -46,7 +58,7 @@ Breadcrumbs::for(
         ->push($lesson->name, route('dashboard.lessons.show', $lesson))
 );
 
-// TOPICS
+// Lesson Topics
 Breadcrumbs::for(
     'dashboard.lessons.topics.index',
     fn(Trail $trail, Lesson $lesson) =>
@@ -68,81 +80,40 @@ Breadcrumbs::for(
         ->push("Editar: {$topic->title}", route('dashboard.lessons.topics.edit', [$lesson, $topic]))
 );
 
-// STUDENTS
+// Lesson Subscriptions (Students)
 Breadcrumbs::for(
-    'dashboard.lessons.students.index',
+    'dashboard.lessons.subscriptions.index',
     fn(Trail $trail, Lesson $lesson) =>
     $trail->parent('dashboard.lessons.show', $lesson)
-        ->push('Inscrições', route('dashboard.lessons.students.index', $lesson))
+        ->push('Inscrições', route('dashboard.lessons.subscriptions.index', $lesson))
 );
 
-// SUGGESTIONS
+// Lesson Doubts
 Breadcrumbs::for(
-    'dashboard.suggestions.index',
-    fn(Trail $trail) =>
-    $trail->parent('dashboard.index')
-        ->push('Sugestões', route('dashboard.suggestions.index'))
-);
-
-Breadcrumbs::for(
-    'dashboard.suggestions.create',
-    fn(Trail $trail) =>
-    $trail->parent('dashboard.suggestions.index')
-        ->push('Nova Sugestão', route('dashboard.suggestions.create'))
+    'dashboard.lessons.doubts.index',
+    fn(Trail $trail, Lesson $lesson) =>
+    $trail->parent('dashboard.lessons.show', $lesson)
+        ->push('Dúvidas', route('dashboard.lessons.doubts.index', $lesson))
 );
 
 Breadcrumbs::for(
-    'dashboard.suggestions.edit',
-    fn(Trail $trail, Suggestion $suggestion) =>
-    $trail->parent('dashboard.suggestions.index')
-        ->push('Editar Sugestão', route('dashboard.suggestions.edit', $suggestion))
-);
-
-// INFORMATION
-Breadcrumbs::for(
-    'dashboard.information.index',
-    fn(Trail $trail) =>
-    $trail->parent('dashboard.index')
-        ->push('Informações', route('dashboard.information.index'))
+    'dashboard.lessons.doubts.create',
+    fn(Trail $trail, Lesson $lesson) =>
+    $trail->parent('dashboard.lessons.doubts.index', $lesson)
+        ->push('Nova Dúvida', route('dashboard.lessons.doubts.create', $lesson))
 );
 
 Breadcrumbs::for(
-    'dashboard.information.create',
-    fn(Trail $trail) =>
-    $trail->parent('dashboard.information.index')
-        ->push('Nova Informação', route('dashboard.information.create'))
+    'dashboard.lessons.doubts.edit',
+    fn(Trail $trail, Lesson $lesson, Doubt $doubt) =>
+    $trail->parent('dashboard.lessons.doubts.index', $lesson)
+        ->push("Responder Dúvida", route('dashboard.lessons.doubts.edit', [$lesson, $doubt]))
 );
 
-Breadcrumbs::for(
-    'dashboard.information.edit',
-    fn(Trail $trail, Information $information) =>
-    $trail->parent('dashboard.information.index')
-        ->push('Editar Informação', route('dashboard.information.edit', $information))
-);
 
-// SPECIALTIES
-Breadcrumbs::for(
-    'dashboard.specialties.index',
-    fn(Trail $trail) =>
-    $trail->parent('dashboard.index')
-        ->push('Especialidades', route('dashboard.specialties.index'))
-);
-
-Breadcrumbs::for(
-    'dashboard.specialties.create',
-    fn(Trail $trail) =>
-    $trail->parent('dashboard.specialties.index')
-        ->push('Nova Especialidade', route('dashboard.specialties.create'))
-);
-
-Breadcrumbs::for(
-    'dashboard.specialties.edit',
-    fn(Trail $trail, Specialty $specialty) =>
-    $trail->parent('dashboard.specialties.index')
-        ->push('Editar Especialidade', route('dashboard.specialties.edit', $specialty))
-);
-
+// ----------------------------------------------------------------
 // USERS
+// ----------------------------------------------------------------
 Breadcrumbs::for(
     'dashboard.users.index',
     fn(Trail $trail) =>
@@ -169,4 +140,164 @@ Breadcrumbs::for(
     fn(Trail $trail, User $user) =>
     $trail->parent('dashboard.users.index')
         ->push($user->name, route('dashboard.users.show', $user))
+);
+
+
+// ----------------------------------------------------------------
+// SPECIALTIES
+// ----------------------------------------------------------------
+Breadcrumbs::for(
+    'dashboard.specialties.index',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.index')
+        ->push('Especialidades', route('dashboard.specialties.index'))
+);
+
+Breadcrumbs::for(
+    'dashboard.specialties.create',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.specialties.index')
+        ->push('Nova Especialidade', route('dashboard.specialties.create'))
+);
+
+Breadcrumbs::for(
+    'dashboard.specialties.edit',
+    fn(Trail $trail, Specialty $specialty) =>
+    $trail->parent('dashboard.specialties.index')
+        ->push("Editar: {$specialty->name}", route('dashboard.specialties.edit', $specialty))
+);
+
+
+// ----------------------------------------------------------------
+// SUGGESTIONS
+// ----------------------------------------------------------------
+Breadcrumbs::for(
+    'dashboard.suggestions.index',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.index')
+        ->push('Sugestões', route('dashboard.suggestions.index'))
+);
+
+Breadcrumbs::for(
+    'dashboard.suggestions.create',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.suggestions.index')
+        ->push('Nova Sugestão', route('dashboard.suggestions.create'))
+);
+
+Breadcrumbs::for(
+    'dashboard.suggestions.edit',
+    fn(Trail $trail, Suggestion $suggestion) =>
+    $trail->parent('dashboard.suggestions.index')
+        ->push('Editar Sugestão', route('dashboard.suggestions.edit', $suggestion))
+);
+
+
+// ----------------------------------------------------------------
+// GUIDEBOOKS & CATEGORIES
+// ----------------------------------------------------------------
+
+// Guidebooks
+Breadcrumbs::for(
+    'dashboard.guidebooks.index',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.index')
+        ->push('Guias Práticos', route('dashboard.guidebooks.index'))
+);
+
+Breadcrumbs::for(
+    'dashboard.guidebooks.create',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.guidebooks.index')
+        ->push('Novo Guia', route('dashboard.guidebooks.create'))
+);
+
+Breadcrumbs::for(
+    'dashboard.guidebooks.edit',
+    fn(Trail $trail, Guidebook $guidebook) =>
+    $trail->parent('dashboard.guidebooks.index')
+        ->push("Editar: {$guidebook->name}", route('dashboard.guidebooks.edit', $guidebook))
+);
+
+// Guidebook Categories
+Breadcrumbs::for(
+    'dashboard.guidebook-categories.index',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.index')
+        ->push('Categorias de Guias', route('dashboard.guidebook-categories.index'))
+);
+
+Breadcrumbs::for(
+    'dashboard.guidebook-categories.create',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.guidebook-categories.index')
+        ->push('Nova Categoria', route('dashboard.guidebook-categories.create'))
+);
+
+Breadcrumbs::for(
+    'dashboard.guidebook-categories.edit',
+    fn(Trail $trail, GuidebookCategory $guidebookCategory) =>
+    $trail->parent('dashboard.guidebook-categories.index')
+        ->push("Editar: {$guidebookCategory->name}", route('dashboard.guidebook-categories.edit', $guidebookCategory))
+);
+
+
+// ----------------------------------------------------------------
+// OTHER RESOURCES
+// ----------------------------------------------------------------
+
+// Quizzes
+Breadcrumbs::for(
+    'dashboard.quizzes.index',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.index')
+        ->push('Quizzes', route('dashboard.quizzes.index'))
+);
+
+// Histories
+Breadcrumbs::for(
+    'dashboard.histories.index',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.index')
+        ->push('Históricos', route('dashboard.histories.index'))
+);
+
+// Library
+Breadcrumbs::for(
+    'dashboard.libraries.index',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.index')
+        ->push('Biblioteca', route('dashboard.libraries.index'))
+);
+
+
+// ----------------------------------------------------------------
+// REPORTS
+// ----------------------------------------------------------------
+Breadcrumbs::for(
+    'dashboard.reports',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.index')
+        ->push('Relatórios')
+);
+
+Breadcrumbs::for(
+    'dashboard.reports.students',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.reports')
+        ->push('Relatório de Alunos', route('dashboard.reports.students'))
+);
+
+Breadcrumbs::for(
+    'dashboard.reports.teachers',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.reports')
+        ->push('Relatório de Professores', route('dashboard.reports.teachers'))
+);
+
+Breadcrumbs::for(
+    'dashboard.reports.lessons',
+    fn(Trail $trail) =>
+    $trail->parent('dashboard.reports')
+        ->push('Relatório de Aulas', route('dashboard.reports.lessons'))
 );

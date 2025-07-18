@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initDeleteAttachmentButtons();
     initDoubtFormSubmissions();
     initPlyrWithTopics();
-    updateProgressBar();
     initQuizJson();
 });
 

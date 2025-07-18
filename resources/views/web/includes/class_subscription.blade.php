@@ -23,11 +23,6 @@
                                     </form>
                                 </div>
                             </div>
-
-                            <h5>
-                                <i class="bi bi-bookmark"></i>
-                                {{ $lesson->specialty->name }}
-                            </h5>
                             <div class="mt-3 text-muted">
                                 {!! $lesson->description !!}
                             </div>
