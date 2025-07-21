@@ -17,10 +17,9 @@
 
         .page-wrapper {
             padding: 30px;
-            padding-top: 100px; /* Increased space for the header */
+            padding-top: 100px;
         }
 
-        /* --- ✅ Corrected Header & Footer --- */
         .header {
             background-color: #133b6a;
             color: #FFFFFF;
@@ -29,7 +28,6 @@
             top: 0;
             left: 0;
             right: 0;
-            /* Using table layout to prevent overlap */
             display: table;
             width: 100%;
         }
@@ -74,7 +72,6 @@
             border-top: 1px solid #e0e0e0;
         }
         
-        /* --- General Layout --- */
         .document-title {
             text-align: center;
             font-size: 20px;
@@ -138,11 +135,9 @@
             color: #133b6a;
             margin-bottom: 15px;
             font-weight: bold;
-            /* ✅ Centered title */
             text-align: center;
         }
 
-        /* --- Table Styling --- */
         table {
             width: 100%;
             border-collapse: collapse;

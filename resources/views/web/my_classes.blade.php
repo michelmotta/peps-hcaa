@@ -1,4 +1,5 @@
 @extends('templates.web')
+
 @section('content')
     <section>
         <div class="content-title">
@@ -6,11 +7,14 @@
             <p class="sub-title">Veja as aulas que você se inscreveu</p>
         </div>
     </section>
-    @include('web.includes.search_form', [
-        'title' => 'Pesquisar minhas aulas...',
-        'action' => ''
+
+    @include('web.includes.class_filter_form', [
+        'specialties' => $specialties,
+        'teachers' => $teachers,
     ])
-    @include('web.includes.class_template')
+
+    @include('web.includes.class_template', ['lessons' => $lessons])
+
     <div class="pagination-wrapper">
         {{ $lessons->links() }}
     </div>

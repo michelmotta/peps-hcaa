@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DoubtController;
@@ -8,7 +7,6 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\GuidebookCategoryController;
 use App\Http\Controllers\GuidebookController;
 use App\Http\Controllers\HistoryController;
-use App\Http\Controllers\InformationController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\LessonUserController;
 use App\Http\Controllers\LibraryController;
@@ -18,10 +16,7 @@ use App\Http\Controllers\SpecialtyController;
 use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\VideoController;
 use App\Http\Controllers\WebController;
-use App\Models\LessonUser;
-use App\Models\Quiz;
 use Illuminate\Support\Facades\Route;
 
 // Website Routes
@@ -40,6 +35,7 @@ Route::name('web.')->group(function () {
     Route::post('/perfil', [AuthController::class, 'perfilCreate'])->name('perfil-create');
     Route::get('/sugerir-temas', [WebController::class, 'suggestions'])->name('suggestions');
     Route::get('/biblioteca', [WebController::class, 'library'])->name('library');
+    Route::get('/validar-certificado/{uuid}', [WebController::class, 'validateCertificate'])->name('validate.certificate');
 
     // Protected routes (only logged-in users)
     Route::middleware('auth')->group(function () {
@@ -55,7 +51,7 @@ Route::name('web.')->group(function () {
         Route::get('/aula/{lesson}/quiz/next-question', [QuizController::class, 'getNextQuestion'])->name('quiz.nextQuestion');
         Route::post('/aula/{lesson}/quiz/submit-answer', [QuizController::class, 'submitAnswer'])->name('quiz.submitAnswer');
         Route::post('/aula/{lesson}/quiz/clear-session', [QuizController::class, 'clearSession'])->name('quiz.clearSession');
-        Route::get('/certificates/{lesson}', [WebController::class, 'generateCertificate'])->name('certificates.generate');
+        Route::get('/certificates/{lesson}', [WebController::class, 'generateStudentCertificate'])->name('certificates.generate');
 
         //Feedback Routes
         Route::post('/aula/{lesson}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
@@ -74,9 +70,11 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
     Route::post('lessons/{lesson}/change-status', [LessonController::class, 'changeStatus'])->name('lessons.change-status');
     Route::post('lessons/attachments/upload', [TopicController::class, 'attachmentsUpload'])->name('attachments.upload');
     Route::post('lessons/attachments/delete', [TopicController::class, 'attachmentsDelete'])->name('attachments.delete');
+    Route::get('lessons/{lesson}/certificates/{user}', [LessonController::class, 'generateTeacherCertificate'])->name('lessons.certificates');
     Route::resource('lessons.topics', TopicController::class);
     Route::resource('lessons.subscriptions', LessonUserController::class);
     Route::resource('lessons.doubts', DoubtController::class);
+    Route::resource('lessons.feedbacks', FeedbackController::class);
     Route::resource('suggestions', SuggestionController::class);
     Route::resource('guidebooks', GuidebookController::class);
     Route::resource('guidebook-categories', GuidebookCategoryController::class);

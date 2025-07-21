@@ -6,7 +6,6 @@
 @extends('templates.dashboard')
 
 @section('content')
-    {{-- Page Header --}}
     <div class="bg-primary rounded-3 mt-n6 mx-n4">
         <div class="p-10">
             <h1 class="mb-0 text-white text-center">
@@ -17,7 +16,6 @@
     </div>
 
     <div class="container-fluid">
-        {{-- Main Control Card --}}
         <div class="card shadow-sm mt-4 mb-8">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">Aulas</h3>
@@ -27,8 +25,6 @@
                 </a>
             </div>
         </div>
-
-        {{-- Accordion Filter Card --}}
         <div class="card shadow-sm mb-4">
             <div class="card-body p-4">
                 <h4 class="fw-bold mb-4">Visão Geral</h4>
@@ -113,8 +109,6 @@
                 </div>
             </div>
         </div>
-
-
         <div class="row mt-8">
             @forelse ($lessons as $lesson)
                 <div class="col-lg-6 mb-8">
@@ -138,7 +132,7 @@
                                             @endforeach
                                         </div>
                                         <h3 class="mb-3 fw-bold">{{ $lesson->name }}</h3>
-                                        <div class="d-flex justify-content-center text-center my-3">
+                                        <div class="d-flex justify-content-center text-center my-6">
                                             <a href="{{ route('dashboard.lessons.topics.index', $lesson->id) }}"
                                                 class="text-inherit mx-3" title="Tópicos">
                                                 <i data-feather="list" class="icon-sm"></i>
@@ -160,14 +154,17 @@
                                                     class="d-block fs-6 fw-bold mt-1">{{ $lesson->doubts->count() }}</span>
                                                 <small class="text-muted mb-0">Dúvidas</small>
                                             </a>
+                                            <a href="{{ route('dashboard.lessons.feedbacks.index', $lesson->id) }}"
+                                                class="text-inherit mx-3" title="Feedbacks">
+                                                <i data-feather="message-circle" class="icon-sm"></i>
+                                                <span
+                                                    class="d-block fs-6 fw-bold mt-1">{{ $lesson->feedbacks->count() }}</span>
+                                                <small class="text-muted mb-0">Feedbacks</small>
+                                            </a>
                                         </div>
                                     </div>
-
-                                    {{-- MODIFIED: Footer items have been reordered --}}
                                     <div class="mt-auto pt-3 border-top">
                                         <div class="d-flex justify-content-between align-items-center">
-
-                                            {{-- Item 1: Status Badge (now on the left) --}}
                                             <div>
                                                 @if ($lesson->lesson_status === LessonStatusEnum::RASCUNHO->value)
                                                     <span class="badge bg-warning"><i data-feather="edit-3"
@@ -180,8 +177,6 @@
                                                             class="icon-xs me-1"></i>Publicada</span>
                                                 @endif
                                             </div>
-
-                                            {{-- Item 2: Professor Info (now in the center) --}}
                                             <div>
                                                 @can('isCoordenador')
                                                     <div class="d-flex align-items-center">
@@ -204,8 +199,6 @@
                                                     </div>
                                                 @endcan
                                             </div>
-
-                                            {{-- Item 3: Action Buttons (now on the right) --}}
                                             <div class="d-flex align-items-center gap-1">
                                                 @can('canProfessorAskForPublication', $lesson)
                                                     <button
@@ -228,6 +221,13 @@
                                                         title="Despublicar" data-bs-toggle="tooltip"><i
                                                             data-feather="x-circle" class="icon-xs"></i></button>
                                                 @endcan
+                                                @can('canGenerateTeacherCertificate', [$lesson, $lesson->teacher])
+                                                    <a href="{{ route('dashboard.lessons.certificates', [$lesson, $lesson->teacher]) }}"
+                                                        class="btn btn-ghost btn-icon btn-sm rounded-circle text-primary"
+                                                        title="Gerar Certificado" data-bs-toggle="tooltip">
+                                                        <i data-feather="award" class="icon-xs"></i>
+                                                    </a>
+                                                @endcan
                                                 <a href="{{ route('dashboard.lessons.edit', $lesson->id) }}"
                                                     class="btn btn-ghost btn-icon btn-sm rounded-circle" title="Editar"
                                                     data-bs-toggle="tooltip"><i data-feather="edit"
@@ -245,8 +245,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- Hidden Forms for Actions --}}
                 @can('canProfessorAskForPublication', $lesson)
                     <form id="ask-publish-{{ $lesson->id }}" class="d-none" method="POST"
                         action="{{ route('dashboard.lessons.change-status', $lesson->id) }}">@csrf<input type="hidden"

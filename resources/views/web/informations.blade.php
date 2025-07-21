@@ -10,56 +10,51 @@
         'action' => route('web.informations'),
         'title' => 'Pesquisar informações...',
     ])
-    <section>
-        <div class="container faqs">
+    <section class="faq-content">
+        <div class="container">
             <div class="row">
-                <!-- FAQ Section -->
-                <div class="col-lg-9">
+                <div class="col-lg-8">
                     <div class="accordion" id="faqAccordion">
-                        @foreach ($information as $info)
-                            <div class="accordion-item mb-3 border-0 rounded-3 overflow-hidden">
+                        @forelse ($information as $info)
+                            <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed shadow-none" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#faq-{{ $info->id }}">
-                                        <i class="fas fa-graduation-cap me-2"></i> {{ $info->title }}
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#faq-{{ $info->id }}">
+                                        <i class="bi bi-patch-question me-2"></i> {{ $info->title }}
                                     </button>
                                 </h2>
                                 <div id="faq-{{ $info->id }}" class="accordion-collapse collapse"
                                     data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body bg-light">
+                                    <div class="accordion-body">
                                         {!! $info->description !!}
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                            <div class="text-center py-5">
+                                <i class="bi bi-search display-4 text-muted"></i>
+                                <h4 class="mt-3">Nenhuma informação encontrada</h4>
+                                <p class="text-muted">Tente ajustar os termos da sua pesquisa.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                    <div class="pagination-wrapper">
+                        {{ $information->links() }}
                     </div>
                 </div>
-                <!-- Sidebar -->
                 <div class="col-lg-3">
-                    <div class="card shadow-sm border-0 rounded-3 sticky-top" style="top: 20px;">
+                    <div class="sidebar-card sticky-top">
                         <div class="card-body">
-                            <h4 class="card-title">
-                                <i class="fas fa-question-circle me-2"></i> Ainda com dúvidas?
-                            </h4>
-                            <p class="card-text">Entre em contato com nosso suporte através do e-mail ou telefone</p>
-
-                            <div class="mb-3">
-                                <ul class="list-unstyled">
-                                    <li class="mb-2">
-                                        <i class="bi bi-envelope me-2"></i> email@email.com
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="bi bi-telephone me-2"></i> (67) 3333-3333
-                                    </li>
-                                </ul>
-                            </div>
+                            <h4 class="card-title"><i class="bi bi-headset me-2"></i>Ainda com dúvidas?</h4>
+                            <p class="card-text">Se não encontrou o que procurava, nossa equipe está pronta para ajudar.</p>
+                            <ul class="list-unstyled mt-4">
+                                <li class="mb-2"><i class="bi bi-envelope me-2"></i> email@email.com</li>
+                                <li><i class="bi bi-telephone me-2"></i> (67) 3333-3333</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <div class="pagination-wrapper">
-        {{ $information->links() }}
-    </div>
 @endsection

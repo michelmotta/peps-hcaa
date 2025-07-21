@@ -14,9 +14,41 @@ class FeedbackController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, Lesson $lesson)
     {
-        //
+        $searchTerm = $request->input('q');
+
+        $baseQuery = Feedback::query()->where('lesson_id', $lesson->id);
+
+        $allFeedbacks = $baseQuery->get();
+
+        $totalFeedbacks = $allFeedbacks->count();
+        $averageRating = $totalFeedbacks > 0 ? $allFeedbacks->avg('rating') : 0;
+
+        $ratingsCount = $allFeedbacks->groupBy('rating')->map->count();
+
+        $positiveCount = ($ratingsCount[5] ?? 0) + ($ratingsCount[4] ?? 0);
+        $negativeCount = ($ratingsCount[2] ?? 0) + ($ratingsCount[1] ?? 0);
+
+        $positivePercentage = $totalFeedbacks > 0 ? ($positiveCount / $totalFeedbacks) * 100 : 0;
+        $negativePercentage = $totalFeedbacks > 0 ? ($negativeCount / $totalFeedbacks) * 100 : 0;
+
+        $feedbacksQuery = $baseQuery->when(
+            $searchTerm,
+            fn($q) => $q->whereIn('id', Feedback::search($searchTerm)->keys())
+        )->latest();
+
+        $feedbacks = $feedbacksQuery->paginate(10)->withQueryString();
+
+        return view('dashboard.feedbacks.index', compact(
+            'lesson',
+            'feedbacks',
+            'averageRating',
+            'totalFeedbacks',
+            'ratingsCount',
+            'positivePercentage',
+            'negativePercentage'
+        ));
     }
 
     /**

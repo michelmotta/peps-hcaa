@@ -1,39 +1,38 @@
-<section class="curso-profile py-4 bg-light">
+<section class="curso-profile">
     <div class="container">
         <div class="curso-profile-card">
             <div class="row justify-content-center mt-4">
-                <div class="col-md-8 mb-5">
-                    <div class="curso-profile-card-infos">
+                <div class="col-md-12 mb-5">
+                    <div class="curso-profile-card-infos shadow-none">
                         <div>
                             <img src="{{ asset('storage/' . $lesson->file->path) }}" class="img-fluid curso-thumbnail"
                                 alt="Curso de Cardiologia">
                         </div>
                         <div class="p-4">
                             <div class="row align-items-center">
-                                <div class="col-md-9">
-                                    <h3 class="titulo-curso mb-0">{{ $lesson->name }}</h3>
+                                <div class="col-md-12">
+                                    <h3 class="titulo-curso mb-1">{{ $lesson->name }}</h3>
                                 </div>
-                                <div class="col-md-3 text-end">
-                                    <form action="{{ route('web.subscribe', $lesson) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline-primary px-4 py-2 fw-semibold">
-                                            <i class="bi bi-play me-2"></i>
-                                            Assistir
-                                        </button>
-                                    </form>
-                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                @foreach ($lesson->specialties as $specialty)
+                                    <a href="#" class="badge bg-light text-dark text-decoration-none fw-normal">
+                                        <i class="bi bi-tag me-1"></i>
+                                        {{ $specialty->name }}
+                                    </a>
+                                @endforeach
                             </div>
                             <div class="mt-3 text-muted">
                                 {!! $lesson->description !!}
                             </div>
                             <div class="fs-6 d-flex justify-content-start gap-4 small text-muted text-center mt-3">
                                 <span>
-                                    <i class="bi bi-list-check me-1"></i>
-                                    {{ $lesson->topics->count() }} tópicos
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ $lesson->workload }} Horas
                                 </span>
                                 <span>
-                                    <i class="bi bi-award me-1"></i>
-                                    {{ $lesson->workload }} Horas
+                                    <i class="bi bi-list-check me-1"></i>
+                                    {{ $lesson->topics->count() }} tópicos
                                 </span>
                                 <span>
                                     <i class="bi bi-mortarboard me-1"></i>
@@ -49,7 +48,8 @@
                                                 <button class="accordion-button collapsed shadow-none" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#faq-{{ $topic->id }}">
                                                     <i class="fas fa-graduation-cap me-2"></i>
-                                                    {{ $index + 1 }}. {{ $topic->title }}
+                                                    {{ $index + 1 }}.
+                                                    {{ $topic->title }}
                                                 </button>
                                             </h2>
                                             <div id="faq-{{ $topic->id }}" class="accordion-collapse collapse"
@@ -65,15 +65,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="teacher-info">
+                <div class="col-md-12">
+                    <div class="teacher-info shadow-none">
                         <div class="teacher-thumbnail">
                             <img src="{{ asset('storage/' . $lesson->teacher->file->path) }}" class="img-fluid"
                                 alt="Professor Jesse Pinkman">
                         </div>
                         <div class="p-4">
-                            <h6 class="fw-bold text-center mb-0">{{ $lesson->teacher->name }}</h6>
-                            <p class="text-muted text-center mb-3">{{ $lesson->teacher->expertise }}</p>
+                            <h6 class="fw-bold text-center mb-0">
+                                {{ $lesson->teacher->name }}</h6>
+                            <p class="text-muted text-center mb-3">
+                                {{ $lesson->teacher->expertise }}</p>
                             <div class="text-muted small text-justify teacher-biography">
                                 {{ $lesson->teacher->biography }}
                             </div>

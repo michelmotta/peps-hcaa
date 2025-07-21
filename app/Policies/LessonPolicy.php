@@ -73,15 +73,14 @@ class LessonPolicy
             ->exists();
     }
 
-    public function generateCertificate(User $user, Lesson $lesson): bool
+    public function canGenerateStudentCertificate(User $user, Lesson $lesson): bool
     {
         return $this->finishedLesson($user, $lesson);
     }
 
     public function canProfessorAskForPublication(User $user, Lesson $lesson): bool
     {
-        return $user->hasOnlyProfessorProfile() &&
-            $lesson->lesson_status === LessonStatusEnum::RASCUNHO->value;
+        return $user->hasOnlyProfessorProfile() && $lesson->lesson_status === LessonStatusEnum::RASCUNHO->value;
     }
 
     public function canCoordenadorPublish(User $user, Lesson $lesson): bool
@@ -97,5 +96,10 @@ class LessonPolicy
     {
         return $user->hasProfile('Coordenador') &&
             $lesson->lesson_status === LessonStatusEnum::PUBLICADA->value;
+    }
+
+    public function canGenerateTeacherCertificate(User $user, Lesson $lesson, User $teacher): bool
+    {
+        return $lesson->teacher->id === $teacher->id && $lesson->lesson_status === LessonStatusEnum::PUBLICADA->value;
     }
 }

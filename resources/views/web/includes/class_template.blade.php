@@ -20,15 +20,12 @@
                                             </div>
                                         @endif
                                     @endauth
-
                                     <img src="{{ asset('storage/' . $lesson->file->path) }}" alt="Imagem da aula"
                                         class="img-fluid w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <div class="class-infos h-100 d-flex flex-column justify-content-between p-4">
-
-                                    {{-- Top content block --}}
                                     <div>
                                         <div class="d-flex flex-wrap gap-2 mb-2">
                                             @foreach ($lesson->specialties as $specialty)
@@ -39,14 +36,10 @@
                                                 </a>
                                             @endforeach
                                         </div>
-
                                         <h4>{{ $lesson->name }}</h4>
-
                                         <div class="mb-3">
                                             {!! Str::limit(strip_tags($lesson->description), 120) !!}
                                         </div>
-
-                                        {{-- MODIFIED: Added professor's expertise --}}
                                         <div class="card-author text-center mb-3">
                                             <a href="{{ route('web.teacher', $lesson->id) }}"
                                                 class="d-inline-flex align-items-center gap-3 text-decoration-none text-reset">
@@ -60,19 +53,17 @@
                                             </a>
                                         </div>
                                     </div>
-
                                     <div class="pt-3 border-top d-flex justify-content-between align-items-center">
                                         <div class="class-meta d-flex gap-4 small text-muted">
-                                            <span>
-                                                <i class="bi bi-clock me-1"></i>
-                                                {{ $lesson->workload }} Horas
-                                            </span>
                                             <span>
                                                 <i class="bi bi-list-check me-1"></i>
                                                 {{ $lesson->topics->count() }} tópicos
                                             </span>
+                                            <span>
+                                                <i class="bi bi-award me-1"></i>
+                                                {{ $lesson->workload }} Horas
+                                            </span>
                                         </div>
-
                                         <div class="text-center">
                                             <a href="{{ route('web.class', $lesson->id) }}"
                                                 class="btn fw-bold read-more-btn">

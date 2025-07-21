@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -140,6 +141,11 @@ class User extends Authenticatable
             ->using(LessonUser::class)
             ->withPivot(['id', 'score', 'finished', 'finished_at'])
             ->withTimestamps();
+    }
+
+    public function studentSubscriptions(): HasManyThrough
+    {
+        return $this->hasManyThrough(LessonUser::class, Lesson::class, 'user_id', 'lesson_id');
     }
 
     public function histories()

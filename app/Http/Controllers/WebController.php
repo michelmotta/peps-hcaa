@@ -6,6 +6,8 @@ use App\Enums\LessonStatusEnum;
 use App\Enums\ProfileEnum;
 use App\Models\Certificate;
 use App\Models\Feedback;
+use App\Models\Guidebook;
+use App\Models\GuidebookCategory;
 use App\Models\Information;
 use App\Models\Lesson;
 use App\Models\Specialty;
@@ -49,6 +51,7 @@ class WebController extends Controller
 
     public function class(Lesson $lesson)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $feedback = null;
 
@@ -58,9 +61,12 @@ class WebController extends Controller
                 ->first();
         }
 
+        $watchedTopicIds = $user ? $user->histories()->pluck('topic_id')->toArray() : [];
+
         return view('web.class', [
             'lesson' => $lesson,
             'feedback' => $feedback,
+            'watchedTopicIds' => $watchedTopicIds
         ]);
     }
 
@@ -68,52 +74,64 @@ class WebController extends Controller
     {
         $search = $request->query('q');
 
-        $baseQuery = fn($query) => $query
+        $query = User::query()
             ->whereHas('profiles', function ($q) {
                 $q->where('profiles.id', ProfileEnum::PROFESSOR->value);
             })
-            ->with(['profiles', 'createdLessons.subscriptions'])
-            ->orderByDesc('id');
+            ->withCount([
+                'createdLessons',
+                'studentSubscriptions'
+            ]);
 
-        $query = $search
-            ? User::search($search)->query($baseQuery)
-            : User::query()->tap($baseQuery);
+        if ($search) {
+            $teacherIds = User::search($search)->keys();
+            $query->whereIn('id', $teacherIds);
+        }
+
+        $teachers = $query->orderByDesc('id')->paginate(12)->withQueryString();
 
         return view('web.teachers', [
-            'teachers' => $query->paginate(9)->withQueryString(),
+            'teachers' => $teachers,
         ]);
     }
 
     public function teacher(User $user)
     {
         if (!$user->hasProfile('Professor')) {
-            return redirect()
-                ->back();
+            if (!$user->hasProfile('Professor')) {
+                return redirect()
+                    ->back();
+            }
         }
 
-        $user->load(['createdLessons.students']);
+        $user->loadCount(['createdLessons', 'studentSubscriptions']);
 
         return view('web.teacher', [
             'teacher' => $user,
-            'lessons' => Lesson::where('user_id', $user->id)->paginate(4)->withQueryString()
         ]);
     }
+
 
     public function informations(Request $request)
     {
         $search = $request->query('q');
 
-        $baseQuery = fn($query) => $query
-            ->with('user')
-            ->where('published', true)
-            ->orderByDesc('id');
+        $query = Guidebook::query()
+            ->with('Category')
+            ->where('type', 'extern');
 
-        $query = $search
-            ? Information::search($search)->query($baseQuery)
-            : Information::query()->tap($baseQuery);
+        if ($search) {
+            $guidebookIds = Guidebook::search($search)
+                ->where('type', 'extern')
+                ->keys();
+
+            $query->whereIn('id', $guidebookIds);
+        }
+
+        $information = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         return view('web.informations', [
-            'information' => $query->paginate(9)->withQueryString(),
+            'information' => $information
         ]);
     }
 
@@ -121,65 +139,92 @@ class WebController extends Controller
     {
         $search = $request->query('q');
         $specialtyId = $request->query('specialty_id');
+        $teacherId = $request->query('teacher_id');
+        $sortBy = $request->query('sort_by', 'newest');
+
+        $with = ['file', 'specialties', 'teacher.file'];
+        if (Auth::check()) {
+            $with['subscriptions'] = fn($q) => $q->where('user_id', Auth::id());
+        }
 
         $query = Lesson::query()
-            ->with(['file', 'specialties', 'topics', 'teacher.file'])
-            ->where('lesson_status', LessonStatusEnum::PUBLICADA->value)
-            ->orderByDesc('id');
+            ->with($with)
+            ->where('lesson_status', LessonStatusEnum::PUBLICADA->value);
 
         if ($specialtyId) {
-            $ids = Specialty::where('parent_id', $specialtyId)
-                ->orWhere('id', $specialtyId)
-                ->pluck('id');
+            $query->whereHas('specialties', fn($q) => $q->where('specialties.id', $specialtyId));
+        }
 
-            $query->whereHas('specialties', function ($q) use ($ids) {
-                $q->whereIn('specialties.id', $ids);
-            });
+        if ($teacherId) {
+            $query->where('user_id', $teacherId);
         }
 
         if ($search) {
-            $lessonIds = Lesson::search($search)->keys();
+            $lessonIds = Lesson::search($search)->take(100)->keys();
             $query->whereIn('id', $lessonIds);
         }
 
+        $orderDirection = $sortBy === 'oldest' ? 'asc' : 'desc';
+        $query->orderBy('id', $orderDirection);
+
         $lessons = $query->paginate(15)->withQueryString();
 
-        if (Auth::check()) {
-            $lessons->load(['subscriptions' => function ($query) {
-                $query->where('user_id', Auth::id());
-            }]);
-        }
+        $specialties = Specialty::whereNull('parent_id')->orderBy('name')->get();
+        $teachers = User::whereHas('profiles', fn($q) => $q->where('profiles.id', ProfileEnum::PROFESSOR->value))
+            ->orderBy('name')->get();
 
         return view('web.classes', [
             'lessons' => $lessons,
+            'specialties' => $specialties,
+            'teachers' => $teachers,
         ]);
     }
 
     public function myClasses(Request $request)
     {
         $search = $request->query('q');
-        $userId = Auth::id();
+        $specialtyId = $request->query('specialty_id');
+        $teacherId = $request->query('teacher_id');
+        $sortBy = $request->query('sort_by', 'newest');
 
-        $baseQuery = function ($query) use ($userId) {
-            $query->whereHas('subscriptions', function ($q) use ($userId) {
-                $q->where('users.id', $userId);
-            })
-                ->with(['subscriptions' => function ($q) use ($userId) {
-                    $q->where('users.id', $userId);
-                }])
-                ->orderByDesc('id');
-        };
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        $query = Lesson::query();
+        $query = $user->subscriptions()
+            ->with(['file', 'specialties', 'teacher.file'])
+            ->where('lesson_status', LessonStatusEnum::PUBLICADA->value);
 
-        if ($search) {
-            $query = Lesson::search($search)->query($baseQuery);
-        } else {
-            $query->when(true, $baseQuery); // applies the baseQuery
+        if ($specialtyId) {
+            $query->whereHas('specialties', function ($q) use ($specialtyId) {
+                $q->where('specialties.id', $specialtyId);
+            });
         }
 
+        if ($teacherId) {
+            $query->where('user_id', $teacherId);
+        }
+
+        if ($search) {
+            $lessonIds = Lesson::search($search)->keys();
+            $query->whereIn('lessons.id', $lessonIds);
+        }
+
+        if ($sortBy === 'oldest') {
+            $query->orderBy('lessons.id', 'asc');
+        } else {
+            $query->orderBy('lessons.id', 'desc');
+        }
+
+        $lessons = $query->paginate(9)->withQueryString();
+
+        $specialties = Specialty::whereNull('parent_id')->orderBy('name')->get();
+        $teachers = User::whereHas('profiles', fn($q) => $q->where('profiles.id', ProfileEnum::PROFESSOR->value))
+            ->orderBy('name')->get();
+
         return view('web.my_classes', [
-            'lessons' => $query->paginate(9)->withQueryString(),
+            'lessons' => $lessons,
+            'specialties' => $specialties,
+            'teachers' => $teachers,
         ]);
     }
 
@@ -187,15 +232,38 @@ class WebController extends Controller
     {
         $search = $request->query('q');
 
-        $baseQuery = fn($query) => $query
+        $topSuggestions = collect();
+        $suggestionsQuery = Suggestion::query()
+            ->with('user')
             ->orderByDesc('votes');
 
-        $query = $search
-            ? Suggestion::search($search)->query($baseQuery)
-            : Suggestion::query()->tap($baseQuery);
+        if ($search) {
+            $suggestionIds = Suggestion::search($search)->take(1000)->keys();
+            $suggestionsQuery->whereIn('id', $suggestionIds);
+        }
+
+        $suggestions = $suggestionsQuery->paginate(9)->withQueryString();
+
+        if (!$search) {
+            $topSuggestionIds = Suggestion::query()
+                ->orderByDesc('votes')
+                ->limit(3)
+                ->pluck('id');
+
+            if ($topSuggestionIds->isNotEmpty()) {
+                $caseStatement = collect($topSuggestionIds)->map(function ($id, $index) {
+                    return "WHEN id = {$id} THEN {$index}";
+                })->implode(' ');
+
+                $topSuggestions = Suggestion::whereIn('id', $topSuggestionIds)
+                    ->orderByRaw("CASE {$caseStatement} END")
+                    ->get();
+            }
+        }
 
         return view('web.suggestions', [
-            'suggestions' => $query->paginate(9)->withQueryString(),
+            'topSuggestions' => $topSuggestions,
+            'suggestions' => $suggestions,
         ]);
     }
 
@@ -256,24 +324,22 @@ class WebController extends Controller
         return view('web.perfil');
     }
 
-    public function generateCertificate(Lesson $lesson)
+    public function generateStudentCertificate(Lesson $lesson)
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!Gate::allows('generateCertificate', $lesson)) {
-            abort(403, 'Você não tem permissão para gerar este certificado.');
+        if (!Gate::allows('canGenerateStudentCertificate', $lesson)) {
+            return redirect()
+                ->back()
+                ->with('error', 'Você não tem permissão para gerar este certificado.');
         }
 
         Certificate::registerCertificate($lesson, $user);
 
-        $lessonData = $user->isTeacherOf($lesson)
-            ? $lesson
-            : $user->subscriptions()->where('lessons.id', $lesson->id)->firstOrFail();
-
         return Pdf::loadView('web.includes.certificate', [
             'user' => $user,
-            'lesson' => $lessonData,
+            'lesson' => $user->subscriptions()->where('lessons.id', $lesson->id)->firstOrFail(),
             'date' => now()->translatedFormat('d \\d\\e F \\d\\e Y'),
         ])->setPaper('a4', 'landscape')->download('certificado-' . $lesson->id . '.pdf');
     }

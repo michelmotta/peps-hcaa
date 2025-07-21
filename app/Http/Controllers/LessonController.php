@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CertificateTypeEnum;
 use App\Enums\LessonStatusEnum;
 use App\Http\Requests\StoreLessonRequest;
 use App\Http\Requests\UpdateLessonRequest;
+use App\Models\Certificate;
 use App\Models\Doubt;
 use App\Models\File;
 use App\Models\Lesson;
 use App\Models\Specialty;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use PhpParser\Node\Expr\Cast\String_;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LessonController extends Controller
 {
@@ -221,5 +226,35 @@ class LessonController extends Controller
             'value' => $lesson->id,
             'text'  => $lesson->name,
         ])->values();
+    }
+
+    public function generateTeacherCertificate(Lesson $lesson, User $user)
+    {
+        if (!Gate::allows('canGenerateTeacherCertificate', [$lesson, $user])) {
+            return redirect()
+                ->back()
+                ->with('error', 'Você não tem permissão para gerar este certificado.');
+        }
+
+        $certificate = Certificate::registerCertificate($lesson, $user, CertificateTypeEnum::TEACHER);
+
+        $validationUrl = route('web.validate.certificate', ['uuid' => $certificate->uuid]);
+
+        $qrCodeImage = QrCode::format('png')->size(150)->margin(1)->generate($validationUrl);
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrCodeImage);
+
+        $data = [
+            'user' => $user,
+            'lesson' => $lesson,
+            'date' => $lesson->created_at->translatedFormat('d \\d\\e F \\d\\e Y'),
+            'qrCodeBase64' => $qrCodeBase64,
+            'validationUrl' => $validationUrl,
+            'validationCode' => $certificate->uuid,
+            'certificateDate' => $certificate->created_at->translatedFormat('d \\d\\e F \\d\\e Y'),
+        ];
+
+        return Pdf::loadView('dashboard.lessons.certificate', $data)
+            ->setPaper('a4', 'landscape')
+            ->stream('certificado-' . $user->name . '.pdf');
     }
 }

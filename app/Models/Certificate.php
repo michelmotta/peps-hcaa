@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CertificateTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -19,15 +20,23 @@ class Certificate extends Model
         'issued_at'
     ];
 
-    public static function registerCertificate(Lesson $lesson, User $user): Certificate
+    public function user()
     {
-        $type = $user->isTeacherOf($lesson) ? 'teacher' : 'student';
+        return $this->belongsTo(User::class);
+    }
 
+    public function lesson()
+    {
+        return $this->belongsTo(Lesson::class);
+    }
+
+    public static function registerCertificate(Lesson $lesson, User $user, CertificateTypeEnum $certificateType = CertificateTypeEnum::STUDENT): Certificate
+    {
         $certificate = self::firstOrCreate(
             [
                 'user_id'   => $user->id,
                 'lesson_id' => $lesson->id,
-                'type'      => $type,
+                'type'      => $certificateType->value,
             ],
             [
                 'uuid' => (string) Str::uuid(),
@@ -40,15 +49,5 @@ class Certificate extends Model
         ]);
 
         return $certificate;
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function lesson()
-    {
-        return $this->belongsTo(Lesson::class);
     }
 }

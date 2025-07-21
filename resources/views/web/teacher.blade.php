@@ -1,68 +1,47 @@
 @extends('templates.web')
+
 @section('content')
     <section>
         <div class="content-title">
             <h1>Professor</h1>
-            <p class="sub-title">Saiba mais sobre nossos professores</p>
+            <p class="sub-title">Conheça mais sobre o especialista</p>
         </div>
     </section>
-    <section class="professor-profile py-5 bg-light">
+    <section class="teacher-profile-section">
         <div class="container">
-            <!-- Hero Section -->
-            <div class="row justify-content-center">
-                <div class="col-md-12">
-                    <div class="row g-0 align-items-center">
-                        <!-- Professor Thumbnail -->
-                        <div class="col-md-3">
-                            <div class="professor-thumbnail-wrapper">
-                                <img src="{{ asset('storage/' . $teacher->file->path) }}" class="img-fluid professor-thumbnail">
+            <div class="profile-card">
+                <div class="profile-intro">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="intro-identity">
+                                <img src="{{ asset('storage/' . $teacher->file->path) }}" class="intro-photo"
+                                    alt="{{ $teacher->name }}">
+                                <h1 class="intro-name">{{ $teacher->name }}</h1>
+                                <p class="intro-expertise">{{ $teacher->expertise }}</p>
                             </div>
                         </div>
-                        <!-- Professor Info -->
-                        <div class="col-md-9">
-                            <div class="p-4">
-                                <h3>{{ $teacher->name }}</h3>
-                                <h5 class="text-muted">{{ $teacher->expertise }}</h5>
-                                <p class="mt-3 text-muted">
-                                    {!! $teacher->biography !!}
-                                </p>
-
-                                <!-- Estudantes and Aulas Section -->
-                                <div class="mt-4">
-                                    <span class="me-3">
-                                        <i class="bi bi-mortarboard"></i> 
-                                        {{ $teacher->createdLessons->flatMap->students->unique('id')->count() }} Estudantes
-                                    </span>
-                                    <span>
-                                        <i class="bi bi-journal-text"></i> 
-                                        {{ $teacher->createdLessons->count() }} Aulas
-                                    </span>
+                        <div class="col-lg-6">
+                            <div class="intro-stats">
+                                <div class="stat-item">
+                                    <i class="bi bi-mortarboard"></i>
+                                    <strong>{{ $teacher->student_subscriptions_count ?? 0 }}</strong>
+                                    <span>Estudantes</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="bi bi-journal-text"></i>
+                                    <strong>{{ $teacher->created_lessons_count ?? 0 }}</strong>
+                                    <span>Aulas Ministradas</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <hr>
+                <hr class="profile-divider">
+                <div class="biography-wrapper">
+                    <h3 class="section-title">Sobre o professor</h3>
+                    <p>{{ $teacher->biography }}</p>
                 </div>
             </div>
         </div>
     </section>
-    <section>
-        <div class="container recent-classes">
-            <div class="col-md-12">
-                <h3 class="mt-5">Aulas do Professor</h3>
-            </div>
-        </div>
-    </section>
-    @include('web.includes.class_template', $lessons)
-    <div class="pagination-wrapper">
-        {{ $lessons->links() }}
-    </div>
 @endsection

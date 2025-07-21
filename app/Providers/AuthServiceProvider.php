@@ -34,9 +34,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('isCoordenadorOrProfessor', [UserPolicy::class, 'isCoordenadorOrProfessor']);
 
         Gate::define('finishedLesson', [LessonPolicy::class, 'finishedLesson']);
-        Gate::define('generateCertificate', [LessonPolicy::class, 'generateCertificate']);
+        Gate::define('canGenerateStudentCertificate', [LessonPolicy::class, 'canGenerateStudentCertificate']);
         Gate::define('canProfessorAskForPublication', [LessonPolicy::class, 'canProfessorAskForPublication']);
         Gate::define('canCoordenadorPublish', [LessonPolicy::class, 'canCoordenadorPublish']);
         Gate::define('canCoordenadorUnpublish', [LessonPolicy::class, 'canCoordenadorUnpublish']);
+        Gate::define('canGenerateTeacherCertificate', [LessonPolicy::class, 'canGenerateTeacherCertificate']);
     }
 }

@@ -3,84 +3,124 @@
     <section>
         <div class="content-title">
             <h1>Sugerir Temas</h1>
-            <p class="sub-title">Faça login para sugerir temas ou votar em temas sugeridos.</p>
+            <p class="sub-title">Vote nos temas que você mais gosta ou sugira um novo!</p>
         </div>
     </section>
     @include('web.includes.search_form', [
         'title' => 'Pesquisar sugestões...',
-        'action' => '',
+        'action' => route('web.suggestions'),
     ])
-    <section class="theme-voting-section py-4">
+    <section class="suggestion-board-section">
         <div class="container">
             @auth
-                <!-- Right-aligned Novo Tema Button with hover effect -->
-                <div class="d-flex justify-content-end mb-4">
-                    <button class="btn novo-tema-btn " data-bs-toggle="modal" data-bs-target="#themeModal">
-                        <i class="bi bi-plus-lg me-2"></i>Novo Tema
+                <div class="d-flex justify-content-center mb-5">
+                    <button class="btn novo-tema-btn" data-bs-toggle="modal" data-bs-target="#themeModal">
+                        <i class="bi bi-plus-lg me-2"></i>Sugerir Novo Tema
                     </button>
                 </div>
             @endauth
-            <!-- Voting Cards Grid -->
-            <div class="row g-4 mt-3">
-                @foreach ($suggestions as $suggestion)
-                    <div class="col-md-6 col-lg-4">
-                        <div class="theme-card p-4 h-100">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <small class="text-muted"><i
-                                        class="bi bi-person-circle me-1"></i>{{ $suggestion->user->name }}</small>
-                                <small class="text-muted">{{ $suggestion->created_at_formatted }}</small>
-                            </div>
-                            <h5 class="fw-bold mb-3">{{ $suggestion->name }}</h5>
-                            <p class="text-muted small mb-4">{!! $suggestion->description !!}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="vote-count fw-bold">
-                                    <i class="bi bi-hand-thumbs-up me-1"></i> {{ $suggestion->votes }} votos
+            @if ($topSuggestions->isNotEmpty() && !request('page') && !request('q'))
+                <div class="leaderboard">
+                    <h2 class="section-title"><span>Temas em Destaque</span></h2>
+                    <div class="row justify-content-center">
+                        @foreach ($topSuggestions as $index => $suggestion)
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="leaderboard-card rank-{{ $index + 1 }}">
+                                    <div class="rank-badge">#{{ $index + 1 }}</div>
+                                    <div class="card-content">
+                                        <div class="card-main-content">
+                                            <h5 class="card-title">{{ $suggestion->name }}</h5>
+                                            <p class="card-author">Sugerido por: {{ $suggestion->user->name }}</p>
+                                            <div class="vote-count">{{ $suggestion->votes }} votos</div>
+                                        </div>
+                                        @auth
+                                            <form method="POST" action="{{ route('web.suggestion-update', $suggestion->id) }}">
+                                                @csrf @method('PATCH')
+                                                <button type="submit" class="btn vote-btn">
+                                                    <i class="bi bi-hand-thumbs-up"></i> Votar
+                                                </button>
+                                            </form>
+                                        @endauth
+                                    </div>
                                 </div>
-                                @auth
-                                    <form method="POST" action="{{ route('web.suggestion-update', $suggestion->id) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn vote-btn text-white btn-sm rounded-pill px-3">
-                                            Votar
-                                        </button>
-                                    </form>
-                                    
-                                @endauth
                             </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+            <div class="suggestion-feed">
+                <h2 class="section-title">
+                    <span>{{ request('q') ? 'Resultados da Busca' : 'Todas as Sugestões' }}</span>
+                </h2>
+                @forelse ($suggestions as $suggestion)
+                    <div class="suggestion-list-item">
+                        <div class="vote-control">
+                            @auth
+                                <form method="POST" action="{{ route('web.suggestion-update', $suggestion->id) }}">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" class="vote-btn-list">
+                                        <i class="bi bi-hand-thumbs-up"></i> Votar
+                                    </button>
+                                </form>
+                            @endauth
+                            <div class="vote-count-list">{{ $suggestion->votes }} Votos</div>
+                        </div>
+                        <div class="suggestion-details">
+                            <h5 class="suggestion-title">{{ $suggestion->name }}</h5>
+                            <p class="suggestion-description">{{ $suggestion->description }}</p>
+                            <small class="suggestion-meta">
+                                Sugerido por {{ $suggestion->user->name }} &middot;
+                                {{ $suggestion->created_at_formatted }}
+                            </small>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="text-center py-5">
+                        <i class="bi bi-search display-4 text-muted"></i>
+                        <h4 class="mt-3">Nenhuma sugestão encontrada</h4>
+                        <p class="text-muted">Tente ajustar os termos da sua pesquisa ou seja o primeiro a sugerir um tema!
+                        </p>
+                    </div>
+                @endforelse
+            </div>
+            <div class="pagination-wrapper">
+                {{ $suggestions->links() }}
             </div>
         </div>
-        <!-- Theme Submission Modal -->
-        <div class="modal fade" id="themeModal" tabindex="-1">
+    </section>
+    @auth
+        <div class="modal fade" id="themeModal" tabindex="-1" aria-labelledby="themeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header text-white" style="background-color: #052c52;">
-                        <h5 class="modal-title"><i class="bi bi-lightbulb me-2"></i>Sugerir Novo Tema</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
+                <div class="modal-content suggestion-modal-content">
                     <div class="modal-body">
+                        <div class="modal-icon-header">
+                            <i class="bi bi-lightbulb"></i>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h4 class="modal-title text-center" id="themeModalLabel">Sugerir Novo Tema</h4>
+                        <p class="text-center text-muted mb-4">Compartilhe sua ideia para uma nova aula. As melhores sugestões
+                            podem ser produzidas!</p>
                         <form method="POST" action="{{ route('web.suggestion-create') }}">
                             @csrf
-                            <div class="mb-3">
-                                <label class="form-label">Título do tema</label>
-                                <input type="text" class="form-control" name="name" required>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="suggestionName" name="name"
+                                    placeholder="Título do tema" required>
+                                <label for="suggestionName">Título do tema</label>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Descrição</label>
-                                <textarea class="form-control" rows="4" name="description" required></textarea>
+                            <div class="form-floating mb-4">
+                                <textarea class="form-control" id="suggestionDescription" name="description" placeholder="Descrição"
+                                    style="height: 120px" required></textarea>
+                                <label for="suggestionDescription">Descrição</label>
                             </div>
-                            <button type="submit" class="btn w-100 py-2 text-white" style="background-color: #052c52;">
-                                <i class="bi bi-send me-2"></i>Enviar Sugestão
-                            </button>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg submit-suggestion-btn">
+                                    <i class="bi bi-send me-2"></i>Enviar Sugestão
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <div class="pagination-wrapper">
-        {{ $suggestions->links() }}
-    </div>
+    @endauth
 @endsection

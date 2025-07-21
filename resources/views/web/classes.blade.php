@@ -6,11 +6,11 @@
             <p class="sub-title">Descubra aulas e aprenda conforme suas necessidades</p>
         </div>
     </section>
-    @include('web.includes.search_form', [
-        'title' => 'Pesquisar aulas...',
-        'action' => '',
+    @include('web.includes.class_filter_form', [
+        'specialties' => $specialties,
+        'teachers' => $teachers,
     ])
-    @include('web.includes.class_template', $lessons)
+    @include('web.includes.class_template', ['lessons' => $lessons])
     <div class="pagination-wrapper">
         {{ $lessons->links() }}
     </div>
