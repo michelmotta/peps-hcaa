@@ -143,7 +143,7 @@ class DoubtController extends Controller
     public function doubtCreate(Request $request, Lesson $lesson)
     {
         $validatedData = $request->validate([
-            'doubt' => 'required',
+            'doubt' => 'required|string|max:1000',
         ]);
 
         try {
@@ -157,22 +157,27 @@ class DoubtController extends Controller
                 'answered_at' => null,
             ]);
 
-            // Carrega a relação do usuário
-            $doubt->load('user');
+            $doubt->load('user.file');
+
+            $filePath = $doubt->user->file ? asset('storage/' . $doubt->user->file->path) : null;
 
             return response()->json([
                 'status' => 'success',
                 'doubt' => [
                     'doubt' => $doubt->doubt,
                     'created_at_formatted' => $doubt->created_at_formatted,
-                    'answered_at_formatted' => $doubt->answered_at_formatted,
                     'user' => [
                         'name' => $doubt->user->name,
+                        'file_path' => $filePath,
                     ],
                 ],
             ]);
         } catch (Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+            report($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ocorreu um erro ao processar sua solicitação.'
+            ], 500);
         }
     }
 }

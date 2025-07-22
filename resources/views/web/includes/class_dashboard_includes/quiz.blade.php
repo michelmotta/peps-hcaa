@@ -1,30 +1,38 @@
 <section class="avaliacao-section">
-    <div class="container text-center pt-5 pb-5">
+    <div class="container text-center">
         @if (Gate::allows('finishedLesson', $lesson))
-            <h2 class="mb-3">Você já finalizou o quiz desta aula!</h2>
-            <p class="mb-4">Seu certificado está disponível na aba Certificado.</p>
+            <div class="avaliacao-card finished">
+                <div class="avaliacao-icon">
+                    <i class="bi bi-patch-check-fill"></i>
+                </div>
+                <h2>Você já finalizou o quiz desta aula!</h2>
+                <p class="lead">Seu certificado está te esperando na aba "Certificado".</p>
+            </div>
         @else
-            <h2 class="mb-3">Quiz de Avaliação do Aprendizado</h2>
-            <p class="mb-4">Clique no botão abaixo para iniciar o quiz.</p>
-
-            <button type="button" class="btn btn-primary btn-lg d-inline-flex align-items-center gap-2"
-                data-bs-toggle="modal" data-bs-target="#quizModal" data-lesson-id="{{ $lesson->id ?? 'UNKNOWN_LESSON' }}">
-                <i class="bi bi-play-circle-fill"></i> Iniciar Quiz
-            </button>
+            <div class="avaliacao-card">
+                <div class="avaliacao-icon">
+                    <i class="bi bi-card-checklist"></i>
+                </div>
+                <h2>Teste seus conhecimentos!</h2>
+                <p class="lead">Encare o desafio e mostre o que você aprendeu.</p>
+                <button type="button" class="btn btn-primary btn-lg start-quiz-btn" data-bs-toggle="modal"
+                    data-bs-target="#quizModal" data-lesson-id="{{ $lesson->id ?? 'UNKNOWN_LESSON' }}">
+                    <i class="bi bi-play-circle-fill"></i> Iniciar Quiz
+                </button>
+            </div>
         @endif
     </div>
 </section>
+
 <section>
     <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true"
         data-bs-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content quiz-modal-content">
                 <div class="quiz-header">
-                    <div id="questionCounter" class="question-counter">Questão ... de ...
-                    </div>
+                    <div id="questionCounter" class="question-counter">Questão ... de ...</div>
                     <div class="progress">
-                        <div id="quizProgressBar" class="progress-bar" style="width: 0%">
-                        </div>
+                        <div id="quizProgressBar" class="progress-bar" style="width: 0%"></div>
                     </div>
                     <div id="quizTopic" class="quiz-topic">Carregando Tópico...</div>
                     <button type="button" id="quizCloseBtn" class="btn-close" data-bs-dismiss="modal"
@@ -32,11 +40,11 @@
                 </div>
 
                 <div class="question-box">
-                    <h2 id="questionText" class="question-text">Carregando Pergunta...
-                    </h2>
+                    <h2 id="questionText" class="question-text">Carregando Pergunta...</h2>
                 </div>
 
-                <div class="quiz-feedback-message mb-3 text-center" id="quizFeedbackMessage" style="display: none;">
+                <div class="quiz-feedback-container" id="quizFeedbackContainer" style="display: none;">
+                    <div class="quiz-feedback-message" id="quizFeedbackMessage"></div>
                 </div>
 
                 <div id="answerOptionsContainer" class="answer-options"></div>

@@ -194,7 +194,7 @@ class QuizController extends Controller
         return response()->json([
             'status' => 'next_topic_ready',
             'is_correct' => $isCorrect,
-            'correct_answer' => $correctAnswer,
+            //'correct_answer' => $correctAnswer,
             'message' => 'Tópico concluído com sucesso! Prepare-se para o próximo.',
         ]);
     }
@@ -221,7 +221,7 @@ class QuizController extends Controller
         return response()->json([
             'status' => 'topic_failed',
             'is_correct' => $isCorrect,
-            'correct_answer' => $correctAnswer,
+            //'correct_answer' => $correctAnswer,
             'score' => round($score),
             'message' => "Você acertou apenas " . round($score) . "% das perguntas do tópico '{$topic->title}'. Assista ao vídeo novamente e tente outra vez.",
             'topic' => [
@@ -299,7 +299,7 @@ class QuizController extends Controller
                 $question = $this->getCurrentQuestion($topicProgress);
                 if (!$question) {
                     $quizState['topics_progress'][$currentTopicId]['current_question_index']++;
-                    Session::put($sessionKey, $quizState); // Save state after advancing
+                    Session::put($sessionKey, $quizState);
                     continue;
                 }
 
@@ -352,7 +352,6 @@ class QuizController extends Controller
 
             $currentTopicId = $this->getCurrentTopicId($quizState);
             if ($currentTopicId === null) {
-                // Se não há um tópico ativo, tenta finalizar caso haja algum dado pendente
                 if (!empty($quizState['topics_scores'])) {
                     $this->finalizeLessonQuiz($lesson, $user, $sessionKey, $quizState);
                 }
@@ -360,7 +359,6 @@ class QuizController extends Controller
             }
 
             if (!isset($quizState['topics_progress'][$currentTopicId])) {
-                // Lógica de recuperação de estado se o progresso do tópico não for encontrado
                 $currentTopicForInit = Topic::find($currentTopicId);
                 if ($currentTopicForInit) {
                     $this->initializeTopicProgressIfNeeded($quizState, $currentTopicForInit);
@@ -383,7 +381,6 @@ class QuizController extends Controller
 
             $isCorrect = strtolower(trim($request->selected_option)) === strtolower(trim($question->correct));
 
-            // Atualiza o progresso na sessão
             $quizState['topics_progress'][$currentTopicId]['answered_count']++;
             if ($isCorrect) {
                 $quizState['topics_progress'][$currentTopicId]['correct_count']++;
@@ -393,7 +390,6 @@ class QuizController extends Controller
             $topicFinished = $quizState['topics_progress'][$currentTopicId]['current_question_index'] >= count($quizState['topics_progress'][$currentTopicId]['questions_ids']);
 
             if ($topicFinished) {
-                // Reatribui topicProgress após as atualizações
                 $topicProgress = $quizState['topics_progress'][$currentTopicId];
                 $score = $this->calculateScore($topicProgress);
 
@@ -418,16 +414,14 @@ class QuizController extends Controller
                 ]);
 
                 if ($score < self::MINIMUM_PASSING_SCORE) {
-                    unset($quizState['topics_progress'][$currentTopicId]); // Reseta o progresso do tópico falho
+                    unset($quizState['topics_progress'][$currentTopicId]);
                     Session::put($sessionKey, $quizState);
                     return $this->responseTopicFailed($isCorrect, $question->correct, $score, $currentTopic, $lesson);
                 }
 
-                // Tópico Aprovado
                 $quizState['topics_scores'][$currentTopicId] = round($score, 2);
                 $this->advanceTopicIndex($quizState);
 
-                // Verifica se a aula inteira terminou
                 if ($this->getCurrentTopicId($quizState) === null) {
                     $this->finalizeLessonQuiz($lesson, $user, $sessionKey, $quizState);
                     return $this->responseFinished();
@@ -437,12 +431,11 @@ class QuizController extends Controller
                 return $this->responseNextTopicReady($isCorrect, $question->correct);
             }
 
-            // Se o tópico não terminou, apenas salva o estado e retorna o status da resposta
             Session::put($sessionKey, $quizState);
             return response()->json([
                 'status' => 'answer_received',
                 'is_correct' => $isCorrect,
-                'correct_answer' => $question->correct,
+                //'correct_answer' => $question->correct,
                 'message' => $isCorrect ? 'Resposta correta!' : 'Resposta incorreta.',
             ]);
         } catch (Exception $e) {
@@ -450,9 +443,6 @@ class QuizController extends Controller
         }
     }
 
-    /**
-     * Clears the user's quiz session for a specific lesson.
-     */
     public function clearSession(Lesson $lesson): JsonResponse
     {
         try {
@@ -467,5 +457,4 @@ class QuizController extends Controller
             return $this->responseError('Ocorreu um erro ao limpar a sessão do quiz.', 500);
         }
     }
-    
 }

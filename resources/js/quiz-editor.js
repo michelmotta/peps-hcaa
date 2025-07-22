@@ -22,8 +22,7 @@ function criarPerguntaHtml(index) {
     return `
         <div class="accordion-item pergunta-item shadow-sm mb-3" data-pergunta-index="${index}">
             <h2 class="accordion-header" id="heading-${index}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapse-${index}" aria-expanded="true" aria-controls="collapse-${index}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}" aria-expanded="true" aria-controls="collapse-${index}">
                     <strong>
                         <span class="pergunta-numero">Questão Nº ${index + 1}</span>
                     </strong>
@@ -54,6 +53,7 @@ function criarPerguntaHtml(index) {
     `;
 }
 
+// Loads saved quiz data into the editor
 function carregarAvaliacoesSalvas(dados) {
     const container = document.getElementById('perguntasContainer');
     if (!Array.isArray(dados) || !container) return;
@@ -133,7 +133,9 @@ if (btnAdicionarPergunta) {
     btnAdicionarPergunta.addEventListener('click', () => {
         if (perguntaCount >= 5) {
             Swal.fire({
-                icon: 'warning', title: 'Limite atingido!', text: 'No máximo 5 questões por tópico.',
+                icon: 'warning',
+                title: 'Limite atingido!',
+                text: 'No máximo 5 questões por tópico.',
             });
             return;
         }
@@ -158,7 +160,9 @@ if (containerPerguntas) {
             const totalRespostas = respostasContainer.querySelectorAll('.resposta-item').length;
             if (totalRespostas >= 4) {
                 Swal.fire({
-                    icon: 'warning', title: 'Limite atingido!', text: 'No máximo 4 alternativas possíveis.',
+                    icon: 'warning',
+                    title: 'Limite atingido!',
+                    text: 'No máximo 4 alternativas possíveis.',
                 });
                 return;
             }
@@ -235,7 +239,9 @@ if (btnSalvar) {
 
         if (hasEmptyField) {
             Swal.fire({
-                icon: 'error', title: 'Campos Incompletos!', text: 'Por favor, preencha todos os enunciados, alternativas e marque uma resposta correta para cada questão.',
+                icon: 'error',
+                title: 'Campos Incompletos!',
+                text: 'Por favor, preencha todos os enunciados, alternativas e marque uma resposta correta para cada questão.',
             });
             return;
         }

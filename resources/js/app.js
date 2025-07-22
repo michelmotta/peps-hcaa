@@ -15,6 +15,7 @@ import "dropzone/dist/dropzone.css";
 import IMask from 'imask';
 
 import { initQuizEditor } from './quiz-editor';
+import { initQuizPlayer } from './quiz-player';
 
 import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDoubtFormSubmissions();
     initPlyrWithTopics();
     initQuizJson();
+    initQuizPlayer();
 });
 
 window.addEventListener('load', () => {
@@ -296,26 +298,37 @@ function initDoubtFormSubmissions() {
                     if (response.data.status === 'success') {
                         form.reset();
 
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalPergunta'));
-                        modal.hide();
+                        const collapseEl = document.getElementById('collapseAskQuestion');
+                        if (collapseEl) {
+                            const collapse = bootstrap.Collapse.getInstance(collapseEl);
+                            collapse?.hide();
+                        }
 
-                        const qaList = document.querySelector('.qa-list');
-
+                        const chatFeed = document.querySelector('.chat-feed');
                         const newDoubt = response.data.doubt;
 
+                        const emptyMessage = document.getElementById('empty-chat-message');
+                        if (emptyMessage) {
+                            emptyMessage.remove();
+                        }
+
                         const html = `
-                            <div class="qa-item">
-                                <p class="qa-meta">
-                                    <i class="bi bi-person-fill"></i> ${newDoubt.user.name} &nbsp;
-                                    <i class="bi bi-calendar-event"></i> ${newDoubt.created_at_formatted}
-                                </p>
-                                <p class="student-question">
-                                    <i class="bi bi-chat-left-text"></i> ${newDoubt.doubt}
-                                </p>
+                            <div class="chat-message student-message">
+                                <div class="chat-avatar">
+                                    <img src="${newDoubt.user.file_path}" alt="${newDoubt.user.name}">
+                                </div>
+                                <div class="message-content">
+                                    <div class="chat-bubble">
+                                        <p>${newDoubt.doubt}</p>
+                                    </div>
+                                    <div class="chat-meta">
+                                        <strong>${newDoubt.user.name}</strong> &middot; ${newDoubt.created_at_formatted}
+                                    </div>
+                                </div>
                             </div>
                         `;
 
-                        qaList.insertAdjacentHTML('beforeend', html);
+                        chatFeed.insertAdjacentHTML('beforeend', html);
 
                         Swal.fire({
                             icon: 'success',
@@ -334,14 +347,12 @@ function initDoubtFormSubmissions() {
                 })
                 .catch(error => {
                     let errorMessage = 'Erro inesperado.';
-
                     if (error.response && error.response.data && error.response.data.errors) {
                         const errors = error.response.data.errors;
                         errorMessage = Object.values(errors).flat().join('\n');
                     } else if (error.response?.data?.message) {
                         errorMessage = error.response.data.message;
                     }
-
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro ao enviar',
@@ -351,6 +362,7 @@ function initDoubtFormSubmissions() {
         });
     }
 }
+
 
 /**
  * Initializes Plyr player and sets up topic click behavior.
@@ -388,23 +400,10 @@ function initPlyrWithTopics() {
 
         itemElement.classList.add('watched');
 
-        let badge = itemElement.querySelector('.badge-watched');
-        if (!badge) {
-            badge = document.createElement('span');
-            badge.classList.add('badge', 'badge-watched');
-            badge.textContent = 'Assistido';
-
-            const topicInfo = itemElement.querySelector('.topic-info > div.d-flex');
-            if (topicInfo) {
-                topicInfo.appendChild(badge);
-            }
-        }
-
         updateProgressBar();
 
         axios.post(window.location.pathname + '/history', { topic_id: topicId })
             .then(() => {
-                console.log('Histórico salvo com sucesso para o tópico ' + topicId);
                 sentHistory.add(topicId);
             })
             .catch((error) => {
@@ -498,254 +497,6 @@ function initPlyrWithTopics() {
         currentItem?.classList.remove('playing');
     });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const quizModalEl = document.getElementById('quizModal');
-    if (!quizModalEl) return;
-
-    const questionCounterEl = document.getElementById('questionCounter');
-    const progressBarEl = document.getElementById('quizProgressBar');
-    const quizTopicEl = document.getElementById('quizTopic');
-    const questionTextEl = document.getElementById('questionText');
-    const answerOptionsContainerEl = document.getElementById('answerOptionsContainer');
-    const btnSubmitAnswerEl = document.getElementById('btnSubmitAnswer');
-    const btnNextQuestionEl = document.getElementById('btnNextQuestion');
-    const btnNextQuestionTextEl = btnNextQuestionEl.querySelector('.btn-text');
-
-    const quizFeedbackMessageEl = document.getElementById('quizFeedbackMessage');
-    const topicFailedVideoInfoEl = document.getElementById('topicFailedVideoInfo');
-    const videoTitleEl = document.getElementById('videoTitle');
-    const videoThumbnailEl = document.getElementById('videoThumbnail');
-    const videoLinkEl = document.getElementById('videoLink');
-
-    // State variables
-    let currentLessonId = null;
-    let currentQuestionId = null;
-    let selectedAnswerKey = null;
-    let submittedAnswerButtonElement = null;
-
-    // Axios is globally configured
-
-    function showFeedback(message, type = 'info') {
-        quizFeedbackMessageEl.textContent = message;
-        quizFeedbackMessageEl.className = `quiz-feedback-message mb-3 text-center alert alert-${type}`;
-        quizFeedbackMessageEl.style.display = 'block';
-    }
-
-    function hideFeedback() {
-        quizFeedbackMessageEl.style.display = 'none';
-        quizFeedbackMessageEl.textContent = '';
-    }
-
-    function resetUIForNewQuestion() {
-        hideFeedback();
-        answerOptionsContainerEl.innerHTML = '';
-        selectedAnswerKey = null;
-        submittedAnswerButtonElement = null;
-        topicFailedVideoInfoEl.style.display = 'none';
-        document.querySelectorAll('.btn-answer.active').forEach(btn => {
-            btn.classList.remove('active');
-            btn.disabled = false;
-        });
-
-        btnSubmitAnswerEl.style.display = 'inline-block';
-        btnSubmitAnswerEl.disabled = true;
-
-        btnNextQuestionEl.style.display = 'none';
-        btnNextQuestionEl.disabled = true;
-    }
-
-    async function fetchNextQuestion() {
-        if (!currentLessonId || currentLessonId === 'UNKNOWN_LESSON') {
-            showFeedback('Erro: ID da aula não configurado para iniciar a avaliação.', 'danger');
-            const modal = bootstrap.Modal.getInstance(quizModalEl);
-            if (modal) modal.hide();
-            return;
-        }
-        resetUIForNewQuestion();
-        questionTextEl.textContent = 'Carregando próxima pergunta...';
-        quizTopicEl.textContent = 'Carregando Tópico...';
-
-        try {
-            const response = await axios.get(`/aula/${currentLessonId}/quiz/next-question`);
-            processQuizResponse(response.data);
-        } catch (error) {
-            console.error('Error fetching next question:', error);
-            const errorMessage = error.response?.data?.message || error.message || 'Erro desconhecido.';
-            showFeedback(`Erro ao carregar pergunta: ${errorMessage}`, 'danger');
-            questionTextEl.textContent = 'Não foi possível carregar a pergunta.';
-        }
-    }
-
-    function renderQuestion(data) {
-        currentQuestionId = data.question.id;
-        questionTextEl.textContent = data.question.text;
-        quizTopicEl.textContent = `Tópico: ${data.topic_title}`;
-
-        if (data.overall_current_question_number && data.total_questions_in_lesson) {
-            questionCounterEl.textContent = `Questão ${data.overall_current_question_number} de ${data.total_questions_in_lesson}`;
-        } else {
-            questionCounterEl.textContent = `Questão N/A de N/A`;
-            console.warn("Backend did not provide overall question count data.");
-        }
-
-        if (typeof data.overall_progress_in_lesson !== 'undefined') {
-            progressBarEl.style.width = `${data.overall_progress_in_lesson}%`;
-            progressBarEl.setAttribute('aria-valuenow', data.overall_progress_in_lesson);
-        } else {
-            progressBarEl.style.width = `0%`;
-            progressBarEl.setAttribute('aria-valuenow', 0);
-        }
-
-        const optionsArray = data.question.options;
-        answerOptionsContainerEl.innerHTML = '';
-
-        optionsArray.forEach(optionObject => {
-            const key = Object.keys(optionObject)[0];
-            const optionText = optionObject[key];
-            const button = document.createElement('button');
-            button.classList.add('btn-answer');
-            button.dataset.optionKey = key;
-            const span = document.createElement('span');
-            span.classList.add('option-label');
-            span.textContent = key;
-            button.appendChild(span);
-            button.append(` ${optionText}`);
-            button.addEventListener('click', (event) => handleAnswerSelection(event, key));
-            answerOptionsContainerEl.appendChild(button);
-        });
-    }
-
-    function handleAnswerSelection(event, optionKey) {
-        const previouslySelected = answerOptionsContainerEl.querySelector('.btn-answer.active');
-        if (previouslySelected) {
-            previouslySelected.classList.remove('active');
-        }
-        submittedAnswerButtonElement = event.currentTarget;
-        submittedAnswerButtonElement.classList.add('active');
-        selectedAnswerKey = optionKey;
-        btnSubmitAnswerEl.disabled = false;
-    }
-
-    async function submitAnswerHandler() {
-        if (!selectedAnswerKey || !currentQuestionId || !currentLessonId) {
-            showFeedback('Por favor, selecione uma resposta.', 'warning');
-            return;
-        }
-        btnSubmitAnswerEl.disabled = true;
-
-        try {
-            const response = await axios.post(`/aula/${currentLessonId}/quiz/submit-answer`, {
-                question_id: currentQuestionId,
-                selected_option: selectedAnswerKey
-            });
-            processQuizResponse(response.data);
-        } catch (error) {
-            console.error('Error submitting answer:', error);
-            const errorMessage = error.response?.data?.message || error.message || 'Erro desconhecido.';
-            showFeedback(`Erro ao enviar resposta: ${errorMessage}`, 'danger');
-            btnSubmitAnswerEl.disabled = false;
-        }
-    }
-
-    function processQuizResponse(data) {
-        hideFeedback();
-        console.log('Backend Response:', data);
-
-        if (data.status === 'question') {
-            renderQuestion(data);
-        } else if (data.status === 'answer_received' || data.status === 'next_topic_ready' || data.status === 'topic_failed') {
-            answerOptionsContainerEl.querySelectorAll('.btn-answer').forEach(btn => {
-                btn.disabled = true;
-            });
-
-            btnSubmitAnswerEl.style.display = 'none';
-            btnNextQuestionEl.style.display = 'inline-block';
-
-            if (data.is_correct) {
-                showFeedback(data.message || 'Resposta Correta!', 'success');
-            } else {
-                if (submittedAnswerButtonElement) {
-                    submittedAnswerButtonElement.classList.remove('active');
-                }
-                showFeedback(data.message || 'Resposta Incorreta!', 'danger');
-            }
-
-            if (data.status !== 'topic_failed') {
-                btnNextQuestionEl.disabled = false;
-            } else {
-                if (data.video) {
-                    topicFailedVideoInfoEl.style.display = 'block';
-                    videoTitleEl.textContent = data.video.name || 'Vídeo de revisão do tópico.';
-                    if (data.video.thumbnail_path) {
-                        videoThumbnailEl.src = data.video.thumbnail_path;
-                        videoThumbnailEl.style.display = 'block';
-                    } else { videoThumbnailEl.style.display = 'none'; }
-                    if (data.video.path) {
-                        videoLinkEl.href = '#!';
-                        videoLinkEl.textContent = `Revisar o vídeo: ${data.video.name}`;
-                        videoLinkEl.style.display = 'block';
-                    } else { videoLinkEl.style.display = 'none'; }
-                }
-                btnNextQuestionEl.disabled = true;
-            }
-
-        } else if (data.status === 'finished') {
-            questionTextEl.textContent = data.message || 'Quiz finalizado com sucesso!';
-            quizTopicEl.textContent = 'Parabéns!';
-            answerOptionsContainerEl.innerHTML = '';
-
-            if (data.total_questions_in_lesson) {
-                progressBarEl.style.width = '100%';
-                questionCounterEl.textContent = `Completado ${data.total_questions_in_lesson} de ${data.total_questions_in_lesson} questões!`;
-            } else {
-                progressBarEl.style.width = '100%';
-                questionCounterEl.textContent = 'Completo!';
-            }
-
-            btnSubmitAnswerEl.style.display = 'none';
-            btnNextQuestionTextEl.textContent = 'Fechar Quiz';
-            btnNextQuestionEl.style.display = 'inline-block';
-            btnNextQuestionEl.disabled = false;
-            btnNextQuestionEl.onclick = () => {
-                const modal = bootstrap.Modal.getInstance(quizModalEl);
-                modal.hide();
-            };
-            showFeedback(data.message, 'success');
-        } else if (data.status === 'error') {
-            showFeedback(data.message, 'danger');
-            btnSubmitAnswerEl.disabled = false;
-        }
-    }
-
-    quizModalEl.addEventListener('show.bs.modal', (event) => {
-        const button = event.relatedTarget;
-        if (button && button.dataset.lessonId && button.dataset.lessonId !== 'UNKNOWN_LESSON') {
-            currentLessonId = button.dataset.lessonId;
-            btnNextQuestionTextEl.textContent = 'Próxima';
-            btnNextQuestionEl.onclick = fetchNextQuestion;
-            fetchNextQuestion();
-        } else {
-            console.error('Lesson ID not found or invalid on triggering button for quizModal.');
-            showFeedback('Erro: ID da aula não disponível para iniciar a avaliação.', 'danger');
-            event.preventDefault();
-        }
-    });
-
-    quizModalEl.addEventListener('hidden.bs.modal', () => {
-        resetUIForNewQuestion();
-        questionTextEl.textContent = 'Carregando Pergunta...';
-        quizTopicEl.textContent = 'Carregando Tópico...';
-        questionCounterEl.textContent = 'Questão ... de ...';
-        progressBarEl.style.width = '0%';
-        currentQuestionId = null;
-
-        btnNextQuestionTextEl.textContent = 'Próxima';
-        btnNextQuestionEl.onclick = fetchNextQuestion;
-    });
-
-    btnSubmitAnswerEl.addEventListener('click', submitAnswerHandler);
-});
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('avaliacao-form');

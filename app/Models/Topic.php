@@ -12,7 +12,7 @@ class Topic extends Model
     use HasFactory, Searchable;
 
     protected $casts = [
-        'attachments' => 'array',
+        'attachments' => 'collection',
     ];
 
     /**
