@@ -5,8 +5,24 @@
                 <div class="avaliacao-icon">
                     <i class="bi bi-patch-check-fill"></i>
                 </div>
-                <h2>Você já finalizou o quiz desta aula!</h2>
-                <p class="lead">Seu certificado está te esperando na aba "Certificado".</p>
+                <h2>Você finalizou o quiz desta aula!</h2>
+
+                @if ($lessonUserData?->score)
+                    <div class="quiz-score-display">
+                        <div class="score-label">Sua nota final</div>
+                        <div class="score-value">{{ $lessonUserData->score }}<span>/10</span></div>
+                    </div>
+                @endif
+
+                @if (isset($averageScore))
+                    <div class="class-average-display">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Média da turma: <strong>{{ number_format($averageScore, 1, ',', '') }}</strong> /
+                            10</span>
+                    </div>
+                @endif
+
+                <p class="lead mt-3">Seu certificado está te esperando na aba "Certificado".</p>
             </div>
         @else
             <div class="avaliacao-card">
@@ -23,7 +39,6 @@
         @endif
     </div>
 </section>
-
 <section>
     <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true"
         data-bs-backdrop="static">

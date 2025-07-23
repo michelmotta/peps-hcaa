@@ -4,20 +4,22 @@
             <div class="col-12 col-lg-4">
                 <div class="course-playlist">
                     @php
-                        $totalTopics = count($lesson->topics);
+                        $totalTopics = $lesson->topics->count();
                         $watchedCount = count($watchedTopicIds ?? []);
                         $progressPercent = $totalTopics > 0 ? round(($watchedCount / $totalTopics) * 100) : 0;
                     @endphp
                     <div class="playlist-header">
-                        <h5 class="playlist-title">Tópicos da Aula</h5>
-                        <div class="course-progress-bar">
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar" role="progressbar" style="width: {{ $progressPercent }}%;"
-                                    aria-valuenow="{{ $progressPercent }}"></div>
-                            </div>
-                            <small>{{ $progressPercent }}% concluído</small>
+                        <div class="playlist-header-info">
+                            <h5 class="playlist-title">Tópicos da Aula</h5>
+                            <span class="playlist-progress-text">{{ $watchedCount }} / {{ $totalTopics }}
+                                concluídos</span>
+                        </div>
+                        <div class="progress" role="progressbar" aria-valuenow="{{ $progressPercent }}" aria-valuemin="0"
+                            aria-valuemax="100" style="height: 8px;">
+                            <div class="progress-bar" style="width: {{ $progressPercent }}%"></div>
                         </div>
                     </div>
+
                     <div class="playlist-body">
                         @forelse ($lesson->topics as $index => $topic)
                             @php
@@ -26,9 +28,10 @@
                             <div class="topic-item {{ $isWatched ? 'watched' : '' }}"
                                 data-video="{{ asset('storage/' . $topic->video->path) }}"
                                 data-topic-id="{{ $topic->id }}">
-                                <div class="topic-visuals">
-                                    <img src="{{ asset('storage/' . $topic->video->thumbnail_path) }}" alt="Thumb"
-                                        class="topic-thumb">
+
+                                <div class="topic-status">
+                                    <i class="bi bi-play-circle-fill play-icon"></i>
+                                    <i class="bi bi-check-circle-fill watched-icon"></i>
                                     <div class="playing-indicator-overlay">
                                         <div class="equalizer-bar"></div>
                                         <div class="equalizer-bar"></div>
@@ -36,20 +39,19 @@
                                     </div>
                                 </div>
 
-                                <div class="topic-info">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <h6 class="topic-title">{{ $topic->title }}</h6>
+                                <div class="topic-content-wrapper">
+                                    <div class="topic-thumb-wrapper">
+                                        <img src="{{ asset('storage/' . $topic->video->thumbnail_path) }}"
+                                            alt="Thumb" class="topic-thumb">
                                     </div>
-                                    <small class="topic-duration">
-                                        <i class="bi bi-clock"></i>
-                                        {{ humanAbbreviatedTime($topic->video->duration) }}
-                                    </small>
-                                </div>
 
-                                <div class="topic-status">
-                                    <span class="topic-number">{{ $index + 1 }}</span>
-                                    <i class="bi bi-play-circle-fill play-icon"></i>
-                                    <i class="bi bi-check-circle-fill watched-icon"></i>
+                                    <div class="topic-info">
+                                        <h6 class="topic-title">{{ $topic->title }}</h6>
+                                        <span class="topic-duration">
+                                            <i class="bi bi-clock"></i>
+                                            {{ humanAbbreviatedTime($topic->video->duration) }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         @empty

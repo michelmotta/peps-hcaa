@@ -499,34 +499,6 @@ function initPlyrWithTopics() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('avaliacao-form');
-    const statusEl = document.getElementById('avaliacao-status');
-
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const lessonId = form.dataset.lessonId;
-            const formData = new FormData(form);
-
-            try {
-                const response = await axios.post(`/aula/${lessonId}/feedback`, formData);
-                statusEl.innerHTML = `<div class="alert alert-success text-center">${response.data.message}</div>`;
-                form.style.display = 'none';
-            } catch (error) {
-                if (error.response?.status === 422) {
-                    const errors = Object.values(error.response.data.errors).flat().join('<br>');
-                    statusEl.innerHTML = `<div class="alert alert-danger">${errors}</div>`;
-                } else {
-                    statusEl.innerHTML = `<div class="alert alert-danger">Erro inesperado ao enviar a avaliação.</div>`;
-                }
-            }
-        });
-    }
-});
-
-
-document.addEventListener('DOMContentLoaded', () => {
     const addButton = document.getElementById('add-subspecialty');
     const wrapper = document.getElementById('subspecialties-wrapper');
 
@@ -544,6 +516,54 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-subspecialty')) {
                 e.target.closest('.subspecialty-item').remove();
+            }
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('feedback-form');
+
+    if (form) {
+        const statusEl = document.getElementById('feedback-status');
+        const button = form.querySelector('.submit-button');
+        const buttonText = button.querySelector('span');
+        const buttonIcon = button.querySelector('i');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            button.disabled = true;
+            button.classList.add('is-loading');
+            buttonText.textContent = 'Enviando...';
+            buttonIcon.className = 'spinner';
+            statusEl.style.display = 'none';
+
+            const lessonId = form.dataset.lessonId;
+            const formData = new FormData(form);
+
+            try {
+                const response = await axios.post(`/aula/${lessonId}/feedback`, formData);
+
+                statusEl.innerHTML = `<div class="alert alert-success">${response.data.message}</div>`;
+                statusEl.style.display = 'block';
+                form.style.display = 'none';
+
+            } catch (error) {
+                let errorMessage = 'Ocorreu um erro inesperado. Tente novamente.';
+                if (error.response?.status === 422) {
+                    errorMessage = Object.values(error.response.data.errors).flat().join('<br>');
+                }
+                statusEl.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`;
+                statusEl.style.display = 'block';
+
+            } finally {
+                if (form.style.display !== 'none') {
+                    button.disabled = false;
+                    button.classList.remove('is-loading');
+                    buttonText.textContent = 'Enviar Avaliação';
+                    buttonIcon.className = 'bi bi-send-fill';
+                }
             }
         });
     }

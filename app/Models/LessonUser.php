@@ -35,7 +35,9 @@ class LessonUser extends Pivot
      */
     protected $casts = [
         'finished' => 'boolean',
-        'finished_at' => 'datetime',
+        'created_at' => 'datetime:d/m/Y',
+        'finished_at' => 'datetime:d/m/Y',
+        'score' => 'decimal:2',
     ];
 
     /**

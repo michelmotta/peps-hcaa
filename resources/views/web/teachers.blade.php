@@ -47,12 +47,11 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-12">
-                        <div class="text-center py-5">
-                            <i class="bi bi-search display-4 text-muted"></i>
-                            <h4 class="mt-3">Nenhum professor encontrado</h4>
-                            <p class="text-muted">Tente ajustar os termos da sua pesquisa.</p>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="bi bi-inbox"></i>
                         </div>
+                        <h3 class="empty-state-title">Nenhum resultado encontrado.</h3>
                     </div>
                 @endforelse
             </div>

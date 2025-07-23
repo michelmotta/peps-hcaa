@@ -4,7 +4,6 @@
 
 @extends('templates.dashboard')
 @section('content')
-    {{-- Page Header --}}
     <div class="bg-primary rounded-3 mt-n6 mx-n4">
         <div class="p-10">
             <h1 class="mb-0 text-white text-center">
@@ -13,9 +12,7 @@
             </h1>
         </div>
     </div>
-
     <div class="container-fluid">
-        {{-- Unified Header with Search and Actions --}}
         <div class="card shadow-sm mb-4 mt-4">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">Arquivos</h3>
@@ -36,8 +33,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- List Layout --}}
         <div class="row g-4">
             @forelse ($libraries as $library)
                 <div class="col-4">
@@ -121,7 +116,7 @@
                 </div>
             @endforelse
         </div>
-        @if ($libraries->isNotEmpty())
+        @if ($libraries->isNotEmpty() && $libraries->hasPages())
             <div class="card card-pagination shadow-sm mt-4">
                 <div class="card-body">
                     {{ $libraries->withQueryString()->links() }}

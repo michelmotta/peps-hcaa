@@ -25,20 +25,20 @@ class LessonUserSeeder extends Seeder
 
             foreach ($assignedLessons as $lessonId) {
                 $isFinished = (bool)rand(0, 1);
+                $createdAt = now();
 
                 $lessonUsers->push([
                     'lesson_id'   => $lessonId,
                     'user_id'     => $userId,
                     'score'       => $isFinished ? rand(60, 100) : null,
                     'finished'    => $isFinished,
-                    'finished_at' => $isFinished ? Carbon::now()->subDays(rand(1, 30)) : null,
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
+                    'finished_at' => $isFinished ? $createdAt->copy()->addMinutes(rand(1, 120)) : null,
+                    'created_at'  => $createdAt,
+                    'updated_at'  => $createdAt,
                 ]);
             }
         }
 
-        // Bulk insert for performance (optional)
         LessonUser::insert($lessonUsers->toArray());
     }
 }

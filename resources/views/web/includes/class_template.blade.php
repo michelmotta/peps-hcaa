@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="container">
             <div class="row g-4">
-                @foreach ($lessons as $lesson)
+                @forelse ($lessons as $lesson)
                     <div class="col-md-6">
                         <div
                             class="row class-card g-0 align-items-stretch bg-white overflow-hidden mb-4 position-relative">
@@ -75,7 +75,14 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="bi bi-inbox"></i>
+                        </div>
+                        <h3 class="empty-state-title">Nenhum resultado encontrado.</h3>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>

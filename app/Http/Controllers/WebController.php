@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CertificateTypeEnum;
 use App\Enums\LessonStatusEnum;
 use App\Enums\ProfileEnum;
 use App\Models\Certificate;
 use App\Models\Feedback;
 use App\Models\Guidebook;
-use App\Models\GuidebookCategory;
-use App\Models\Information;
 use App\Models\Lesson;
+use App\Models\LessonUser;
+use App\Models\Library;
 use App\Models\Specialty;
 use App\Models\Suggestion;
 use App\Models\User;
@@ -18,6 +19,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class WebController extends Controller
 {
@@ -54,11 +56,26 @@ class WebController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $feedback = null;
+        $lessonUserData = null;
+        $averageScore = null;
 
         if ($user) {
             $feedback = Feedback::where('lesson_id', $lesson->id)
                 ->where('user_id', $user->id)
                 ->first();
+
+            $lessonUserData = LessonUser::where('user_id', $user->id)
+                ->where('lesson_id', $lesson->id)
+                ->first();
+        }
+
+        $rawAverageScore = LessonUser::where('lesson_id', $lesson->id)
+            ->where('finished', true)
+            ->average('score');
+
+        $averageScore = null;
+        if ($rawAverageScore !== null) {
+            $averageScore = $rawAverageScore / 10.0;
         }
 
         $watchedTopicIds = $user ? $user->histories()->pluck('topic_id')->toArray() : [];
@@ -66,7 +83,9 @@ class WebController extends Controller
         return view('web.class', [
             'lesson' => $lesson,
             'feedback' => $feedback,
-            'watchedTopicIds' => $watchedTopicIds
+            'watchedTopicIds' => $watchedTopicIds,
+            'lessonUserData' => $lessonUserData,
+            'averageScore' => $averageScore,
         ]);
     }
 
@@ -267,9 +286,25 @@ class WebController extends Controller
         ]);
     }
 
-    public function library()
+    public function library(Request $request)
     {
-        return view('web.library');
+        $searchTerm = $request->input('q');
+
+        if ($searchTerm) {
+            /** @var \App\Models\library $libraryItems */
+            $libraryItems = Library::search($searchTerm)
+                ->paginate(12);
+
+            $libraryItems->load('file');
+        } else {
+            $libraryItems = Library::with('file')
+                ->latest()
+                ->paginate(12);
+        }
+
+        return view('web.library', [
+            'libraryItems' => $libraryItems,
+        ]);
     }
 
     public function suggestionCreate(Request $request)
@@ -335,12 +370,31 @@ class WebController extends Controller
                 ->with('error', 'Você não tem permissão para gerar este certificado.');
         }
 
-        Certificate::registerCertificate($lesson, $user);
+        $lessonUserData = LessonUser::where('user_id', $user->id)
+            ->where('lesson_id', $lesson->id)
+            ->where('finished', true)
+            ->firstOrFail();
 
-        return Pdf::loadView('web.includes.certificate', [
+        $certificate = Certificate::registerCertificate($lesson, $user, CertificateTypeEnum::STUDENT);
+
+        $validationUrl = route('web.validate.certificate', ['uuid' => $certificate->uuid]);
+
+        $qrCodeImage = QrCode::format('png')->size(150)->margin(1)->generate($validationUrl);
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrCodeImage);
+
+        $data = [
             'user' => $user,
-            'lesson' => $user->subscriptions()->where('lessons.id', $lesson->id)->firstOrFail(),
-            'date' => now()->translatedFormat('d \\d\\e F \\d\\e Y'),
-        ])->setPaper('a4', 'landscape')->download('certificado-' . $lesson->id . '.pdf');
+            'lesson' => $lesson,
+            'lessonUserData' => $lessonUserData,
+            'date' => $lesson->created_at->translatedFormat('d \\d\\e F \\d\\e Y'),
+            'qrCodeBase64' => $qrCodeBase64,
+            'validationUrl' => $validationUrl,
+            'validationCode' => $certificate->uuid,
+            'certificateDate' => $certificate->created_at->translatedFormat('d \\d\\e F \\d\\e Y'),
+        ];
+
+        return Pdf::loadView('web.includes.certificate', $data)
+            ->setPaper('a4', 'landscape')
+            ->stream('certificado-' . $user->name . '.pdf');
     }
 }
