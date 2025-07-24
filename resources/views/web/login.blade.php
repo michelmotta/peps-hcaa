@@ -11,7 +11,7 @@
             <!-- Login Form (Bootstrap Column) -->
             <div class="col-12 col-md-6 login-form">
                 <h4>Acessar a Plataforma</h4>
-                <form method="POST" action="{{ route('web.login-post') }}">
+                <form method="POST" action="{{ route('login-post') }}">
                     @csrf
                     <div class="mb-3">
                         <label for="username" class="form-label">Usuário</label>
@@ -45,7 +45,7 @@
                         </button>
                     </div>
                     <div class="text-center">
-                        <a href="#" class="forgot-link">Esqueceu sua senha?</a>
+                        <a href="{{ route('password.forgot') }}" class="forgot-link">Esqueceu sua senha?</a>
                     </div>
                 </form>
             </div>

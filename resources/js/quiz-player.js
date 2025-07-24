@@ -1,4 +1,10 @@
 export function initQuizPlayer() {
+    const btnNext = document.getElementById('btnNextQuestion');
+
+    if (!btnNext) {
+        return;
+    }
+
     const ui = {
         modal: document.getElementById('quizModal'),
         counter: document.getElementById('questionCounter'),
@@ -7,8 +13,8 @@ export function initQuizPlayer() {
         question: document.getElementById('questionText'),
         optionsContainer: document.getElementById('answerOptionsContainer'),
         btnSubmit: document.getElementById('btnSubmitAnswer'),
-        btnNext: document.getElementById('btnNextQuestion'),
-        btnNextText: document.getElementById('btnNextQuestion').querySelector('.btn-text'),
+        btnNext: btnNext,
+        btnNextText: btnNext.querySelector('.btn-text'),
         feedbackContainer: document.getElementById('quizFeedbackContainer'),
         feedbackMessage: document.getElementById('quizFeedbackMessage'),
     };

@@ -397,4 +397,32 @@ class WebController extends Controller
             ->setPaper('a4', 'landscape')
             ->stream('certificado-' . $user->name . '.pdf');
     }
+
+
+    public function validateCertificate(Request $request)
+    {
+        $certificate = null;
+        $searchedUuid = $request->input('uuid');
+
+        if ($searchedUuid) {
+            if ($request->isMethod('post')) {
+                $request->validate([
+                    'uuid' => ['required', 'uuid', 'exists:certificates,uuid'],
+                ], [
+                    'uuid.required' => 'O código de validação é obrigatório.',
+                    'uuid.uuid' => 'O código de validação informado não é válido.',
+                    'uuid.exists' => 'Nenhum certificado encontrado com esse código.',
+                ]);
+            }
+
+            $certificate = Certificate::where('uuid', $searchedUuid)
+                ->with(['user', 'lesson'])
+                ->first();
+        }
+
+        return view('web.certificate', [
+            'certificate' => $certificate,
+            'searchedUuid' => $searchedUuid,
+        ]);
+    }
 }

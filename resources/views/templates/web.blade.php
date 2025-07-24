@@ -80,7 +80,7 @@
                                 <ul class="dropdown-menu" aria-labelledby="menuDropdown">
                                     @guest
                                         <li>
-                                            <a class="dropdown-item" href="{{ route('web.login') }}">
+                                            <a class="dropdown-item" href="{{ route('login') }}">
                                                 <i class="bi bi-box-arrow-in-right me-2"></i> Login
                                             </a>
                                         </li>
@@ -105,7 +105,7 @@
                                         </li>
                                         <hr>
                                         <li>
-                                            <form method="POST" action="{{ route('web.logout-post') }}">
+                                            <form method="POST" action="{{ route('logout-post') }}">
                                                 @csrf
                                                 <button class="dropdown-item" type="submit">
                                                     <i class="bi bi-box-arrow-in-left me-2"></i>
@@ -155,6 +155,7 @@
                 <div class="col-md-4 mb-4 text-center">
                     <h5 class="mb-3">Links Úteis</h5>
                     <ul class="list-unstyled">
+                        <li><a href="{{ route('web.validate.certificate') }}" class="footer-link">Validar Certificado</a></li>
                         <li><a href="#" class="footer-link">Termos de Uso</a></li>
                         <li><a href="#" class="footer-link">Política de Privacidade</a></li>
                         <li><a href="#" class="footer-link">Ajuda</a></li>

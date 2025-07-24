@@ -473,7 +473,7 @@ footer,
         transition: color 0.3s;
 
         &:hover {
-            color: $main-color;
+            color: #FFF;
         }
     }
 
@@ -1168,7 +1168,7 @@ footer,
         display: flex;
         max-width: 900px;
         background-color: #fff;
-        border-radius: 1.5rem;
+        border-radius: 10px;
         box-shadow: 0 0 10px #c2c2c2;
         width: 100%;
         overflow: hidden;
@@ -2937,27 +2937,6 @@ footer,
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .library-content-wrapper {
     padding: 2rem 0;
 
@@ -3059,7 +3038,6 @@ footer,
     }
 }
 
-
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -3092,4 +3070,271 @@ footer,
     font-size: 1.1rem;
     line-height: 1.6;
     margin-bottom: 2rem;
+}
+
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.certificate-validator-page {
+
+    // Styles for the form container card
+    .validator-form-wrapper {
+        max-width: 750px;
+        margin: 2.5rem auto 0;
+        padding: 2.5rem;
+        background-color: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header-icon {
+            font-size: 3rem;
+            color: #133b6a;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-top: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .validator-form {
+            .form-control {
+                border-right: 0;
+
+                &:focus {
+                    border-color: #133b6a;
+                    box-shadow: 0 0 0 0.25rem rgba(19, 59, 106, 0.15);
+                    z-index: 5;
+                }
+            }
+
+            .btn-primary {
+                background-color: #133b6a;
+                border-color: #133b6a;
+                z-index: 4;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        }
+    }
+
+    // --- MODAL & RESULT STYLES ---
+    .modal-content {
+        border: none;
+        border-radius: 12px;
+    }
+
+    .result-card {
+        box-shadow: none;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+
+        .card-header {
+            position: relative;
+            padding: 1rem 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: none;
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+        }
+
+        &.is-valid {
+            .card-header {
+                background-color: #198754;
+                color: #ffffff;
+            }
+        }
+
+        &.is-invalid {
+            .card-header {
+                background-color: #dc3545;
+                color: #ffffff;
+            }
+        }
+
+        .card-body {
+            padding: 2rem 1.5rem;
+
+            .intro-text {
+                font-size: 1.1rem;
+                color: #6c757d;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .card-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f8f9fa;
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-align: center;
+        }
+    }
+
+    .detail-item {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e9ecef;
+        align-items: center;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            flex-basis: 180px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #212529;
+
+            &.uuid {
+                font-family: monospace;
+                font-size: 0.9rem;
+                word-break: break-all;
+                margin-top: 3px;
+            }
+        }
+    }
+
+    .invalid-uuid {
+        font-family: monospace;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #dc3545;
+        background-color: #f8d7da;
+        padding: 0.75rem;
+        border-radius: 6px;
+        word-break: break-all;
+        text-align: center;
+    }
+
+    .suggestion-text {
+        margin-top: 1.5rem;
+        font-size: 1rem;
+        color: #6c757d;
+        text-align: center;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.password-reset-section {
+    padding: 2rem 0;
+
+    .reset-card {
+        background-color: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            color: #133b6a;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+
+        .form-control {
+            border-left: none;
+
+            &:focus {
+                border-color: #133b6a;
+                box-shadow: 0 0 0 0.25rem rgba(19, 59, 106, 0.15);
+            }
+
+            &:read-only {
+                background-color: #e9ecef;
+            }
+        }
+
+        .btn-primary {
+            background-color: #133b6a;
+            border-color: #133b6a;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            font-weight: 600;
+
+            &:hover {
+                background-color: #1a4c8a;
+                border-color: #1a4c8a;
+            }
+        }
+
+        .card-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            padding: 1rem;
+
+            .footer-link {
+                text-decoration: none;
+                color: #133b6a;
+                font-weight: 500;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
 }
