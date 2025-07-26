@@ -6,7 +6,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <img src="{{ asset('images/logo-home.png') }}" alt="">
-                        <h1>HCAA | PEPS</h1>
+                        <h1>PEPS | HCAA</h1>
                         <h2>Programa de Educação Permanente em Saúde</h2>
                     </div>
                 </div>

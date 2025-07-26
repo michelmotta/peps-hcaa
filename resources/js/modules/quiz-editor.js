@@ -29,14 +29,14 @@ function criarPerguntaHtml(index) {
                 </button>
             </h2>
             <div id="collapse-${index}" class="accordion-collapse collapse show" aria-labelledby="heading-${index}">
-                <div class="accordion-body bg-light">
+                <div class="accordion-body">
                     <div class="d-flex justify-content-end mb-3">
                         <button type="button" class="btn btn-danger btn-sm remover-pergunta" title="Remover pergunta">
                             <i class="bi bi-trash me-1"></i>Excluir Questão
                         </button>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Enunciado da Questão:</label>
+                        <label class="form-label fw-bold fs-4">Enunciado da Questão:</label>
                         <textarea class="form-control" name="pergunta-${index}" rows="3" placeholder="Digite o enunciado da questão aqui..." required></textarea>
                     </div>
                     <hr class="my-4">
@@ -44,7 +44,7 @@ function criarPerguntaHtml(index) {
                     <div class="mb-3 respostas-container">
                         ${criarRespostaHtml(index, 0)}
                     </div>
-                    <button type="button" class="btn btn-primary btn-sm adicionar-resposta" data-pergunta-index="${index}">
+                    <button type="button" class="btn btn-success btn-sm adicionar-resposta" data-pergunta-index="${index}">
                         <i class="bi bi-plus-circle me-1"></i>Adicionar Alternativa
                     </button>
                 </div>

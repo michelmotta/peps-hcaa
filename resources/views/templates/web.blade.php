@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Favicon icon-->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('icons/logo-icon.png') }}">
-    <title>HCAA | PEPS</title>
+    <title>Programa de Educação Permanente em Saúde - PEPS | HCAA</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -133,9 +133,10 @@
             <div class="row text-center text-md-start">
                 <!-- Coluna 1: Logo centralizada -->
                 <div class="col-md-4 mb-4 d-flex flex-column align-items-center text-center">
-                    <img src="{{ asset('images/logo-home.png') }}" alt="Logo" class="footer-logo mb-3">
-                    <p class="mb-1">HCAA | PEPS</p>
-                    <p class="small">Programa de Educação Permanente em Saúde</p>
+                    <img src="{{ asset('images/logo-home.png') }}" alt="Logo" class="footer-logo mb-4">
+                    <p class="mb-1">PEPS | HCAA</p>
+                    <p class="small mb-0">Programa de Educação Permanente em Saúde</p>
+                    <p class="small">Hospital de Câncer Alfredo Abrão</p>
                 </div>
 
                 <!-- Coluna 2: Links principais -->

@@ -175,14 +175,11 @@
                             </div>
                         </div>
                     </div>
-
-                    {{-- Student List Card --}}
                     <div class="card mt-4 shadow-sm">
                         <div class="card-header">
                             <h3 class="details-title mb-0">
                                 <i data-feather="users" class="icon-sm me-2"></i>Alunos Inscritos
                             </h3>
-                            {{-- Button was removed from here --}}
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -203,7 +200,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <div>
                                                             <img class="avatar-md avatar rounded-circle"
-                                                                src="{{ $student->file?->path ? asset('storage/' . $student->file->path) : asset('images/default_user.png') }}"
+                                                                src="{{ $student->file?->path ? asset('storage/' . $student->file->path) : 'https://placehold.co/40x40/EBF4FF/7F9CF5?text=' . strtoupper(substr($student->name, 0, 1)) }}"
                                                                 alt="Foto do Aluno">
                                                         </div>
                                                         <div class="ms-3 lh-1">

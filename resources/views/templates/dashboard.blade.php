@@ -75,7 +75,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <form method="POST" action="{{ route('web.logout-post') }}">
+                                        <form method="POST" action="{{ route('logout-post') }}">
                                             @csrf
                                             <button class="dropdown-item text-danger" type="submit">
                                                 <i class="me-2 icon-xxs dropdown-item-icon" data-feather="power"></i>

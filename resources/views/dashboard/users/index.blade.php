@@ -37,9 +37,9 @@
 
                             <div
                                 class="col-md-3 d-flex flex-column align-items-center justify-content-center p-3 {{ $user->active ? 'bg-success-soft' : 'bg-dark-soft' }}">
-                                <a href="{{ asset('storage/' . $user->file->path) }}"
+                                <a href="{{ $user->file && $user->file->path ? asset('storage/' . $user->file->path) : '#' }}"
                                     data-fancybox="user-{{ $user->id }}">
-                                    <img src="{{ asset('storage/' . $user->file->path) }}"
+                                    <img src="{{ $user->file?->path ? asset('storage/' . $user->file->path) : 'https://placehold.co/80x80/EBF4FF/7F9CF5?text=' . strtoupper(substr($user->name, 0, 1)) }}"
                                         alt="Avatar de {{ $user->name }}"
                                         class="img-fluid rounded-circle border border-2 border-white"
                                         style="width: 80px; height: 80px; object-fit: cover;">
@@ -112,7 +112,8 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="loginHistoryModalLabel-{{ $user->id }}">Últimos 5 Logins de
+                                <h5 class="modal-title" id="loginHistoryModalLabel-{{ $user->id }}">Últimos 5 Logins
+                                    de
                                     {{ $user->name }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>

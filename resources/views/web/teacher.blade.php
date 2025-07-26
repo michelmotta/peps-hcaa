@@ -14,8 +14,13 @@
                     <div class="row align-items-center">
                         <div class="col-lg-6">
                             <div class="intro-identity">
-                                <img src="{{ asset('storage/' . $teacher->file->path) }}" class="intro-photo"
-                                    alt="{{ $teacher->name }}">
+                                @if ($teacher->file)
+                                    <img src="{{ asset('storage/' . $teacher->file->path) }}" alt="{{ $teacher->name }}"
+                                        class="intro-photo">
+                                @else
+                                    <img src="https://placehold.co/200x200/EBF4FF/7F9CF5?text={{ strtoupper(substr($teacher->name, 0, 1)) }}"
+                                        class="rounded-circle">
+                                @endif
                                 <h1 class="intro-name">{{ $teacher->name }}</h1>
                                 <p class="intro-expertise">{{ $teacher->expertise }}</p>
                             </div>

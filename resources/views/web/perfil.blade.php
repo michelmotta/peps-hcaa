@@ -1,166 +1,147 @@
 @extends('templates.web')
+
 @section('content')
     <section>
         <div class="content-title">
-            <h1>{{ isset($user) ? 'Atualizar Conta' : 'Criar Conta' }}</h1>
+            <h1>{{ isset($user) ? 'Meu Perfil' : 'Criar Conta' }}</h1>
             <p class="sub-title">
-                {{ isset($user) ? 'Atualize as informações de sua conta' : 'Crie uma conta e aproveite todas as aulas disponibilizadas' }}
+                {{ isset($user) ? 'Atualize as informações da sua conta' : 'Crie uma conta e aproveite todas as aulas' }}
             </p>
         </div>
     </section>
-    <section class="create-account-section container">
-        <div class="create-account-card">
-            <div class="create-account-form">
-                <div class="account-header">
-                    <h4>{{ isset($user) ? 'Atualização de Conta' : 'Criação de Conta' }}</h4>
-                </div>
-                @isset($user)
-                    <div class="account-thumb">
-                        <img src="{{ asset('storage/' . $user->file->path) }}" alt="">
+    <section class="profile-section container">
+        <form method="POST" action="{{ isset($user) ? route('web.perfil-update', $user->id) : route('web.perfil-create') }}"
+            enctype="multipart/form-data">
+            @csrf
+            @isset($user)
+                @method('PATCH')
+            @endisset
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="profile-sidebar-card">
+                        <div class="profile-picture-wrapper">
+                            <label for="file" class="picture-upload-label">
+                                <img id="profile-picture-preview"
+                                    src="{{ isset($user) && $user->file ? asset('storage/' . $user->file->path) : 'https://placehold.co/400x400/EBF0F6/7F92B0?text=Foto' }}"
+                                    alt="Foto de Perfil">
+                                <div class="upload-overlay">
+                                    <i class="bi bi-camera-fill"></i>
+                                    <span>Trocar Foto</span>
+                                </div>
+                            </label>
+                            <input type="file" name="file" id="file"
+                                class="d-none @error('file') is-invalid @enderror"
+                                onchange="document.getElementById('profile-picture-preview').src = window.URL.createObjectURL(this.files[0])">
+                        </div>
+                        <h5 class="profile-name text-center mt-3">{{ $user->name ?? 'Novo Usuário' }}</h5>
+                        <p class="profile-email text-center text-muted">{{ $user->email ?? ' ' }}</p>
+                        @error('file')
+                            <div class="invalid-feedback d-block text-center">{{ $message }}</div>
+                        @enderror
                     </div>
-                @endisset
-                <div class="account-body">
-                    @if ($errors->any())
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="col-lg-8">
+                    <div class="form-card">
+                        <div class="card-header">
+                            <i class="bi bi-person-badge"></i>
+                            <h4>Informações Pessoais</h4>
                         </div>
-                    @endif
-                    <form method="POST"
-                        action="{{ isset($user) ? route('web.perfil-update', $user->id) : route('web.perfil-create') }}"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @isset($user)
-                            @method('PATCH')
-                        @endisset
-
-                        <div class="row">
-                            <h4 class="text-center mb-4">Informações Pessoais</h4>
-                            <div class="col-md-6">
-                                <!-- Nome -->
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Nome</label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" placeholder="Digite seu nome" name="name"
-                                        value="{{ !isset($user) ? old('name') : $user->name }}" required>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Nome Completo</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text @error('name') border border-danger @enderror"><i
+                                                class="bi bi-person-fill"></i></span>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                            id="name" name="name" value="{{ $user->name ?? old('name') }}" required>
+                                    </div>
                                     @error('name')
-                                        <span class="invalid-feedback" role="alert">
-                                            {{ $message }}
-                                        </span>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <!-- Email -->
-                                <div class="mb-3">
+                                <div class="col-md-6 mb-3">
                                     <label for="email" class="form-label">E-mail</label>
-                                    <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                        id="email" placeholder="Digite seu e-mail" name="email"
-                                        value="{{ !isset($user) ? old('email') : $user->email }}" required>
+                                    <div class="input-group">
+                                        <span class="input-group-text @error('email') border border-danger @enderror"><i
+                                                class="bi bi-envelope-at-fill"></i></span>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                            id="email" name="email" value="{{ $user->email ?? old('email') }}"
+                                            required>
+                                    </div>
                                     @error('email')
-                                        <span class="invalid-feedback" role="alert">
-                                            {{ $message }}
-                                        </span>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <!-- CPF -->
-                                <div class="mb-3">
+                                <div class="col-md-6 mb-3">
                                     <label for="cpf" class="form-label">CPF</label>
-                                    <input type="text" class="form-control @error('cpf') is-invalid @enderror"
-                                        id="cpf" placeholder="Digite seu CPF" name="cpf"
-                                        value="{{ !isset($user) ? old('cpf') : $user->cpf }}" required>
+                                    <div class="input-group">
+                                        <span class="input-group-text @error('cpf') border border-danger @enderror"><i
+                                                class="bi bi-person-vcard"></i></span>
+                                        <input type="text" class="form-control @error('cpf') is-invalid @enderror"
+                                            id="cpf" name="cpf" value="{{ $user->cpf ?? old('cpf') }}" required>
+                                    </div>
                                     @error('cpf')
-                                        <span class="invalid-feedback" role="alert">
-                                            {{ $message }}
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <!-- Perfil -->
-                                <div class="mb-3">
-                                    <label for="file" class="form-label">Foto de Perfil</label>
-                                    <input type="file" class="form-control @error('file') is-invalid @enderror"
-                                        id="file" name="file">
-                                    <small>Formatos permitidos: JPG|JPEG|PNG|GIF. Tamanho máximo: 2MB</small>
-                                    @error('file')
-                                        <span class="invalid-feedback" role="alert">
-                                            {{ $message }}
-                                        </span>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                         </div>
-                        <h4 class="text-center mt-5">Segurança</h4>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <!-- Usuário -->
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Usuário</label>
-                                    <input type="text" class="form-control @error('username') is-invalid @enderror"
-                                        id="username" placeholder="Escolha um nome de usuário"
-                                        value="{{ !isset($user) ? old('username') : $user->username }}" name="username"
-                                        required>
+                    </div>
+                    <div class="form-card mt-4">
+                        <div class="card-header">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            <h4>Segurança</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="username" class="form-label">Nome de Usuário</label>
+                                    <div class="input-group">
+                                        <span
+                                            class="input-group-text @error('username') border border-danger @enderror">@</span>
+                                        <input type="text" class="form-control @error('username') is-invalid @enderror"
+                                            id="username" name="username" value="{{ $user->username ?? old('username') }}"
+                                            required>
+                                    </div>
                                     @error('username')
-                                        <span class="invalid-feedback" role="alert">
-                                            {{ $message }}
-                                        </span>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <!-- Senha -->
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Senha</label>
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                        id="password" placeholder="Digite sua senha" name="password"
-                                        {{ !isset($user) ? 'required' : '' }}>
-                                    @isset($user)
-                                        <small>Preencha este campo apenas se você desejar atualizar sua senha.</small>
-                                    @endisset
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">Nova Senha</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text @error('password') border border-danger @enderror"><i
+                                                class="bi bi-key-fill"></i></span>
+                                        <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                            id="password" name="password" {{ !isset($user) ? 'required' : '' }}>
+                                    </div>
                                     @error('password')
-                                        <span class="invalid-feedback" role="alert">
-                                            {{ $message }}
-                                        </span>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <!-- Confirmação de Senha -->
-                                <div class="mb-3">
-                                    <label for="password_confirmation" class="form-label">Confirme sua Senha</label>
-                                    <input type="password"
-                                        class="form-control @error('password_confirmation') is-invalid @enderror"
-                                        id="password_confirmation" placeholder="Confirme sua senha"
-                                        name="password_confirmation" {{ !isset($user) ? 'required' : '' }}>
                                     @isset($user)
-                                        <small>Preencha este campo apenas se você desejar atualizar sua senha.</small>
+                                        <small class="form-text text-muted">Deixe em branco para não alterar.</small>
                                     @endisset
-                                    @error('password_confirmation')
-                                        <span class="invalid-feedback" role="alert">
-                                            {{ $message }}
-                                        </span>
-                                    @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <!-- Botão Criar Conta -->
-                                <div class="text-center mt-5">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-check-circle"></i> Salvar
-                                    </button>
+                                <div class="col-md-6 mb-3">
+                                    <label for="password_confirmation" class="form-label">Confirmar Nova Senha</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                                        <input type="password" class="form-control" id="password_confirmation"
+                                            name="password_confirmation" {{ !isset($user) ? 'required' : '' }}>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-check-circle"></i>
+                            {{ isset($user) ? 'Salvar Alterações' : 'Criar Conta' }}
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </section>
 @endsection

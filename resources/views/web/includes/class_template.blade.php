@@ -43,9 +43,15 @@
                                         <div class="card-author text-center mb-3">
                                             <a href="{{ route('web.teacher', $lesson->id) }}"
                                                 class="d-inline-flex align-items-center gap-3 text-decoration-none text-reset">
-                                                <img src="{{ asset('storage/' . $lesson->teacher->file->path) }}"
-                                                    alt="{{ $lesson->teacher->name }}" width="40" height="40"
-                                                    class="rounded-circle">
+                                                @if ($lesson->teacher && $lesson->teacher->file)
+                                                    <img src="{{ asset('storage/' . $lesson->teacher->file->path) }}"
+                                                        class="rounded-circle" alt="Avatar" width="40"
+                                                        height="40" style="object-fit: cover;">
+                                                @else
+                                                    <img src="https://placehold.co/40x40/EBF4FF/7F9CF5?text={{ strtoupper(substr($lesson->teacher->name, 0, 1)) }}"
+                                                        alt="Avatar" class="rounded-circle" width="40"
+                                                        height="40">
+                                                @endif
                                                 <div class="text-start">
                                                     <p class="mb-0 fw-bold">{{ $lesson->teacher->name }}</p>
                                                     <small class="text-muted">{{ $lesson->teacher->expertise }}</small>

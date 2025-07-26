@@ -43,8 +43,10 @@
             <div class="card mb-4 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex">
-                        <img src="{{ asset('storage/' . $doubt->user->file->path) }}" class="avatar rounded-circle me-3"
-                            alt="Avatar">
+                        <img src="{{ $doubt->user->file?->path
+                            ? asset('storage/' . $doubt->user->file->path)
+                            : 'https://placehold.co/80x80/EBF4FF/7F9CF5?text=' . strtoupper(substr($doubt->user->name, 0, 1)) }}"
+                            class="avatar rounded-circle me-3" alt="Avatar de {{ $doubt->user->name }}">
                         <div class="flex-grow-1">
                             <div class="chat-bubble p-3 rounded-3">
                                 <p class="mb-0">{{ $doubt->doubt }}</p>

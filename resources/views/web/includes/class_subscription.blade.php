@@ -67,9 +67,14 @@
                 </div>
                 <div class="col-md-4">
                     <div class="teacher-info">
-                        <div class="teacher-thumbnail">
-                            <img src="{{ asset('storage/' . $lesson->teacher->file->path) }}" class="img-fluid"
-                                alt="Professor Jesse Pinkman">
+                        <div class="teacher-thumbnail pt-3">
+                            @if ($lesson->teacher && $lesson->teacher->file)
+                                <img src="{{ asset('storage/' . $lesson->teacher->file->path) }}" class="img-fluid"
+                                    style="object-fit: cover;">
+                            @else
+                                <img src="https://placehold.co/300x300/EBF4FF/7F9CF5?text={{ strtoupper(substr($lesson->teacher->name, 0, 1)) }}"
+                                    class="rounded-circle">
+                            @endif
                         </div>
                         <div class="p-4">
                             <h6 class="fw-bold text-center mb-0">{{ $lesson->teacher->name }}</h6>

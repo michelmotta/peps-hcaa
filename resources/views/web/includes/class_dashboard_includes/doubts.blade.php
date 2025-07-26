@@ -33,7 +33,13 @@
             @forelse ($lesson->doubts as $doubt)
                 <div class="chat-message student-message">
                     <div class="chat-avatar">
-                        <img src="{{ asset('storage/' . $doubt->user->file->path) }}" alt="{{ $doubt->user->name }}">
+                        @if ($doubt->user->file)
+                            <img src="{{ asset('storage/' . $doubt->user->file->path) }}"
+                                alt="{{ $doubt->user->name }}">
+                        @else
+                            <img src="https://placehold.co/48x48/EBF4FF/7F9CF5?text={{ strtoupper(substr($doubt->user->name, 0, 1)) }}"
+                                class="rounded-circle">
+                        @endif
                     </div>
                     <div class="message-content">
                         <div class="chat-bubble">

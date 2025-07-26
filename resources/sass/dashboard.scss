@@ -495,3 +495,12 @@ legend {
     background-color: #6c757d;
 }
 
+#perguntasContainer{
+    .accordion-header{
+        button{
+            font-size: 18px;
+            background: #133b6a !important;
+            color: #FFF;
+        }
+    }
+}

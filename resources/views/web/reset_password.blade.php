@@ -24,7 +24,8 @@
                                 <div class="mb-3">
                                     <label for="email" class="form-label">E-mail</label>
                                     <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
+                                        <span class="input-group-text @error('email') border border-danger @enderror"><i
+                                                class="bi bi-envelope-at"></i></span>
                                         <input id="email" type="email"
                                             class="form-control @error('email') is-invalid @enderror" name="email"
                                             value="{{ $email ?? old('email') }}" required readonly>
@@ -37,7 +38,8 @@
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Nova Senha</label>
                                     <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                        <span class="input-group-text @error('password') border border-danger @enderror"><i
+                                                class="bi bi-lock-fill"></i></span>
                                         <input id="password" type="password"
                                             class="form-control @error('password') is-invalid @enderror" name="password"
                                             required>

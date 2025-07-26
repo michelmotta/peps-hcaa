@@ -20,9 +20,13 @@
                     <div class="col-md-6 mb-4">
                         <div class="teacher-card-horizontal">
                             <div class="teacher-photo-wrapper">
-                                <img src="{{ asset('storage/' . $teacher->file->path) }}" alt="{{ $teacher->name }}">
+                                @if ($teacher->file)
+                                    <img src="{{ asset('storage/' . $teacher->file->path) }}" alt="{{ $teacher->name }}">
+                                @else
+                                    <img src="https://placehold.co/300x300/EBF4FF/7F9CF5?text={{ strtoupper(substr($teacher->name, 0, 1)) }}"
+                                        class="rounded-circle">
+                                @endif
                             </div>
-
                             <div class="teacher-content-wrapper">
                                 <div class="teacher-main-info">
                                     <h4 class="teacher-name">{{ $teacher->name }}</h4>
@@ -31,7 +35,6 @@
                                         {{ Str::words($teacher->biography, 30, '...') }}
                                     </p>
                                 </div>
-
                                 <div class="teacher-footer-info">
                                     <div class="teacher-stats">
                                         <span><i class="bi bi-mortarboard"></i>
@@ -55,7 +58,6 @@
                     </div>
                 @endforelse
             </div>
-
             <div class="pagination-wrapper">
                 {{ $teachers->links() }}
             </div>
