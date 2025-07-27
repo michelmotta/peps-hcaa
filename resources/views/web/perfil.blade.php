@@ -48,7 +48,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-12 mb-3">
                                     <label for="name" class="form-label">Nome Completo</label>
                                     <div class="input-group">
                                         <span class="input-group-text @error('name') border border-danger @enderror"><i
@@ -82,6 +82,14 @@
                                             id="cpf" name="cpf" value="{{ $user->cpf ?? old('cpf') }}" required>
                                     </div>
                                     @error('cpf')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label for="biography" class="form-label">Resumo Profissional</label>
+                                    <textarea class="form-control @error('biography') is-invalid @enderror" id="biography" name="biography"
+                                        style="height:100px">{{ $user->biography ?? old('biography') }}</textarea>
+                                    @error('biography')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -120,7 +128,7 @@
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                     @isset($user)
-                                        <small class="form-text text-muted">Deixe em branco para não alterar.</small>
+                                        <small class="form-text text-muted">Preencha apenas se desejar alterar sua senha.</small>
                                     @endisset
                                 </div>
                                 <div class="col-md-6 mb-3">
@@ -134,9 +142,23 @@
                             </div>
                         </div>
                     </div>
+                    @unless (isset($user))
+                        <div class="mt-4 p-3 bg-light rounded border">
+                            <div class="form-check">
+                                <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox"
+                                    value="1" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    Eu li e concordo com os <a href="#" target="_blank">Termos de Uso</a>.
+                                </label>
+                                @error('terms')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    @endunless
                     <div class="text-center mt-4">
                         <button type="submit" class="btn btn-primary btn-lg px-5">
-                            <i class="bi bi-check-circle"></i>
+                            <i class="bi bi-check-circle me-2"></i>
                             {{ isset($user) ? 'Salvar Alterações' : 'Criar Conta' }}
                         </button>
                     </div>

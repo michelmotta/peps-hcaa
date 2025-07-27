@@ -27,7 +27,7 @@
     <!-- Theme CSS -->
     @vite(['resources/css/theme.min.css', 'resources/sass/dashboard.scss'])
 
-    <title>HCAA | PEPS - Dashboard</title>
+    <title>PEPS | HCAA - Dashboard</title>
 </head>
 
 <body>

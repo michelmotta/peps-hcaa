@@ -27,7 +27,21 @@ class StorePerfilRequest extends FormRequest
             'cpf' => 'required|max:255|unique:users',
             'username' => 'required|max:255|unique:users',
             'password' => 'required|min:6|max:255|confirmed',
+            'biography' => 'nullable|string',
             'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'terms' => 'accepted',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'terms.accepted' => 'Você deve aceitar os Termos de Uso para criar uma conta.',
         ];
     }
 }

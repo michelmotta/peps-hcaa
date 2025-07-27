@@ -8,7 +8,7 @@
         </div>
     </section>
 
-    <section class="login-page-section">
+    <section class="login-page-section mt-5">
         <div class="container">
             <div class="login-card-wrapper">
                 <div class="login-welcome-panel">

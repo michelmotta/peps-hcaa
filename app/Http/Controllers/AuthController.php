@@ -38,14 +38,13 @@ class AuthController extends Controller
         }
 
         if (!$user->active) {
-            return back()->with('error', 'O usuário informado está inativo. Entre em contato com o coordenador.');
+            return back()->with('error', 'O usuário informado está inativo. Entre em contato com um coordenador.');
         }
 
-        if (!Hash::check($credentials['password'], $user->password)) {
+        if (!Auth::attempt($credentials)) {
             return back()->with('error', 'A senha informada está incorreta.');
         }
 
-        Auth::login($user);
         $request->session()->regenerate();
 
         UserLogin::create([
