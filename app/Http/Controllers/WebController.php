@@ -359,6 +359,11 @@ class WebController extends Controller
         return view('web.perfil');
     }
 
+    public function userTerms()
+    {
+        return view('web.user_terms');
+    }
+
     public function generateStudentCertificate(Lesson $lesson)
     {
         /** @var \App\Models\User $user */

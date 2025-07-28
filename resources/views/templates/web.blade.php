@@ -143,12 +143,36 @@
                 <div class="col-md-4 mb-4 text-center">
                     <h5 class="mb-3">Menu</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Início</a></li>
-                        <li><a href="#" class="footer-link">Aulas</a></li>
-                        <li><a href="#" class="footer-link">Professores</a></li>
-                        <li><a href="#" class="footer-link">Informações</a></li>
-                        <li><a href="#" class="footer-link">Sobre</a></li>
-                        <li><a href="#" class="footer-link">Minhas Aulas</a></li>
+                        <li>
+                            <a href="{{ route('web.index') }}" class="footer-link">
+                                Início
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('web.classes') }}" class="footer-link">
+                                Aulas
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('web.teachers') }}" class="footer-link">
+                                Professores
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('web.informations') }}#" class="footer-link">
+                                Informações
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('web.suggestions') }}" class="footer-link">
+                                Sugerir Temas
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('web.library') }}" class="footer-link">
+                                Biblioteca Digital
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
@@ -156,11 +180,26 @@
                 <div class="col-md-4 mb-4 text-center">
                     <h5 class="mb-3">Links Úteis</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ route('web.validate.certificate') }}" class="footer-link">Validar Certificado</a></li>
-                        <li><a href="#" class="footer-link">Termos de Uso</a></li>
-                        <li><a href="#" class="footer-link">Política de Privacidade</a></li>
-                        <li><a href="#" class="footer-link">Ajuda</a></li>
-                        <li><a href="#" class="footer-link">FAQ</a></li>
+                        <li>
+                            <a href="{{ route('web.validate.certificate') }}" class="footer-link">
+                                Validar Certificado
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('web.user.terms') }}" class="footer-link">
+                                Termos de Uso
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('web.informations') }}" class="footer-link">
+                                Ajuda
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer-link">
+                                Política de Privacidade
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -50,6 +50,7 @@ Route::name('web.')->group(function () {
     Route::get('/informacoes', [WebController::class, 'informations'])->name('informations');
     Route::get('/biblioteca', [WebController::class, 'library'])->name('library');
     Route::get('/sugerir-temas', [WebController::class, 'suggestions'])->name('suggestions');
+    Route::get('/termos-de-uso', [WebController::class, 'userTerms'])->name('user.terms');
 
     // Certificates
     Route::match(['get', 'post'], '/validar-certificado', [WebController::class, 'validateCertificate'])->name('validate.certificate');

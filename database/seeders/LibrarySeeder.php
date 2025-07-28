@@ -16,7 +16,6 @@ class LibrarySeeder extends Seeder
     {
         $userId = User::inRandomOrder()->first()?->id;
 
-        // Fallback if no user exists
         if (!$userId) {
             $userId = User::factory()->create()->id;
         }
