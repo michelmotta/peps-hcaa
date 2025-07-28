@@ -1,8 +1,5 @@
-# .github/workflows/laravel-ci.yml
-
 name: Laravel CI/CD Pipeline
 
-# Controls when the workflow will run
 on:
   push:
     branches: ["main"]
@@ -12,37 +9,41 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Setup environment file
       - name: Setup environment file
         run: cp .env.testing .env
 
+      # 3. Build and Start Containers
       - name: Build and Start Containers
-        run: docker-compose up -d --build
+        run: docker compose up -d --build
 
+      # 4. Wait for PostgreSQL
       - name: Wait for PostgreSQL
         run: |
           echo "Waiting for PostgreSQL..."
-          until docker-compose exec -T postgres pg_isready --quiet --username=postgres; do
+          until docker compose exec -T postgres pg_isready --quiet --username=postgres; do
             sleep 2
           done
           echo "PostgreSQL is ready!"
 
+      # 5. Install Composer Dependencies
       - name: Install Composer Dependencies
-        run: docker-compose exec -T php-fpm composer install --no-interaction --no-progress --prefer-dist
+        run: docker compose exec -T php-fpm composer install --no-interaction --no-progress --prefer-dist
 
-      - name: Generate App Key
-        run: docker-compose exec -T php-fpm php artisan key:generate
-
+      # 6. Run database migrations
       - name: Run Database Migrations
-        run: docker-compose exec -T php-fpm php artisan migrate:fresh --seed
+        run: docker compose exec -T php-fpm php artisan migrate:fresh --seed
 
+      # 7. Run tests
       - name: Run Tests 🧪
-        run: docker-compose exec -T php-fpm php artisan test
+        run: docker compose exec -T php-fpm php artisan test
 
+      # 8. Stop containers
       - name: Stop Containers
         if: always()
-        run: docker-compose down
+        run: docker compose down
