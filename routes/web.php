@@ -17,6 +17,7 @@ use App\Http\Controllers\SpecialtyController;
 use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VideoController;
 use App\Http\Controllers\WebController;
 
 /*
@@ -61,7 +62,7 @@ Route::name('web.')->group(function () {
     Route::middleware('auth')->group(function () {
 
         Route::patch('/perfil/{user}', [AuthController::class, 'perfilUpdate'])->name('perfil-update');
-        
+
         // Suggestions
         Route::post('/sugerir-temas', [WebController::class, 'suggestionCreate'])->name('suggestion-create');
         Route::patch('/sugerir-temas/{suggestion}', [WebController::class, 'suggestionUpdate'])->name('suggestion-update');
@@ -115,6 +116,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
     Route::get('lessons/{lesson}/certificates/{user}', [LessonController::class, 'generateTeacherCertificate'])->name('lessons.certificates');
 
     // --- Resource Routes (Professor & Coordinator) ---
+    Route::resource('videos', VideoController::class);
     Route::resource('lessons', LessonController::class);
     Route::resource('lessons.topics', TopicController::class);
     Route::resource('lessons.subscriptions', LessonUserController::class);

@@ -28,10 +28,10 @@ class VideoSeeder extends Seeder
             ],
             [
                 'name' => 'Tópico 2.webm',
-                'path' => 'uploads/lessons/videos/GObR04w1uUQjlcmqLnbrzwwYaNKkQnG8261QIHyM.webm',
+                'path' => 'uploads/lessons/videos/Hjg6GDUQgVm7rm5obHdgowN9WXSXD1uebG3EwX6K.mp4',
                 'duration' => '00:00:32',
-                'thumbnail_path' => 'uploads/lessons/videos/GObR04w1uUQjlcmqLnbrzwwYaNKkQnG8261QIHyM.jpg',
-                'mime_type' => 'video/webm',
+                'thumbnail_path' => 'uploads/lessons/videos/Hjg6GDUQgVm7rm5obHdgowN9WXSXD1uebG3EwX6K.jpg',
+                'mime_type' => 'video/mp4',
                 'size' => 2165175,
                 'extension' => 'webm',
                 'created_at' => Carbon::now(),

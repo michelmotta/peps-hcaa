@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Lesson;
 use App\Models\LessonUser;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Carbon\Carbon;
 
 class LessonUserSeeder extends Seeder
 {
@@ -15,16 +16,12 @@ class LessonUserSeeder extends Seeder
     public function run(): void
     {
         $lessonUsers = collect();
-        $userIds = range(4, 24);
-        $availableLessons = range(1, 4);
+        $userIds = User::pluck('id')->toArray();
+        $lessonIds = Lesson::pluck('id')->toArray();
 
-        foreach ($userIds as $userId) {
-            $assignedLessons = collect($availableLessons)
-                ->shuffle()
-                ->take(rand(1, 4));
-
-            foreach ($assignedLessons as $lessonId) {
-                $isFinished = (bool)rand(0, 1);
+        foreach ($lessonIds as $lessonId) {
+            foreach ($userIds as $userId) {
+                $isFinished = fake()->boolean();
                 $createdAt = now();
 
                 $lessonUsers->push([
@@ -32,7 +29,7 @@ class LessonUserSeeder extends Seeder
                     'user_id'     => $userId,
                     'score'       => $isFinished ? rand(60, 100) : null,
                     'finished'    => $isFinished,
-                    'finished_at' => $isFinished ? $createdAt->copy()->addMinutes(rand(1, 120)) : null,
+                    'finished_at' => $isFinished ? $createdAt->addMinutes(rand(100, 500)) : null,
                     'created_at'  => $createdAt,
                     'updated_at'  => $createdAt,
                 ]);

@@ -47,22 +47,17 @@
                 @forelse ($topics as $topic)
                     <div class="list-group-item p-3">
                         <div class="d-flex align-items-center">
-                            {{-- Thumbnail on the left --}}
                             <a href="{{ asset('storage/' . $topic->video->path) }}" data-fancybox
                                 class="d-none d-md-block flex-shrink-0 me-3">
                                 <img src="{{ asset('storage/' . $topic->video->thumbnail_path) }}"
                                     style="width: 160px; height: 90px; object-fit: cover;" class="rounded"
                                     alt="Thumbnail">
                             </a>
-
-                            {{-- Main content area --}}
                             <div class="flex-grow-1">
-                                {{-- The title tag was changed from h5 to h4 --}}
                                 <h4 class="fw-bold mb-1">{{ $loop->iteration }}. {{ $topic->title }}</h4>
                                 <p class="text-muted small mb-2">
                                     {!! Str::limit(strip_tags($topic->description), 120) !!}
                                 </p>
-                                {{-- Metadata --}}
                                 <div class="d-flex align-items-center gap-4 small text-muted">
                                     <span title="Duração do Vídeo">
                                         <i data-feather="play-circle" class="icon-sm me-1"></i>
@@ -78,8 +73,6 @@
                                     </span>
                                 </div>
                             </div>
-
-                            {{-- Action buttons on the right --}}
                             <div class="d-flex gap-1 ms-3">
                                 <a href="{{ route('dashboard.lessons.topics.edit', [$lesson->id, $topic->id]) }}"
                                     class="btn btn-ghost btn-icon btn-sm rounded-circle" title="Editar">

@@ -25,7 +25,7 @@ class UpdateTopicRequest extends FormRequest
             'title' => 'required|max:255',
             'resume' => 'required',
             'description' => 'required',
-            'file' => 'nullable|file|mimes:mp4,webm|max:102400', // 100 MB
+            'video_id' => 'nullable|integer|exists:videos,id',
             'attachments' => 'nullable',
             'quiz' => 'nullable',
         ];

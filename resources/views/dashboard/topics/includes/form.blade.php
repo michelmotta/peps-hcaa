@@ -51,17 +51,66 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-12">
+                <div id="upload-status" class="col-md-12 mb-3"></div>
+                <div class="col-md-12" id="video-upload-wrapper"
+                    @if (isset($topic) && $topic->video) style="display: none;" @endif>
                     <div class="mb-3">
                         <label for="file" class="form-label">Vídeo</label>
                         <input type="file" class="form-control @error('file') is-invalid @enderror" id="file"
-                            name="file">
+                            name="file" accept="video/mp4" data-upload-url="{{ route('dashboard.videos.store') }}">
                         <small class="d-block">Formatos permitidos: MP4|WEBM. Tamanho máximo: 100MB</small>
                         @error('file')
-                            <span class="invalid-feedback" role="alert">
-                                {{ $message }}
-                            </span>
+                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
                         @enderror
+                    </div>
+                </div>
+                <input type="hidden" name="video_id" id="video-id-input" value="{{ $topic->video->id ?? '' }}">
+                <div class="col-md-12 mb-3" id="video-preview-container"
+                    @if (!isset($topic) || !$topic->video) style="display: none;" @endif>
+                    <div class="card border-success bg-success-subtle shadow-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <div class="position-relative" id="video-thumbnail-wrapper">
+                                        <a href="{{ isset($topic) && $topic->video ? Storage::url($topic->video->path) : '#' }}"
+                                            @if (isset($topic) && $topic->video) data-fancybox @endif>
+                                            <img id="video-thumbnail-preview"
+                                                src="{{ isset($topic) && $topic->video ? Storage::url($topic->video->thumbnail_path) : '' }}"
+                                                alt="Thumbnail do vídeo" class="img-fluid rounded"
+                                                style="width: 160px; height: 90px; object-fit: cover;">
+                                            <div class="position-absolute top-50 start-50 translate-middle"
+                                                style="pointer-events: none;">
+                                                <i class="bi bi-play-circle-fill text-white"
+                                                    style="font-size: 2.5rem; opacity: 0.7; text-shadow: 0 0 8px rgba(0,0,0,0.5);"></i>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h6 class="mb-1 d-flex align-items-center text-success-emphasis">
+                                        <i class="bi bi-check-circle-fill me-2"></i>
+                                        Vídeo Carregado
+                                    </h6>
+                                    <p class="mb-1 fw-bold text-dark" id="video-file-name">
+                                        {{ $topic->video->name ?? 'nome_do_arquivo.mp4' }}</p>
+                                    <p class="text-muted small mb-3" id="video-file-size">
+                                        {{ isset($topic) && $topic->video ? round($topic->video->size / (1024 * 1024), 2) . ' MB' : '' }}
+                                    </p>
+                                    <button type="button" id="remove-video-btn" class="btn btn-sm btn-danger"
+                                        data-base-url="{{ url('dashboard/videos') }}"
+                                        data-delete-url="{{ isset($topic) && $topic->video ? route('dashboard.videos.destroy', $topic->video->id) : '' }}">
+                                        <i class="bi bi-trash me-1"></i> Trocar Vídeo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3" id="progress-container" style="display: none;">
+                    <div class="progress" style="height: 25px;">
+                        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated fs-6"
+                            role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100"></div>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -75,9 +124,7 @@
                         <input type="hidden" name="description" id="description"
                             value="@if (isset($topic)) {{ $topic->description }}@else{{ old('description') }} @endif">
                         @error('description')
-                            <span class="invalid-feedback" role="alert">
-                                {{ $message }}
-                            </span>
+                            <span class="invalid-feedback d-block" role="alert">{{ $message }}</span>
                         @enderror
                     </div>
                 </div>

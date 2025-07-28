@@ -52,32 +52,23 @@ class TopicController extends Controller
         try {
             $validatedData = $request->validated();
 
-            // Handle file upload
-            if ($request->hasFile('file')) {
-                $video = Video::uploadSingleVideo($request->file('file'));
-                $validatedData['video_id'] = $video->id;
-            }
-
-            // Set the lesson_id
             $validatedData['lesson_id'] = $lesson->id;
 
-            // Decode attachments and quiz
-            $validatedData['attachments'] = json_decode($validatedData['attachments'], true);
-            $validatedData['quiz'] = json_decode($validatedData['quiz'], true);
+            $validatedData['quiz'] = isset($validatedData['quiz']) ? json_decode($validatedData['quiz'], true) : [];
 
-            // Create the topic
             $topic = Topic::create($validatedData);
 
-            // Prepare and save quizzes
-            $quizzes = collect($validatedData['quiz'])->map(function ($quizData) {
-                return new Quiz([
-                    'question' => $quizData['question'] ?? null,
-                    'options'  => $quizData['options'] ?? null,
-                    'correct'  => $quizData['correct'] ?? null,
-                ]);
-            });
+            if (!empty($validatedData['quiz'])) {
+                $quizzes = collect($validatedData['quiz'])->map(function ($quizData) {
+                    return new Quiz([
+                        'question' => $quizData['question'] ?? null,
+                        'options'  => $quizData['options'] ?? null,
+                        'correct'  => $quizData['correct'] ?? null,
+                    ]);
+                });
 
-            $topic->quizzes()->saveMany($quizzes);
+                $topic->quizzes()->saveMany($quizzes);
+            }
 
             return redirect()
                 ->route('dashboard.lessons.topics.index', $lesson)
@@ -113,33 +104,23 @@ class TopicController extends Controller
         try {
             $validatedData = $request->validated();
 
-            // Handle file upload
-            if ($request->hasFile('file')) {
-                $video = Video::uploadSingleVideo($request->file('file'));
-                $validatedData['video_id'] = $video->id;
-            }
-
-            // Set lesson and decode arrays
-            $validatedData['lesson_id'] = $lesson->id;
-            $validatedData['attachments'] = json_decode($validatedData['attachments'], true);
-            $validatedData['quiz'] = json_decode($validatedData['quiz'], true);
-
-            // Update topic
             $topic->update($validatedData);
 
-            // Delete old quizzes (or handle update if needed)
-            $topic->quizzes()->delete();
+            if ($request->has('quiz')) {
+                $topic->quizzes()->delete();
 
-            // Re-create quizzes
-            $quizzes = collect($validatedData['quiz'])->map(function ($quizData) {
-                return new Quiz([
-                    'question' => $quizData['question'] ?? null,
-                    'options'  => $quizData['options'] ?? null,
-                    'correct'  => $quizData['correct'] ?? null,
-                ]);
-            });
-
-            $topic->quizzes()->saveMany($quizzes);
+                $quizData = json_decode($request->input('quiz'), true) ?? [];
+                if (!empty($quizData)) {
+                    $quizzes = collect($quizData)->map(function ($data) {
+                        return new Quiz([
+                            'question' => $data['question'] ?? null,
+                            'options'  => $data['options'] ?? null,
+                            'correct'  => $data['correct'] ?? null,
+                        ]);
+                    });
+                    $topic->quizzes()->saveMany($quizzes);
+                }
+            }
 
             return redirect()
                 ->route('dashboard.lessons.topics.index', $lesson->id)
@@ -157,19 +138,14 @@ class TopicController extends Controller
     public function destroy(Lesson $lesson, Topic $topic)
     {
         try {
-            // Se o tópico tiver um vídeo associado, você pode deletá-lo também
             if ($topic->video) {
-                // Exclui o arquivo de vídeo
                 Storage::disk('public')->delete($topic->video->path);
-                // Exclui o thumbnail
                 if ($topic->video->thumbnail_path) {
                     Storage::disk('public')->delete($topic->video->thumbnail_path);
                 }
-                // Exclui o registro do vídeo
                 $topic->video->delete();
             }
 
-            // Exclui o tópico
             $topic->delete();
 
             return redirect()

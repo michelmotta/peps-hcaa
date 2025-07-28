@@ -11,6 +11,7 @@ import { VideoModule } from './modules/VideoModule';
 import { FileUploadModule } from './modules/FileUploadModule';
 import { FormModule } from './modules/FormModule';
 import { FeedbackModule } from './modules/FeedbackModule';
+import { VideoUploadModule } from './modules/VideoUploadModule';
 
 // Global libraries setup
 import { setupGlobalLibraries } from './utils/globalSetup';
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     FileUploadModule.init();
     FormModule.init();
     FeedbackModule.init();
+    VideoUploadModule.init();
 });
 
 window.addEventListener('load', () => {
