@@ -4,7 +4,7 @@
 ![Logo do Laravel](https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg)
 
 [![Última Versão Estável](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/framework)
-[![Status dos Testes](https://github.com/michelmotta/peps-hcaa/actions/workflows/run-laravel-tests.yml/badge.svg)](https://github.com/michelmotta/peps-hcaa/actions/workflows/laravel-tests.yml)
+[![Status dos Testes](https://github.com/michelmotta/peps-hcaa/actions/workflows/laravel-tests.yml/badge.svg)](https://github.com/michelmotta/peps-hcaa/actions/workflows/laravel-tests.yml)
 [![Licença](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/framework)
 
 ## Sobre o Projeto
