@@ -1,61 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# PEPS - Programa de Educação Permanente em Saúde
 
-## About Laravel
+![Logo do Laravel](https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+[![Última Versão Estável](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/framework)
+[![Status dos Testes](https://github.com/michelmotta/peps-hcaa/actions/workflows/run-laravel-tests.yml/badge.svg)](https://github.com/michelmotta/peps-hcaa/actions/workflows/run-laravel-tests.yml)
+[![Licença](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/framework)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Sobre o Projeto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+O PEPS é uma plataforma robusta de e-learning construída com o framework Laravel. Ele oferece uma solução completa para criar, gerenciar e distribuir conteúdo educacional através de aulas, tópicos, vídeos e questionários interativos.
 
-## Learning Laravel
+Este software foi desenvolvido como parte do programa de Mestrado Profissional da Faculdade de Computação (FACOM) da Universidade Federal de Mato Grosso do Sul (UFMS), em parceria com o Hospital de Câncer Alfredo Abrão (HCAA).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Principais Funcionalidades
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Gerenciamento de Usuários e Perfis**: Cadastro e autenticação seguros, com perfis de usuário detalhados, incluindo biografias e fotos.
+- **Estrutura de Cursos e Aulas**: Um sistema hierárquico para organizar o conteúdo em aulas e tópicos.
+- **Manipulação Avançada de Vídeos**:
+  - Upload de vídeos de forma assíncrona com barra de progresso em tempo real.
+  - Geração automática de miniaturas (thumbnails) usando FFMpeg.
+  - Pré-visualização de vídeos em lightbox (Fancybox).
+  - Opção para alterar ou excluir vídeos pré-carregados antes de salvar o formulário.
+- **Questionários Interativos**: Um construtor dinâmico de questionários que permite aos instrutores criar perguntas de múltipla escolha para qualquer tópico.
+- **Anexos de Arquivos**: Uploader de arquivos com funcionalidade de arrastar e soltar (drag-and-drop) para adicionar materiais complementares aos tópicos.
+- **Painel Administrativo**: Uma poderosa interface de backend para gerenciar usuários, aulas, tópicos e o conteúdo do site.
+- **Frontend Moderno**: Construído com Bootstrap e módulos JavaScript para uma experiência de usuário responsiva e interativa, com diálogos de confirmação personalizados usando SweetAlert2.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Instalação e Configuração (com Docker)
 
-## Laravel Sponsors
+Siga estes passos para executar o projeto em sua máquina local usando Docker.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Pré-requisitos
 
-### Premium Partners
+- Docker
+- Docker Compose
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+### 1. Clonar o Repositório
 
-## Contributing
+```bash
+git clone https://github.com/michelmotta/peps-hcaa.git
+cd peps-hcaa
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Configuração do Ambiente
 
-## Code of Conduct
+Copie o arquivo de ambiente de exemplo:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Abra o arquivo `.env` e certifique-se de que as variáveis do banco de dados correspondem às do seu `docker-compose.yml`:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+DB_CONNECTION=pgsql
+DB_HOST=postgres
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+```
 
-## License
+### 3. Iniciar os Containers
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+docker compose up -d --build
+```
+
+### 4. Instalar Dependências
+
+```bash
+# Instalar dependências do PHP
+docker compose exec php-fpm composer install
+
+# Instalar dependências do JavaScript
+docker compose exec php-fpm npm install
+```
+
+### 5. Configuração da Aplicação
+
+```bash
+docker compose exec php-fpm php artisan key:generate
+docker compose exec php-fpm php artisan migrate
+docker compose exec php-fpm php artisan storage:link
+docker compose exec php-fpm npm run build
+```
+
+### 6. Acessando a Aplicação
+
+Acesse no navegador:
+
+```
+http://localhost:8080
+```
+
+## Licença
+
+Este projeto é um software de código aberto licenciado sob a licença MIT.
