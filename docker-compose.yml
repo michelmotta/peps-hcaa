@@ -38,3 +38,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  
+  mailpit:
+    container_name: mailpit
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"  # Interface web
+      - "1025:1025"  # Porta SMTP
+    restart: unless-stopped
