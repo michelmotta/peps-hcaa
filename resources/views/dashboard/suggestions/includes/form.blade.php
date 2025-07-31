@@ -1,7 +1,7 @@
 @csrf
 <section>
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-12">
             <div class="mb-3">
                 <label for="name" class="form-label">Título</label>
                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="title"
@@ -15,21 +15,6 @@
                 @enderror
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="mb-3">
-                <label for="votes" class="form-label">Votos</label>
-                <input type="number" class="form-control @error('votes') is-invalid @enderror" id="votes"
-                    placeholder="Digite os votos" name="votes"
-                    value="@if(isset($suggestion)){{ $suggestion->votes }}@else{{ old('votes') }}@endif"
-                    required>
-                @error('title')
-                    <span class="invalid-feedback" role="alert">
-                        {{ $message }}
-                    </span>
-                @enderror
-            </div>
-        </div>
-        <!-- Editor -->
         <div class="col-md-12">
             <div class="mt-2 mb-4">
                 <label class="form-label">Descrição</label>

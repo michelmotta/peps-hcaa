@@ -68,11 +68,19 @@
                                 </div>
                                 <ul class="list-unstyled">
                                     <li>
-                                        <a class="dropdown-item d-flex align-items-center"
-                                            href="{{ route('dashboard.users.edit', Auth::id()) }}">
-                                            <i class="me-2 icon-xxs dropdown-item-icon" data-feather="user"></i>
-                                            Perfil
-                                        </a>
+                                        @can('isCoordenador')
+                                            <a class="dropdown-item d-flex align-items-center"
+                                                href="{{ route('dashboard.users.edit', Auth::id()) }}">
+                                                <i class="me-2 icon-xxs dropdown-item-icon" data-feather="user"></i>
+                                                Perfil
+                                            </a>
+                                        @elsecan('isProfessor')
+                                            <a class="dropdown-item d-flex align-items-center"
+                                                href="{{ route('web.perfil') }}">
+                                                <i class="me-2 icon-xxs dropdown-item-icon" data-feather="user"></i>
+                                                Perfil
+                                            </a>
+                                        @endcan
                                     </li>
                                     <li>
                                         <form method="POST" action="{{ route('logout-post') }}">
@@ -96,8 +104,7 @@
                 <div class="h-100 ps-3 pe-3" data-simplebar>
                     <!-- Brand logo -->
                     <a class="navbar-brand text-center" href="{{ route('dashboard.index') }}">
-                        <img src="{{ asset('images/logo.png') }}"
-                            alt="Logo" />
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" />
                     </a>
                     <!-- Navbar nav -->
                     <ul class="navbar-nav flex-column" id="sideNavbar">

@@ -899,6 +899,7 @@ footer,
             border: none;
             border-bottom: 3px solid transparent;
             font-weight: bold;
+            padding: 8px 10px;
 
             &.active {
                 border-color: $main-color;
@@ -3468,6 +3469,110 @@ footer,
 
         .login-form-panel {
             padding: 2rem 1.5rem;
+        }
+    }
+}
+
+.comunicados-section {
+    .section-title {
+        text-align: center;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #133b6a;
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+
+        &::before,
+        &::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: #dee2e6;
+        }
+
+        span {
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+
+    .comunicados-feed {
+        max-width: 800px;
+        margin: 0 auto;
+
+        .comunicado-card {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-left: 5px solid #133b6a;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+            &:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            }
+
+            .comunicado-header {
+                padding: 1rem 1.5rem;
+                border-bottom: 1px solid #e9ecef;
+                display: flex;
+                align-items: center;
+
+                .comunicado-avatar {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    margin-right: 1rem;
+                    flex-shrink: 0;
+                }
+
+                .comunicado-meta {
+                    .comunicado-subject {
+                        font-size: 1.2rem;
+                        font-weight: 600;
+                        color: #133b6a;
+                        margin: 0;
+                    }
+
+                    .comunicado-author {
+                        font-size: 0.85rem;
+                        color: #6c757d;
+                        margin: 0;
+                    }
+                }
+            }
+
+            .comunicado-body {
+                padding: 1.5rem;
+                line-height: 1.7;
+                color: #343a40;
+            }
+        }
+
+        .comunicado-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            color: #6c757d;
+
+            i {
+                font-size: 3rem;
+                display: block;
+                margin-bottom: 1rem;
+            }
+
+            h4 {
+                font-size: 1.25rem;
+                color: #495057;
+                font-weight: 600;
+            }
         }
     }
 }

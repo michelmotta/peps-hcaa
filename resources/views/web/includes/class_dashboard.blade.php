@@ -71,15 +71,21 @@
                     </div>
                     <ul class="nav nav-tabs justify-content-center mb-4" id="cursoTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="conteudo-tab" data-bs-toggle="tab"
-                                data-bs-target="#conteudo" type="button" role="tab">
-                                <i class="bi bi-journal-text me-1"></i> Informações
+                            <button class="nav-link active" id="anexos-tab" data-bs-toggle="tab" data-bs-target="#anexos"
+                                type="button" role="tab">
+                                <i class="bi bi-paperclip me-1"></i> Conteúdo
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="anexos-tab" data-bs-toggle="tab" data-bs-target="#anexos"
+                            <button class="nav-link" id="conteudo-tab" data-bs-toggle="tab"
+                                data-bs-target="#conteudo" type="button" role="tab">
+                                <i class="bi bi-journal-text me-1"></i> Sobre
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="comunicados-tab" data-bs-toggle="tab" data-bs-target="#comunicados"
                                 type="button" role="tab">
-                                <i class="bi bi-paperclip me-1"></i> Conteúdo
+                                <i class="bi bi-broadcast me-1"></i> Comunicados
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -108,11 +114,14 @@
                         </li>
                     </ul>
                     <div class="tab-content" id="cursoTabsContent">
+                        <div class="tab-pane fade" id="anexos" role="tabpanel">
+                            @include('web.includes.class_dashboard_includes.content')
+                        </div>
                         <div class="tab-pane fade show active" id="conteudo" role="tabpanel">
                             @include('web.includes.class_dashboard_includes.informations')
                         </div>
-                        <div class="tab-pane fade" id="anexos" role="tabpanel">
-                            @include('web.includes.class_dashboard_includes.content')
+                        <div class="tab-pane fade" id="comunicados" role="tabpanel">
+                            @include('web.includes.class_dashboard_includes.messages')
                         </div>
                         <div class="tab-pane fade" id="duvidas" role="tabpanel">
                             @include('web.includes.class_dashboard_includes.doubts')
