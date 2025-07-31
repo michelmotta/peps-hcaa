@@ -154,6 +154,13 @@
                                                     class="d-block fs-6 fw-bold mt-1">{{ $lesson->doubts->count() }}</span>
                                                 <small class="text-muted mb-0">Dúvidas</small>
                                             </a>
+                                            <a href="{{ route('dashboard.lessons.messages.index', $lesson->id) }}"
+                                                class="text-inherit mx-3" title="Mensages">
+                                                <i data-feather="radio" class="icon-sm"></i>
+                                                <span
+                                                    class="d-block fs-6 fw-bold mt-1">{{ $lesson->messages->count() }}</span>
+                                                <small class="text-muted mb-0">Comunicados</small>
+                                            </a>
                                             <a href="{{ route('dashboard.lessons.feedbacks.index', $lesson->id) }}"
                                                 class="text-inherit mx-3" title="Feedbacks">
                                                 <i data-feather="message-circle" class="icon-sm"></i>

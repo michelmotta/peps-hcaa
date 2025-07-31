@@ -11,6 +11,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\LessonUserController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SpecialtyController;
@@ -123,6 +124,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
     Route::resource('lessons.subscriptions', LessonUserController::class);
     Route::resource('lessons.doubts', DoubtController::class);
     Route::resource('lessons.feedbacks', FeedbackController::class);
+    Route::resource('lessons.messages', MessageController::class);
     Route::resource('suggestions', SuggestionController::class);
     Route::resource('guidebooks', GuidebookController::class);
     Route::resource('guidebook-categories', GuidebookCategoryController::class);

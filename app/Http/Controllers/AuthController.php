@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\ProfileEnum;
 use App\Http\Requests\StorePerfilRequest;
 use App\Http\Requests\UpdatePerfilRequest;
+use App\Mail\WelcomeMail;
 use App\Models\File;
 use App\Models\User;
 use App\Models\UserLogin;
@@ -13,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
@@ -93,6 +95,8 @@ class AuthController extends Controller
                 $file->user_id = $user->id;
                 $file->update();
             }
+
+            Mail::to($user->email)->send(new WelcomeMail($user));
 
             return redirect()
                 ->route('login')

@@ -17,7 +17,8 @@
                     <i data-feather="arrow-left" class="nav-icon me-2 icon-xs"></i>
                     Voltar
                 </a>
-                <form method="GET" action="{{-- route('dashboard.lessons.doubts.index', $lesson) --}}" class="mb-0" style="width: 300px;">
+                <form method="GET" action="{{ route('dashboard.lessons.messages.index', $lesson) }}" class="mb-0"
+                    style="width: 300px;">
                     <div class="input-group">
                         <input type="search" class="form-control" name="q" value="{{ request('q') }}"
                             placeholder="Pesquisar comentários...">
@@ -27,93 +28,54 @@
                 </form>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100">
+        <div class="row justify-content-center">
+            <!-- Card: Total de Avaliações -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-start border-primary border-4 shadow-sm h-100">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4 class="mb-0">{{ $totalFeedbacks }}</h4>
-                                <p class="text-muted mb-0">Total de Avaliações</p>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <p class="text-muted text-uppercase small mb-1">Total de Avaliações</p>
+                                <h4 class="fw-bold mb-0">{{ $totalFeedbacks }}</h4>
                             </div>
-                            <div class="icon-shape bg-light-primary text-primary rounded-circle"><i data-feather="users"
-                                    class="icon-md"></i></div>
+                            <div class="col-auto">
+                                <div class="icon-shape bg-light-primary text-primary rounded-circle">
+                                    <i data-feather="users" class="icon-lg"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100">
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-start border-warning border-4 shadow-sm h-100">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4 class="mb-0">{{ number_format($averageRating, 1) }} / 5</h4>
-                                <p class="text-muted mb-0">Média Geral</p>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <p class="text-muted text-uppercase small mb-1">Média Geral</p>
+                                <div class="d-flex align-items-center">
+                                    <h4 class="fw-bold mb-0 me-2">{{ number_format($averageRating, 1) }}</h4>
+                                    <div class="text-warning">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($i <= round($averageRating))
+                                                <i class="bi bi-star-fill"></i>
+                                            @else
+                                                <i class="bi bi-star"></i>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                </div>
                             </div>
-                            <div class="icon-shape bg-light-warning text-warning rounded-circle"><i data-feather="star"
-                                    class="icon-md"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4 class="mb-0">{{ number_format($positivePercentage, 0) }}%</h4>
-                                <p class="text-muted mb-0">Sentimento Positivo</p>
+                            <div class="col-auto">
+                                <div class="icon-shape bg-light-warning text-warning rounded-circle">
+                                    <i data-feather="star" class="icon-lg"></i>
+                                </div>
                             </div>
-                            <div class="icon-shape bg-light-success text-success rounded-circle"><i
-                                    data-feather="trending-up" class="icon-md"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4 class="mb-0">{{ number_format($negativePercentage, 0) }}%</h4>
-                                <p class="text-muted mb-0">Sentimento Negativo</p>
-                            </div>
-                            <div class="icon-shape bg-light-danger text-danger rounded-circle"><i
-                                    data-feather="trending-down" class="icon-md"></i></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">Distribuição das Avaliações</h4>
-            </div>
-            <div class="card-body">
-                @for ($i = 5; $i >= 1; $i--)
-                    @php
-                        $count = $ratingsCount[$i] ?? 0;
-                        $percentage = $totalFeedbacks > 0 ? ($count / $totalFeedbacks) * 100 : 0;
-                    @endphp
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rating-stars me-3"><i data-feather="star"
-                                class="icon-xs @if ($i >= 1) filled @endif"></i><i data-feather="star"
-                                class="icon-xs @if ($i >= 2) filled @endif"></i><i data-feather="star"
-                                class="icon-xs @if ($i >= 3) filled @endif"></i><i data-feather="star"
-                                class="icon-xs @if ($i >= 4) filled @endif"></i><i data-feather="star"
-                                class="icon-xs @if ($i >= 5) filled @endif"></i></div>
-                        <div class="progress flex-grow-1" style="height: 8px;">
-                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $percentage }}%;">
-                            </div>
-                        </div>
-                        <span class="ms-3 text-muted fw-bold" style="width: 40px;">{{ $count }}</span>
-                    </div>
-                @endfor
-            </div>
-        </div>
-
         <h3 class="mb-3">Feedbacks Recebidos</h3>
         @forelse ($feedbacks as $feedback)
             <div class="card mb-3">

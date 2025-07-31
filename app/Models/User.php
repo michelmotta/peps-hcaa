@@ -3,17 +3,22 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Mail\ForgotPasswordMail;
+use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Scout\Searchable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, Searchable;
+    use HasFactory, Notifiable, Searchable, CanResetPasswordTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -98,16 +103,6 @@ class User extends Authenticatable
     public function file()
     {
         return $this->belongsTo(File::class, 'file_id');
-    }
-
-    /**
-     * Get the information entries associated with the user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Information>
-     */
-    public function information()
-    {
-        return $this->belongsToMany(Information::class)->withTimestamps();
     }
 
     /**
@@ -227,5 +222,15 @@ class User extends Authenticatable
     public function lastLogin()
     {
         return $this->hasOne(UserLogin::class)->latestOfMany();
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = route('password.reset', [
+            'token' => $token,
+            'email' => $this->getEmailForPasswordReset(),
+        ]);
+
+        Mail::to($this->getEmailForPasswordReset())->send(new ForgotPasswordMail($this, $url));
     }
 }
