@@ -18,24 +18,19 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <label class="form-label" for="specialtyDropdown">Especialidades</label>
-
                 <div class="dropdown">
                     <button
                         class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
                         type="button" id="specialtyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <span id="specialtyButtonText">Selecione as especialidades</span>
                     </button>
-
                     <div class="dropdown-menu w-100 p-3" aria-labelledby="specialtyDropdown"
                         style="max-height: 280px; overflow-y: auto;">
-
-                        {{-- MODIFIED: Added Select/Deselect All links --}}
                         <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
                             <a href="#" id="selectAllSpecialties" class="small fw-bold">Selecionar Todos</a>
                             <a href="#" id="deselectAllSpecialties" class="small fw-bold text-danger">Limpar
                                 Seleção</a>
                         </div>
-
                         @forelse ($specialties as $parent)
                             <div class="form-check">
                                 <input class="form-check-input parent-checkbox" type="checkbox" name="specialty_ids[]"
@@ -150,17 +145,16 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const specialtyDropdown = document.getElementById('specialtyDropdown');
         const specialtyButtonText = document.getElementById('specialtyButtonText');
         const allCheckboxes = document.querySelectorAll('input[name="specialty_ids[]"]');
         const parentCheckboxes = document.querySelectorAll('.parent-checkbox');
         const childCheckboxes = document.querySelectorAll('.child-checkbox');
-
         const selectAllBtn = document.getElementById('selectAllSpecialties');
         const deselectAllBtn = document.getElementById('deselectAllSpecialties');
+        const dropdownMenu = document.querySelector('.dropdown-menu[aria-labelledby="specialtyDropdown"]');
 
-        if (specialtyDropdown) {
-            specialtyDropdown.nextElementSibling.addEventListener('click', function(e) {
+        if (dropdownMenu) {
+            dropdownMenu.addEventListener('click', function(e) {
                 e.stopPropagation();
             });
         }
@@ -176,22 +170,39 @@
             }
         };
 
-        const syncParentState = (parentId) => {
-            const parentCheckbox = document.querySelector(`.parent-checkbox[data-parent-id='${parentId}']`);
-            if (parentCheckbox) {
-                const children = document.querySelectorAll(`.child-checkbox[data-parent-id='${parentId}']`);
-                const anyChildChecked = Array.from(children).some(child => child.checked);
-                parentCheckbox.checked = anyChildChecked;
-            }
+        const syncParentCheckbox = (parentId) => {
+            const parentCheckbox = document.querySelector(`.parent-checkbox[value='${parentId}']`);
+            if (!parentCheckbox) return;
+
+            const children = document.querySelectorAll(`.child-checkbox[data-parent-id='${parentId}']`);
+            const isAnyChildChecked = Array.from(children).some(child => child.checked);
+            parentCheckbox.checked = isAnyChildChecked;
         };
 
+        parentCheckboxes.forEach(parent => {
+            parent.addEventListener('change', function() {
+                const children = document.querySelectorAll(
+                    `.child-checkbox[data-parent-id='${this.value}']`);
+                children.forEach(child => {
+                    child.checked = this.checked;
+                });
+            });
+        });
+
+        childCheckboxes.forEach(child => {
+            child.addEventListener('change', function() {
+                syncParentCheckbox(this.dataset.parentId);
+            });
+        });
+
+        allCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateButtonText);
+        });
 
         if (selectAllBtn) {
             selectAllBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                allCheckboxes.forEach(checkbox => {
-                    checkbox.checked = true;
-                });
+                allCheckboxes.forEach(checkbox => checkbox.checked = true);
                 updateButtonText();
             });
         }
@@ -199,40 +210,10 @@
         if (deselectAllBtn) {
             deselectAllBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                allCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
+                allCheckboxes.forEach(checkbox => checkbox.checked = false);
                 updateButtonText();
             });
         }
-
-        childCheckboxes.forEach(child => {
-            child.addEventListener('change', function() {
-                syncParentState(this.dataset.parentId);
-            });
-        });
-
-        parentCheckboxes.forEach(parent => {
-            parent.addEventListener('change', function() {
-                if (!this.checked) {
-                    const parentId = this.dataset.parentId;
-                    const children = document.querySelectorAll(
-                        `.child-checkbox[data-parent-id='${parentId}']`);
-                    children.forEach(child => {
-                        child.checked = false;
-                    });
-                }
-            });
-        });
-
-        parentCheckboxes.forEach(parent => {
-            syncParentState(parent.dataset.parentId);
-        });
-
-        allCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateButtonText);
-        });
-
         updateButtonText();
     });
 </script>

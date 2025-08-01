@@ -189,8 +189,18 @@ class WebController extends Controller
         $lessons = $query->paginate(15)->withQueryString();
 
         $specialties = Specialty::whereNull('parent_id')->orderBy('name')->get();
-        $teachers = User::whereHas('profiles', fn($q) => $q->where('profiles.id', ProfileEnum::PROFESSOR->value))
-            ->orderBy('name')->get();
+
+        $teachers = User::whereHas('profiles', function ($query) {
+            $query->whereIn('profiles.id', [
+                ProfileEnum::PROFESSOR->value,
+                ProfileEnum::COORDENADOR->value
+            ]);
+        })
+            ->whereHas('createdLessons', function ($query) {
+                $query->where('lesson_status', LessonStatusEnum::PUBLICADA->value);
+            })
+            ->orderBy('name')
+            ->get();
 
         return view('web.classes', [
             'lessons' => $lessons,
