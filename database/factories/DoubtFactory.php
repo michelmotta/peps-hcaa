@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,10 @@ class DoubtFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'doubt' => $this->faker->sentence() . '?',
+            'lesson_id' => Lesson::factory(),
+            'user_id' => User::factory(),
+            'answered' => false,
         ];
     }
 }
