@@ -33,9 +33,6 @@ class UserTest extends TestCase
         $this->professor->profiles()->attach(ProfileEnum::PROFESSOR->value);
     }
 
-    /**
-     * Função auxiliar para criar um usuário com todos os dados obrigatórios.
-     */
     private function createCompleteUser(array $overrides = []): User
     {
         return User::factory()->create(array_merge([
@@ -56,13 +53,10 @@ class UserTest extends TestCase
         $user->password = 'senha123';
         $hashedPassword = $user->password;
 
-        // Cenário 1: Criptografa uma nova senha
         $this->assertTrue(Hash::check('senha123', $hashedPassword));
 
-        // --- CORREÇÃO PARA 100% DE COBERTURA ---
-        // Cenário 2: Ignora a atribuição de uma senha nula
         $user->password = null;
-        $this->assertEquals($hashedPassword, $user->password); // A senha antiga deve ser mantida
+        $this->assertEquals($hashedPassword, $user->password);
     }
 
     #[Test]
