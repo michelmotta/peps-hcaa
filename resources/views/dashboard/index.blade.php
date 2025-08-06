@@ -19,7 +19,6 @@
         </div>
         <div class="row">
             <div class="col-lg-12 col-md-12 col-12">
-                <!-- Page header -->
                 <div class="mb-5 text-center">
                     <div class="mb-15">
                         <h2 class="mb-0 text-white" style="font-size: 55px">PEPS | HCAA</h2>
@@ -32,11 +31,8 @@
     <div class="container-fluid mt-n10">
         <div class="row">
             <div class="col-xl-3 col-lg-6 col-md-12 col-12 mb-5">
-                <!-- card -->
                 <div class="card h-100 card-lift">
-                    <!-- card body -->
                     <div class="card-body">
-                        <!-- heading -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <h3 class="mb-0">
@@ -49,7 +45,6 @@
                                 <i data-feather="youtube" height="20" width="20"></i>
                             </div>
                         </div>
-                        <!-- project number -->
                         <div class="lh-1">
                             <h1 class="mb-1 fw-bold text-center">{{ $classesCount }}</h1>
                         </div>
@@ -65,11 +60,8 @@
                 </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-12 col-12 mb-5">
-                <!-- card -->
                 <div class="card h-100 card-lift">
-                    <!-- card body -->
                     <div class="card-body">
-                        <!-- heading -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <h3 class="mb-0">Perguntas Pendentes</h3>
@@ -78,7 +70,6 @@
                                 <i data-feather="message-circle" height="20" width="20"></i>
                             </div>
                         </div>
-                        <!-- project number -->
                         <div class="lh-1">
                             <h1 class="mb-1 fw-bold text-center">{{ $unansweredQuestionsCount }}</h1>
                         </div>
@@ -94,11 +85,8 @@
                 </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-12 col-12 mb-5">
-                <!-- card -->
                 <div class="card h-100 card-lift">
-                    <!-- card body -->
                     <div class="card-body">
-                        <!-- heading -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <h3 class="mb-0">
@@ -111,7 +99,6 @@
                                 <i data-feather="users" height="20" width="20"></i>
                             </div>
                         </div>
-                        <!-- project number -->
                         <div class="lh-1">
                             <h1 class="mb-1 fw-bold text-center">{{ $studentsCount }}</h1>
                         </div>
@@ -127,11 +114,8 @@
                 </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-12 col-12 mb-5">
-                <!-- card -->
                 <div class="card h-100 card-lift">
-                    <!-- card body -->
                     <div class="card-body">
-                        <!-- heading -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <h3 class="mb-0">Sugestões de Aulas</h3>
@@ -140,7 +124,6 @@
                                 <i data-feather="hash" height="20" width="20"></i>
                             </div>
                         </div>
-                        <!-- project number -->
                         <div class="lh-1">
                             <h1 class="mb-1 fw-bold text-center">{{ $suggestionsCount }}</h1>
                         </div>
