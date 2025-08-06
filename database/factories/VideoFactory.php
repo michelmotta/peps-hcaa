@@ -17,7 +17,13 @@ class VideoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->words(3, true) . '.mp4',
+            'path' => 'uploads/fake_videos/' . $this->faker->uuid() . '.mp4',
+            'duration' => $this->faker->time('00:H:i'),
+            'thumbnail_path' => 'uploads/fake_thumbnails/' . $this->faker->uuid() . '.jpg',
+            'mime_type' => 'video/mp4',
+            'size' => $this->faker->numberBetween(5000000, 100000000), // 5MB to 100MB
+            'extension' => 'mp4',
         ];
     }
 }

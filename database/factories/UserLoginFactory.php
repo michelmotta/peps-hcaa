@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\History>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserLogin>
  */
-class HistoryFactory extends Factory
+class UserLoginFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,8 +18,9 @@ class HistoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'topic_id' => Topic::factory(),
             'user_id' => User::factory(),
+            'ip_address' => $this->faker->ipv4(),
+            'user_agent' => $this->faker->userAgent(),
         ];
     }
 }

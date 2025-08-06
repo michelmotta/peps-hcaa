@@ -67,7 +67,7 @@ class User extends Authenticatable implements CanResetPassword
     public function toSearchableArray(): array
     {
         return [
-            'name' => $this->title,
+            'name' => $this->name,
             'email' => $this->email,
             'username' => $this->username,
             'expertise' => $this->expertise,
