@@ -73,16 +73,13 @@ class File extends Model
     {
         try {
             $imagick = new Imagick();
-            // The '[0]' specifies that we want to render the first page of the PDF.
             $imagick->readImage(Storage::disk($disk)->path($pdfPath) . '[0]');
             $imagick->setImageFormat('png');
             
-            // Define the path for the thumbnail
             $thumbnailFilename = pathinfo($pdfPath, PATHINFO_FILENAME) . '.png';
             $thumbnailDirectory = 'uploads/library/thumbnails';
             $fullThumbnailPath = $thumbnailDirectory . '/' . $thumbnailFilename;
 
-            // Save the thumbnail to the public disk
             Storage::disk($disk)->put($fullThumbnailPath, $imagick->getImageBlob());
 
             $imagick->clear();
@@ -90,9 +87,6 @@ class File extends Model
 
             return $fullThumbnailPath;
         } catch (Exception $e) {
-            // Log the error or handle it as needed, but don't block the main file upload.
-            // For example: \Log::error('Failed to create PDF thumbnail: ' . $e->getMessage());
-            dd($e->getMessage());
             return null;
         }
     }

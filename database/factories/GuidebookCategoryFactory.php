@@ -17,7 +17,8 @@ class GuidebookCategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->words(3, true),
+            'icon' => 'book-open',
         ];
     }
 }
