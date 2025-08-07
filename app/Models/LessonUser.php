@@ -114,14 +114,11 @@ class LessonUser extends Pivot
      */
     protected function parseDateAttribute($value)
     {
-        try {
-            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value)) {
-                return Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
-            }
-            return $value;
-        } catch (Exception $e) {
-            return Carbon::now()->format('Y-m-d');
+        if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value)) {
+            return Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
         }
+
+        return $value;
     }
 
     /**

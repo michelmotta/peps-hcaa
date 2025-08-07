@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\File;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,9 @@ class LibraryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->sentence(4),
+            'file_id' => File::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }

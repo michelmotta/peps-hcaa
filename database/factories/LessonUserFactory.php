@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +18,14 @@ class LessonUserFactory extends Factory
      */
     public function definition(): array
     {
+        $finished = $this->faker->boolean();
+
         return [
-            //
+            'lesson_id' => Lesson::factory(),
+            'user_id' => User::factory(),
+            'score' => $finished ? $this->faker->numberBetween(70, 100) : null,
+            'finished' => $finished,
+            'finished_at' => $finished ? now() : null,
         ];
     }
 }
