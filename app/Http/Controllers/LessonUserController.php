@@ -64,14 +64,6 @@ class LessonUserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(LessonUser $lessonUser)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Lesson $lesson, LessonUser $subscription)

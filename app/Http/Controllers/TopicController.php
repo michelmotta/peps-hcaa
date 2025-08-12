@@ -81,14 +81,6 @@ class TopicController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Topic $topic)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Lesson $lesson, Topic $topic)

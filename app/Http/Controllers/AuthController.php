@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ProfileEnum;
+use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\StorePerfilRequest;
 use App\Http\Requests\UpdatePerfilRequest;
 use App\Mail\WelcomeMail;
@@ -26,12 +27,9 @@ class AuthController extends Controller
      * @param  \App\Http\Requests\LoginUserRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request): RedirectResponse
+    public function login(LoginUserRequest $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'username' => ['required'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->validated();
 
         $user = User::where('username', $credentials['username'])->first();
 

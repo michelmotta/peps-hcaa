@@ -60,15 +60,7 @@ class LibraryController extends Controller
                 ->with('error', 'Ocorreu um erro ao cadastrar o arquivo: ' . $e->getMessage());
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Library $library)
-    {
-        //
-    }
-
+    
     /**
      * Show the form for editing the specified resource.
      */

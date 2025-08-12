@@ -81,14 +81,6 @@ class SpecialtyController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Specialty $specialty)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Specialty $specialty)

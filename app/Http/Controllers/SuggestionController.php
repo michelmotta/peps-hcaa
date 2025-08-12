@@ -61,14 +61,6 @@ class SuggestionController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Suggestion $suggestion)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Suggestion $suggestion)

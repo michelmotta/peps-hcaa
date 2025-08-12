@@ -75,14 +75,6 @@ class DoubtController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Doubt $doubt)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Lesson $lesson, Doubt $doubt)

@@ -116,7 +116,7 @@ class GuidebookController extends Controller
             $guidebook->delete();
 
             return redirect()
-                ->route('dashboard.information.index')
+                ->route('dashboard.guidebooks.index')
                 ->with('success', 'O manual foi apagado com sucesso!');
         } catch (Exception $e) {
             return redirect()

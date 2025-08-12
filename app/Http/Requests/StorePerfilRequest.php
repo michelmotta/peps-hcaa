@@ -23,7 +23,7 @@ class StorePerfilRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'email' => 'required|max:255|unique:users,email',
+            'email' => 'required|email|max:255|unique:users,email',
             'cpf' => 'required|max:255|unique:users',
             'username' => 'required|max:255|unique:users',
             'password' => 'required|min:6|max:255|confirmed',

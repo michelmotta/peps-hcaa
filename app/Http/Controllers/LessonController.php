@@ -105,14 +105,6 @@ class LessonController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Lesson $lesson)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Lesson $lesson)
