@@ -41,7 +41,7 @@ class TopicController extends Controller
      */
     public function create(Lesson $lesson)
     {
-        return view('dashboard.topics.create', ['lesson' => $lesson]);
+        return view('dashboard.topics.create', ['lesson' => $lesson, 'topic' => new Topic()]);
     }
 
     /**
@@ -55,6 +55,7 @@ class TopicController extends Controller
             $validatedData['lesson_id'] = $lesson->id;
 
             $validatedData['quiz'] = isset($validatedData['quiz']) ? json_decode($validatedData['quiz'], true) : [];
+            $validatedData['attachments'] = isset($validatedData['attachments']) ? json_decode($validatedData['attachments'], true) : [];
 
             $topic = Topic::create($validatedData);
 
@@ -95,6 +96,8 @@ class TopicController extends Controller
     {
         try {
             $validatedData = $request->validated();
+
+            $validatedData['attachments'] = isset($validatedData['attachments']) ? json_decode($validatedData['attachments'], true) : [];
 
             $topic->update($validatedData);
 

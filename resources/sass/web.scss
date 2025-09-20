@@ -3576,3 +3576,56 @@ footer,
         }
     }
 }
+
+@media (max-width: 768px) {
+    .home-banner {
+        padding-bottom: 50px !important;
+    }
+
+    .cards-infos {
+        .card-info {
+            margin-top: 30px !important;
+        }
+    }
+
+    .especialidades-slider {
+        margin-top: 60px;
+    }
+
+    .classes-list {
+        .class-card {
+            .class-infos {
+                .read-more-btn {
+                    font-size: 12px !important;
+                }
+            }
+        }
+    }
+
+    .teacher-card-horizontal {
+        flex-direction: column;
+        text-align: center;
+
+        .teacher-photo-wrapper {
+            margin-bottom: 1rem;
+        }
+
+        .teacher-footer-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+
+            .teacher-stats {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+
+            }
+            a {
+                display: inline-block;
+                margin-top: 20px !important;
+            }
+        }
+    }
+}

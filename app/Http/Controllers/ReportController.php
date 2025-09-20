@@ -30,10 +30,10 @@ class ReportController extends Controller
 
             $dateFilters = function ($query) use ($request) {
                 $query->when($request->start_date, function ($q, $date) {
-                    $q->where('lesson_user.created_at', '>=', $date);
+                    $q->whereDate('lesson_user.created_at', '>=', $date);
                 })
                     ->when($request->end_date, function ($q, $date) {
-                        $q->where('lesson_user.created_at', '<=', $date);
+                        $q->whereDate('lesson_user.created_at', '<=', $date);
                     });
             };
 
@@ -70,10 +70,10 @@ class ReportController extends Controller
 
         $dateFilters = function ($query) use ($request) {
             $query->when($request->start_date, function ($q, $date) {
-                $q->where('lesson_user.created_at', '>=', $date);
+                $q->whereDate('lesson_user.created_at', '>=', $date);
             })
                 ->when($request->end_date, function ($q, $date) {
-                    $q->where('lesson_user.created_at', '<=', $date);
+                    $q->whereDate('lesson_user.created_at', '<=', $date);
                 });
         };
 

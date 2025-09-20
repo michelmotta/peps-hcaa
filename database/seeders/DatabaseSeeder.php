@@ -14,19 +14,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(ProfileSeeder::class);
-        $this->call(FileSeeder::class);
+        //$this->call(FileSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(ProfileUserSeeder::class);
-        $this->call(SpecialtySeeder::class);
-        $this->call(SuggestionSeeder::class);
-        $this->call(LessonSeeder::class);
-        $this->call(VideoSeeder::class);
-        $this->call(TopicSeeder::class);
-        $this->call(QuizSeeder::class);
-        $this->call(LessonUserSeeder::class);
-        $this->call(DoubtSeeder::class);
-        $this->call(GuidebookCategorySeeder::class);
-        $this->call(GuidebookSeeder::class);
-        $this->call(LibrarySeeder::class);
+        //$this->call(SpecialtySeeder::class);
+        //$this->call(SuggestionSeeder::class);
+        //$this->call(LessonSeeder::class);
+        //$this->call(VideoSeeder::class);
+        //$this->call(TopicSeeder::class);
+        //$this->call(QuizSeeder::class);
+        //$this->call(LessonUserSeeder::class);
+        //$this->call(DoubtSeeder::class);
+        //$this->call(GuidebookCategorySeeder::class);
+        //$this->call(GuidebookSeeder::class);
+        //$this->call(LibrarySeeder::class);
     }
 }

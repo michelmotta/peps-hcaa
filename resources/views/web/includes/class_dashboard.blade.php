@@ -114,10 +114,10 @@
                         </li>
                     </ul>
                     <div class="tab-content" id="cursoTabsContent">
-                        <div class="tab-pane fade" id="anexos" role="tabpanel">
+                        <div class="tab-pane fade show active" id="anexos" role="tabpanel">
                             @include('web.includes.class_dashboard_includes.content')
                         </div>
-                        <div class="tab-pane fade show active" id="conteudo" role="tabpanel">
+                        <div class="tab-pane fade" id="conteudo" role="tabpanel">
                             @include('web.includes.class_dashboard_includes.informations')
                         </div>
                         <div class="tab-pane fade" id="comunicados" role="tabpanel">

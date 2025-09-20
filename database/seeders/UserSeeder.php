@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
                 'active' => true,
                 'biography' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam consequat, nibh dignissim luctus consectetur, felis leo viverra sapien, id porttitor lorem est et lectus. Phasellus erat augue, tincidunt quis tortor ac, blandit pretium erat. Vestibulum placerat sapien turpis, at blandit turpis facilisis id. Suspendisse nunc dui, facilisis at egestas ac, viverra et massa.',
                 'password' =>  Hash::make('505426'),
-                'file_id' => 9,
+                'file_id' => null,
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
             ],
@@ -38,7 +38,7 @@ class UserSeeder extends Seeder
                 'active' => true,
                 'biography' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam consequat, nibh dignissim luctus consectetur, felis leo viverra sapien, id porttitor lorem est et lectus. Phasellus erat augue, tincidunt quis tortor ac, blandit pretium erat. Vestibulum placerat sapien turpis, at blandit turpis facilisis id. Suspendisse nunc dui, facilisis at egestas ac, viverra et massa.',
                 'password' =>  Hash::make('505426'),
-                'file_id' => 9,
+                'file_id' => null,
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
             ],
@@ -51,7 +51,7 @@ class UserSeeder extends Seeder
                 'active' => true,
                 'biography' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam consequat, nibh dignissim luctus consectetur, felis leo viverra sapien, id porttitor lorem est et lectus. Phasellus erat augue, tincidunt quis tortor ac, blandit pretium erat. Vestibulum placerat sapien turpis, at blandit turpis facilisis id. Suspendisse nunc dui, facilisis at egestas ac, viverra et massa.',
                 'password' =>  Hash::make('505426'),
-                'file_id' => 9,
+                'file_id' => null,
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
             ],
@@ -62,10 +62,10 @@ class UserSeeder extends Seeder
                 'username' => 'estudante',
                 'active' => true,
                 'password' =>  Hash::make('505426'),
-                'file_id' => 9,
+                'file_id' => null,
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
-            ],
+            ]/* ,
             [
                 'name' => 'Lucas Almeida Ribeiro',
                 'email' => 'lucas.ribeiro@ufms.br',
@@ -285,18 +285,18 @@ class UserSeeder extends Seeder
                 'file_id' => 9,
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
-            ],
+            ], */
         ];
 
         foreach ($users as $user) {
             User::factory()->create($user);
         }
 
-        $files = File::all();
+        /* $files = File::all();
 
         foreach ($files as $file) {
             $file->user_id = 1;
             $file->save();
-        }
+        } */
     }
 }

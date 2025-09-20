@@ -12,7 +12,7 @@ class Topic extends Model
     use HasFactory, Searchable;
 
     protected $casts = [
-        'attachments' => 'collection',
+        'attachments' => 'array',
     ];
 
     /**
@@ -74,5 +74,18 @@ class Topic extends Model
     public function quizzes()
     {
         return $this->hasMany(Quiz::class, 'topic_id');
+    }
+
+    /**
+     * Always return the attachments attribute as a Collection.
+     *
+     * @param string|array|null $value
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAttachmentsAttribute($value)
+    {
+        $data = is_array($value) ? $value : json_decode($value, true);
+
+        return collect($data ?? []);
     }
 }

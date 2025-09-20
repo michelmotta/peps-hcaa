@@ -3,14 +3,12 @@ import Swal from 'sweetalert2';
 export const VideoUploadModule = {
     init() {
         const fileInput = document.getElementById('file');
-
         if (!fileInput) {
             return;
         }
 
         const videoUploadWrapper = document.getElementById('video-upload-wrapper');
-        const progressBar = document.getElementById('progress-bar');
-        const progressContainer = document.getElementById('progress-container');
+        const loadingContainer = document.getElementById('loading-container');
         const uploadStatus = document.getElementById('upload-status');
         const videoIdInput = document.getElementById('video-id-input');
         const videoPreviewContainer = document.getElementById('video-preview-container');
@@ -22,13 +20,7 @@ export const VideoUploadModule = {
         function resetUploader() {
             if (uploadStatus) uploadStatus.innerHTML = '';
             if (videoPreviewContainer) videoPreviewContainer.style.display = 'none';
-            if (progressContainer) progressContainer.style.display = 'none';
-            if (progressBar) {
-                progressBar.style.width = '0%';
-                progressBar.textContent = '0%';
-                progressBar.classList.remove('bg-success');
-                progressBar.classList.add('progress-bar-animated');
-            }
+            if (loadingContainer) loadingContainer.style.display = 'none';
             videoIdInput.value = '';
             fileInput.value = '';
             fileInput.disabled = false;
@@ -40,27 +32,42 @@ export const VideoUploadModule = {
             const uploadUrl = this.dataset.uploadUrl;
             if (!file || !uploadUrl) return;
 
+            fileInput.classList.remove('is-invalid');
+            if (uploadStatus) uploadStatus.innerHTML = '';
+
+            const maxSize = 300 * 1024 * 1024;
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Arquivo muito grande!',
+                    text: 'São permitidos vídeos com no máximo 300MB.'
+                });
+                this.value = '';
+                return;
+            }
+
+            if (file.type !== 'video/mp4') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Formato inválido!',
+                    text: 'São permitidos apenas arquivos MP4.'
+                });
+                this.value = '';
+                return;
+            }
+
+            resetUploader();
+
             if (videoFileName) videoFileName.textContent = file.name;
             if (videoFileSize) videoFileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
 
             const formData = new FormData();
             formData.append('file', file);
 
-            resetUploader();
-            if (progressContainer) progressContainer.style.display = 'block';
+            if (loadingContainer) loadingContainer.style.display = 'block';
             this.disabled = true;
 
-            const config = {
-                onUploadProgress: function (progressEvent) {
-                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    if (progressBar) {
-                        progressBar.style.width = percentCompleted + '%';
-                        progressBar.textContent = `Enviando... ${percentCompleted}%`;
-                    }
-                }
-            };
-
-            axios.post(uploadUrl, formData, config)
+            axios.post(uploadUrl, formData)
                 .then(response => {
                     if (response.data.success) {
                         videoIdInput.value = response.data.video_id;
@@ -74,15 +81,32 @@ export const VideoUploadModule = {
                         }
                         if (videoUploadWrapper) videoUploadWrapper.style.display = 'none';
                         if (videoPreviewContainer) videoPreviewContainer.style.display = 'block';
-                        if (progressContainer) progressContainer.style.display = 'none';
+                        if (loadingContainer) loadingContainer.style.display = 'none'; // Updated
                         this.disabled = false;
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Upload concluído!',
+                            text: 'Seu vídeo foi enviado com sucesso.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                     } else {
-                        throw new Error(response.data.message || 'Server error during upload.');
+                        throw new Error(response.data.message || 'Erro no servidor');
                     }
                 })
                 .catch(error => {
-                    const message = error.response?.data?.errors?.file?.[0] || error.response?.data?.message || 'Falha no envio do vídeo.';
-                    if (uploadStatus) uploadStatus.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+                    const message = error.response?.data?.errors?.file?.[0]
+                        || error.response?.data?.message
+                        || 'Falha no envio do vídeo.';
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Falha no envio',
+                        text: message
+                    });
+
+                    fileInput.classList.add('is-invalid');
                     resetUploader();
                 });
         });
@@ -114,14 +138,24 @@ export const VideoUploadModule = {
                     .then(response => {
                         if (response.data.success) {
                             resetUploader();
-                            if (uploadStatus) uploadStatus.innerHTML = `<div class="alert alert-info">${response.data.message}</div>`;
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Vídeo removido',
+                                text: response.data.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
                         } else {
-                            throw new Error(response.data.message || 'Could not delete video.');
+                            throw new Error(response.data.message || 'Não foi possível remover.');
                         }
                     })
                     .catch(error => {
                         const message = error.response?.data?.message || 'Erro ao remover o vídeo.';
-                        if (uploadStatus) uploadStatus.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro',
+                            text: message
+                        });
                     });
             });
         }

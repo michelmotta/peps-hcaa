@@ -6,13 +6,10 @@
                 @php
                     $isWatched = in_array($topic->id, $watchedTopicIds);
                 @endphp
-                {{-- The topic-watched class is now applied directly to the item --}}
                 <div class="accordion-item {{ $isWatched ? 'topic-watched' : '' }}">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#topic-collapse-{{ $topic->id }}">
-
-                            {{-- Status icon remains the same --}}
                             <div class="topic-status-icon">
                                 @if ($isWatched)
                                     <i class="bi bi-check-circle-fill"></i>
@@ -20,8 +17,6 @@
                                     <i class="bi bi-circle"></i>
                                 @endif
                             </div>
-
-                            {{-- SEMANTIC FIX: Replaced H4 with divs for correct structure --}}
                             <div class="topic-title-content">
                                 <span class="topic-number">Tópico {{ $index + 1 }}</span>
                                 <div class="topic-main-title">{{ $topic->title }}</div>
@@ -34,14 +29,15 @@
                             <div class="topic-description">
                                 {!! $topic->description !!}
                             </div>
-
-                            @if ($topic->attachments->isNotEmpty())
+                            @if ($topic->attachments)
                                 <div class="attachment-list">
                                     <h5 class="attachment-title"><i class="bi bi-paperclip"></i> Materiais
                                         Complementares</h5>
+                                        @php
+                                            $attachments = is_string($topic->attachments) ? json_decode($topic->attachments, true) : $topic->attachments;
+                                        @endphp
                                     <ul class="list-unstyled">
-                                        @foreach ($topic->attachments as $attachment)
-                                            {{-- UX FIX: The entire list item is now a downloadable link --}}
+                                        @foreach ($attachments as $attachment)
                                             <li>
                                                 <a href="{{ Storage::url($attachment['path']) }}"
                                                     class="attachment-item" download>

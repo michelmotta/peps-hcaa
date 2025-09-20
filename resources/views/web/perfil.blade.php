@@ -30,7 +30,7 @@
                                 </div>
                             </label>
                             <input type="file" name="file" id="file"
-                                class="d-none @error('file') is-invalid @enderror"
+                                class="visually-hidden @error('file') is-invalid @enderror"
                                 onchange="document.getElementById('profile-picture-preview').src = window.URL.createObjectURL(this.files[0])">
                         </div>
                         <h5 class="profile-name text-center mt-3">{{ $user->name ?? 'Novo Usuário' }}</h5>
@@ -148,7 +148,7 @@
                                 <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox"
                                     value="1" id="terms" name="terms" required>
                                 <label class="form-check-label" for="terms">
-                                    Eu li e concordo com os <a href="#" target="_blank">Termos de Uso</a>.
+                                    Eu li e concordo com os <a href="{{ route('web.user.terms') }}" target="_blank">Termos de Uso</a>.
                                 </label>
                                 @error('terms')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>

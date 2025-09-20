@@ -10,7 +10,6 @@
         </div>
     </div>
     <div class="container-fluid">
-        {{-- ✅ Filter Section with Date Inputs --}}
         <div class="row mb-4 justify-content-center">
             <div class="col-lg-10">
                 <div class="card p-4 shadow-sm">

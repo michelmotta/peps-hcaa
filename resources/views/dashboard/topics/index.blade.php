@@ -14,7 +14,6 @@
         </div>
     </div>
     <div class="container-fluid">
-        {{-- The top action bar remains the same --}}
         <div class="card shadow-sm border-0 mb-4 mt-4">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
@@ -41,20 +40,22 @@
                 </div>
             </div>
         </div>
-
         <div class="card shadow-sm border-0">
             <div class="list-group list-group-flush">
                 @forelse ($topics as $topic)
                     <div class="list-group-item p-3">
                         <div class="d-flex align-items-center">
-                            <a href="{{ asset('storage/' . $topic->video->path) }}" data-fancybox
+                            @if ($topic->video)
+                                <a href="{{ asset('storage/' . $topic->video->path) }}" data-fancybox
                                 class="d-none d-md-block flex-shrink-0 me-3">
-                                <img src="{{ asset('storage/' . $topic->video->thumbnail_path) }}"
-                                    style="width: 160px; height: 90px; object-fit: cover;" class="rounded"
-                                    alt="Thumbnail">
-                            </a>
+                                    <img src="{{ asset('storage/' . $topic->video->thumbnail_path) }}"
+                                        style="width: 160px; height: 90px; object-fit: cover;"
+                                        class="rounded"
+                                        alt="Thumbnail">
+                                </a>
+                            @endif
                             <div class="flex-grow-1">
-                                <h4 class="fw-bold mb-1">{{ $loop->iteration }}. {{ $topic->title }}</h4>
+                                <h4 class="fw-bold mb-1">{{ $topic->title }}</h4>
                                 <p class="text-muted small mb-2">
                                     {!! Str::limit(strip_tags($topic->description), 120) !!}
                                 </p>
@@ -65,7 +66,7 @@
                                     </span>
                                     <span title="Anexos">
                                         <i data-feather="paperclip" class="icon-sm me-1"></i>
-                                        {{ collect($topic->attachments)->count() }} Anexos
+                                        {{ $topic->attachments->count() }} Anexos
                                     </span>
                                     <span title="Questões">
                                         <i data-feather="help-circle" class="icon-sm me-1"></i>

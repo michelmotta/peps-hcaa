@@ -17,11 +17,11 @@ class VideoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:mp4|max:102400',
+            'file' => 'required|file|mimes:mp4|max:307200',
         ], [
             'file.required' => 'Por favor, selecione um arquivo de vídeo.',
-            'file.mimes' => 'O vídeo deve ser um arquivo do tipo: mp4, webm.',
-            'file.max' => 'O vídeo não pode ser maior que 100MB.',
+            'file.mimes' => 'O vídeo deve ser um arquivo do tipo: mp4.',
+            'file.max' => 'O vídeo não pode ser maior que 300MB.',
         ]);
 
         try {

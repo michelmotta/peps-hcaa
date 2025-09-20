@@ -6,7 +6,7 @@
                 <label for="name" class="form-label">Nome</label>
                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="title"
                     placeholder="Digite o título" name="name"
-                    value="@if (isset($lesson)) {{ $lesson->name }}@else{{ old('name') }} @endif"
+                    value="@if(isset($lesson)){{ $lesson->name }}@else{{ old('name') }}@endif"
                     required>
                 @error('name')
                     <span class="invalid-feedback" role="alert">
@@ -76,9 +76,9 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <label for="workload" class="form-label">Carga Horária</label>
-                <input type="text" class="form-control @error('workload') is-invalid @enderror" id="workload"
+                <input type="number" class="form-control @error('workload') is-invalid @enderror" id="workload"
                     placeholder="Digite o título" name="workload"
-                    value="@if (isset($lesson)) {{ $lesson->workload }}@else{{ old('workload') }} @endif"
+                    value="@if(isset($lesson)){{ $lesson->workload }}@else{{ old('workload') }}@endif"
                     required>
                 @error('workload')
                     <span class="invalid-feedback" role="alert">

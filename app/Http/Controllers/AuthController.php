@@ -98,7 +98,7 @@ class AuthController extends Controller
 
             return redirect()
                 ->route('login')
-                ->with('success', 'O usuário foi cadastrado com sucesso!');
+                ->with('success', 'O usuário foi cadastrado com sucesso. Aguarde a liberação de acesso.');
         } catch (Exception $e) {
             return redirect()
                 ->route('web.perfil')

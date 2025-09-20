@@ -93,7 +93,7 @@
                                         </div>
                                     </div>
                                     <hr>
-                                    <p class="mb-0">{{ $lesson->description }}</p>
+                                    <p class="mb-0">{!! $lesson->description !!}</p>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +165,7 @@
                                             aria-labelledby="heading{{ $topic->id }}"
                                             data-bs-parent="#topicsAccordion">
                                             <div class="accordion-body">
-                                                {{ $topic->description }}
+                                                {!! $topic->description !!}
                                             </div>
                                         </div>
                                     </div>

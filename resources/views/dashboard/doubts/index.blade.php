@@ -76,7 +76,7 @@
                         <div class="d-flex justify-content-end">
                             <div class="flex-grow-1 text-end">
                                 <div class="chat-bubble-answer d-inline-block text-start p-3 rounded-3">
-                                    <p class="mb-0">{{ $doubt->description }}</p>
+                                    <p class="mb-0">{!! $doubt->description !!}</p>
                                 </div>
                                 <small class="text-muted mt-1 d-block">Respondido em
                                     {{ $doubt->answered_at_formatted }}</small>

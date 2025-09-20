@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->foreignId('lesson_id')->constrained('lessons')->nullOnDelete();
-            $table->foreignId('video_id')->constrained('videos')->nullOnDelete();
+            $table->foreignId('video_id')->nullable()->constrained('videos')->nullOnDelete();
             $table->text('resume');
             $table->longText('description');
             $table->jsonb('attachments')->nullable();

@@ -5,16 +5,16 @@
             <div class="col-lg-12 col-md-12 col-12">
                 <div class="p-6 d-lg-flex justify-content-between align-items-center ">
                     <div class="d-md-flex align-items-center">
-                        <img src="{{ asset('storage/' . Auth::user()->file->path) }}" alt="Image"
-                            class="rounded-circle avatar avatar-xl">
+                        <img src="{{ Auth::user()->file?->path
+                            ? asset('storage/' . Auth::user()->file->path)
+                            : 'https://placehold.co/100x100/EBF4FF/7F9CF5?text=' . strtoupper(substr(Auth::user()->name, 0, 1)) }}"
+                            alt="Image" class="rounded-circle avatar avatar-xl">
                         <div class="ms-md-4 mt-3 mt-md-0 lh-1">
                             <h3 class="text-white mb-0">Seja bem-vindo(a), {{ Auth::user()->name }}</h3>
                             <small class="text-white">{{ Auth::user()->profiles->pluck('name')->implode(' | ') }}</small>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
         <div class="row">

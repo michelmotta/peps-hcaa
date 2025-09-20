@@ -54,8 +54,10 @@
                             <a class="rounded-circle" href="#!" role="button" id="dropdownUser"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <div class="avatar avatar-md avatar-indicators avatar-online">
-                                    <img alt="avatar" src="{{ asset('storage/' . Auth::user()->file->path) }}"
-                                        class="rounded-circle" />
+                                    <img alt="avatar" class="rounded-circle"
+                                        src="{{ Auth::user()->file?->path
+                                            ? asset('storage/' . Auth::user()->file->path)
+                                            : 'https://placehold.co/40x40/EBF4FF/7F9CF5?text=' . strtoupper(substr(Auth::user()->name, 0, 1)) }}">
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">

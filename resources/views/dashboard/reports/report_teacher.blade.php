@@ -162,7 +162,7 @@
                                                         <span class="badge bg-success"><i data-feather="check-circle" class="icon-xs me-1"></i>Publicada</span>
                                                     @endif
                                                 </td>
-                                                <td class="text-center">{{ $lesson->topics_count }}</td>
+                                                <td class="text-center">{{ count($lesson->topics) }}</td>
                                                 <td class="text-center">{{ $lesson->workload }}h</td>
                                                 <td class="text-center">{{ $lesson->subscriptions_count }}</td>
                                                 <td class="text-center">{{ $lesson->average_score ? number_format($lesson->average_score, 1) : '-' }}</td>
