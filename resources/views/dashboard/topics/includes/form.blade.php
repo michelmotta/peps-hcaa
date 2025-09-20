@@ -167,80 +167,87 @@
         </div>
     </div>
     <div class="card mb-5 shadow-sm">
-    <div class="card-header bg-body-tertiary d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">
-            <i data-feather="paperclip" class="me-2"></i>
-            Anexos
-        </h4>
-    </div>
-    <div class="card-body p-4">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col" style="width: 5%;">Tipo</th>
-                        <th scope="col">Arquivo</th>
-                        <th scope="col" style="width: 15%;">Tamanho</th>
-                        <th scope="col" class="text-end" style="width: 20%;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (isset($topic) && $topic->attachments->isNotEmpty())
-                        @foreach ($topic->attachments as $file)
-                             <tr class="attachment-card" data-path="{{ $file['path'] ?? '' }}">
-                                <td>
-                                    @php
-                                        $ext = strtolower($file['extension'] ?? '');
-                                        $iconClass = 'bi-file-earmark-text';
-                                        if (in_array($ext, ['png', 'jpg', 'jpeg'])) { $iconClass = 'bi-file-earmark-image'; }
-                                        elseif (in_array($ext, ['mp4', 'mov', 'avi'])) { $iconClass = 'bi-file-earmark-play'; }
-                                        elseif (in_array($ext, ['pdf'])) { $iconClass = 'bi-filetype-pdf'; }
-                                    @endphp
-                                    <i class="{{ $iconClass }} fs-4 text-primary"></i>
-                                </td>
-                                <td class="fw-semibold text-dark">
-                                    {{ $file['name'] ?? 'Arquivo' }}
-                                </td>
-                                <td class="text-muted">
-                                    {{ isset($file['size']) ? round($file['size'] / 1024 / 1024, 2) . ' MB' : '' }}
-                                </td>
-                                <td class="text-end">
-                                    <a href="{{ Storage::url($file['path'] ?? '') }}" target="_blank" class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="tooltip" title="Visualizar">
-                                        <i class="bi bi-eye"></i>
-                                     </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-bs-toggle="tooltip" title="Remover">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+        <div class="card-header bg-body-tertiary d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i data-feather="paperclip" class="me-2"></i>
+                Anexos
+            </h4>
+        </div>
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" style="width: 5%;">Tipo</th>
+                            <th scope="col">Arquivo</th>
+                            <th scope="col" style="width: 15%;">Tamanho</th>
+                            <th scope="col" class="text-end" style="width: 20%;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (isset($topic) && $topic->attachments->isNotEmpty())
+                            @foreach ($topic->attachments as $file)
+                                <tr class="attachment-card" data-path="{{ $file['path'] ?? '' }}">
+                                    <td>
+                                        @php
+                                            $ext = strtolower($file['extension'] ?? '');
+                                            $iconClass = 'bi-file-earmark-text';
+                                            if (in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                                                $iconClass = 'bi-file-earmark-image';
+                                            } elseif (in_array($ext, ['mp4', 'mov', 'avi'])) {
+                                                $iconClass = 'bi-file-earmark-play';
+                                            } elseif (in_array($ext, ['pdf'])) {
+                                                $iconClass = 'bi-filetype-pdf';
+                                            }
+                                        @endphp
+                                        <i class="{{ $iconClass }} fs-4 text-primary"></i>
+                                    </td>
+                                    <td class="fw-semibold text-dark">
+                                        {{ $file['name'] ?? 'Arquivo' }}
+                                    </td>
+                                    <td class="text-muted">
+                                        {{ isset($file['size']) ? round($file['size'] / 1024 / 1024, 2) . ' MB' : '' }}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ Storage::url($file['path'] ?? '') }}" target="_blank"
+                                            class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="tooltip"
+                                            title="Visualizar">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
+                                            data-bs-toggle="tooltip" title="Remover">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr id="no-attachments-row">
+                                <td colspan="4" class="text-center text-muted p-4">
+                                    <i class="bi bi-folder-x fs-2"></i>
+                                    <p class="mt-2 mb-0">Nenhum anexo salvo.</p>
                                 </td>
                             </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="4" class="text-center text-muted p-4">
-                                <i class="bi bi-folder-x fs-2"></i>
-                                <p class="mt-2 mb-0">Nenhum anexo salvo.</p>
-                            </td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
-        </div>
-
-        <hr class="my-4">
-
-        <h6 class="fw-bold text-muted mb-3">ADICIONAR NOVOS ARQUIVOS</h6>
-        <div id="dropzone" class="dropzone border-2 border-dashed rounded-3 bg-light p-4 text-center">
-            <div class="dz-message">
-                <i data-feather="upload-cloud" class="icon-xl text-muted"></i>
-                <h5 class="mt-2">Arraste os arquivos ou clique aqui para enviar</h5>
-                <p class="text-muted small">Você pode adicionar múltiplos arquivos</p>
+                        @endif
+                    </tbody>
+                </table>
             </div>
+
+            <hr class="my-4">
+
+            <h6 class="fw-bold text-muted mb-3">ADICIONAR NOVOS ARQUIVOS</h6>
+            <div id="dropzone" class="dropzone border-2 border-dashed rounded-3 bg-light p-4 text-center">
+                <div class="dz-message">
+                    <i data-feather="upload-cloud" class="icon-xl text-muted"></i>
+                    <h5 class="mt-2">Arraste os arquivos ou clique aqui para enviar</h5>
+                    <p class="text-muted small">Você pode adicionar múltiplos arquivos</p>
+                </div>
+            </div>
+            <input type="hidden" name="attachments" id="attachments" value='{!! json_encode($topic->attachments) !!}'>
+
+            <h4 class="text-center text-danger mt-5">**Não esqueça de salvar as alterações**</h4>
         </div>
-        <input type="hidden" name="attachments" id="attachments" value='@json($topic->attachments)'>
-        
-        <h4 class="text-center text-danger mt-5">**Não esqueça de salvar as alterações**</h4>
     </div>
-</div>
     <div class="card mb-5 shadow-sm">
         <div class="card-header">
             <h4 class="mb-0 d-flex align-items-center">

@@ -59,7 +59,6 @@
                                     @endforeach
                                 </div>
                             @endif
-
                             @if (!$loop->last)
                                 <hr class="my-2">
                             @endif
@@ -90,11 +89,30 @@
         <div class="col-md-12">
             <div class="mb-3">
                 <label for="file" class="form-label">Imagem Destaque</label>
-                <input type="file" class="form-control @error('file') is-invalid @enderror" id="file"
-                    name="file">
-                <small class="d-block">Formatos permitidos: JPG|JPEG|PNG|GIF. Tamanho máximo: 2MB</small>
+                <div class="d-flex align-items-center">
+                    @if (isset($lesson) && $lesson->file)
+                        <div class="me-4 flex-shrink-0">
+                            <a href="{{ Storage::url($lesson->file->path) }}" data-fancybox>
+                                <img src="{{ Storage::url($lesson->file->path) }}" alt="Imagem Destaque Atual"
+                                    class="img-thumbnail"
+                                    style="width: 200px; height: 150px; object-fit: cover;">
+                            </a>
+                        </div>
+                    @endif
+                    <div class="flex-grow-1">
+                        <input type="file" class="form-control @error('file') is-invalid @enderror" id="file" name="file" accept="image/*">
+                        <small class="d-block mt-2">
+                            Formatos permitidos: JPG, PNG, GIF. (Máx: 10MB)
+                        </small>
+                        @if (isset($lesson) && $lesson->file)
+                            <small class="d-block mt-1">
+                                <strong>Enviar um novo arquivo irá substituir o atual.</strong>
+                            </small>
+                        @endif
+                    </div>
+                </div>
                 @error('file')
-                    <span class="invalid-feedback" role="alert">
+                    <span class="invalid-feedback d-block" role="alert">
                         {{ $message }}
                     </span>
                 @enderror

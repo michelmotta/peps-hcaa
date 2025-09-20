@@ -137,16 +137,22 @@ class LessonController extends Controller
     {
         try {
             $validatedData = $request->validated();
+            $oldFile = null;
 
             if ($request->hasFile('file')) {
                 if ($lesson->file) {
-                    $lesson->file->delete();
+                    $oldFile = $lesson->file;
                 }
-                $file = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/lessons');
-                $validatedData['file_id'] = $file->id;
+
+                $newFile = File::uploadSingleFile($request->file('file'), Auth::id(), 'uploads/lessons');
+                $validatedData['file_id'] = $newFile->id;
             }
 
             $lesson->update($validatedData);
+
+            if ($oldFile) {
+                $oldFile->delete();
+            }
 
             $lesson->specialties()->sync($request->input('specialty_ids', []));
 

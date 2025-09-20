@@ -27,7 +27,7 @@ class UpdateLessonRequest extends FormRequest
             'workload' => 'required|integer',
             'specialty_ids' => 'nullable|array',
             'specialty_ids.*' => 'exists:specialties,id',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240',
         ];
     }
 }

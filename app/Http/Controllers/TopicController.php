@@ -169,7 +169,7 @@ class TopicController extends Controller
             ]);
         }
 
-        return response()->json(['error' => 'No file uploaded.'], 400);
+        return response()->json(['message' => 'Ocorreu um erro com o upload do arquivo.'], 400);
     }
 
     public function attachmentsDelete(Request $request)
@@ -179,6 +179,6 @@ class TopicController extends Controller
             Storage::delete($path);
         }
 
-        return response()->json(['status' => 'deleted']);
+        return response()->json(['message' => 'Arquivo apagado com sucesso.']);
     }
 }
