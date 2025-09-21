@@ -73,7 +73,23 @@
                 @enderror
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label for="sector" class="form-label">Setor de Trabalho</label>
+                <select name="sector_id" id="sector_id" class="form-select">
+                    <option value="">-- Selecione um setor</option>
+                    @foreach ($sectors as $sector)
+                        <option value="{{ $sector->id }}" @if(isset($user) && $user->sector_id == $sector->id) selected @endif>{{ $sector->name }}</option>
+                    @endforeach
+                </select>
+                @error('expertise')
+                    <span class="invalid-feedback" role="alert">
+                        {{ $message }}
+                    </span>
+                @enderror
+            </div>
+        </div>
+        <div class="col-md-4">
             <div class="mb-3">
                 <label for="expertise" class="form-label">Especialidade</label>
                 <input type="text" class="form-control @error('expertise') is-invalid @enderror" id="expertise"
@@ -86,7 +102,7 @@
                 @enderror
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="mb-3">
                 <label for="file" class="form-label">Foto de Perfil</label>
                 <input type="file" class="form-control @error('file') is-invalid @enderror" id="file"
@@ -143,7 +159,6 @@
                 @enderror
             </div>
         </div>
-        <!-- Editor -->
         <div class="col-md-12">
             <div class="mt-2 mb-4">
                 <label class="form-label">Biografia</label>

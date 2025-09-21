@@ -23,7 +23,6 @@ export class FileUploadModule {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
             success: (file, response) => {
-                // Sempre ler o estado atual do hidden input
                 const currentFiles = FileUploadModule.parseUploadedFiles(attachmentsInput.value);
                 currentFiles.push(response);
                 attachmentsInput.value = JSON.stringify(currentFiles);
@@ -105,10 +104,8 @@ export class FileUploadModule {
                     return;
                 }
 
-                // Remove do DOM
                 card.remove();
 
-                // Atualiza o hidden input
                 const currentFiles = FileUploadModule.parseUploadedFiles(attachmentsInput.value);
                 const newFiles = currentFiles.filter(file => file.path !== path);
                 attachmentsInput.value = JSON.stringify(newFiles);

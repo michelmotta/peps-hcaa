@@ -26,8 +26,8 @@ export class VideoModule {
 class ProgressManager {
     constructor(topicItems) {
         this.topicItems = topicItems;
-        this.progressBar = document.querySelector('.course-progress-bar .progress-bar');
-        this.progressText = document.querySelector('.course-progress-bar small');
+        this.progressBar = document.querySelector('.progress .progress-bar');
+        this.progressText = document.querySelector('.playlist-progress-text');
     }
     
     updateProgressBar() {
@@ -52,7 +52,7 @@ class TopicManager {
         this.sentHistory = sentHistory;
         this.progressManager = progressManager;
         this.sentEvent = false;
-        this.mustWatchPercentage = 0.1;
+        this.mustWatchPercentage = 0.8;
     }
     
     init() {

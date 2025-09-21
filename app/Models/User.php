@@ -32,6 +32,7 @@ class User extends Authenticatable implements CanResetPassword
         'expertise',
         'username',
         'file_id',
+        'sector_id',
         'password',
         'biography',
     ];

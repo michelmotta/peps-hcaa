@@ -26,7 +26,7 @@
                 <div class="col-md-12">
                     <div class="mt-2 mb-4">
                         <label class="form-label">Resumo</label>
-                        <textarea name="resume" id="resume" class="form-control">@if(isset($topic)){{ $topic->resume }}@else{{ old('resume') }}@endif</textarea>
+                        <textarea name="resume" id="resume" class="form-control">@if (isset($topic)){{ $topic->resume }}@else{{ old('resume') }}@endif</textarea>
                         @error('resume')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
@@ -262,39 +262,47 @@
                     <i class="bi bi-gear-fill me-2 icon-sm"></i>
                     Configurar Questionário
                 </button>
-
                 <h4 class="text-center text-danger mt-5">**Não esqueça de salvar as alterações**</h4>
-
                 <div class="modal fade" id="avaliacaoModal" data-bs-backdrop="static" data-bs-keyboard="false"
                     tabindex="-1" aria-labelledby="exampleModalLabel">
                     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                    <i class="bi bi-gear-fill me-2 icon-xs"></i>
-                                    Configurar Questionário
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Editor de Questionário
                                 </h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
                             </div>
-                            <div class="modal-body bg-light">
-                                <div id="perguntasContainer" class="accordion mb-3"></div>
-
-                                <button type="button" class="btn btn-outline-success mb-3 mt-8"
-                                    id="adicionarPergunta">
-                                    <i class="bi bi-plus-circle me-2 icon-xs"></i>
-                                    Adicionar Questão
-                                </button>
-
-                                <input type="hidden" id="avaliacaoJson" name="quiz"
-                                    value="{{ old('quiz', json_encode($topic->quizzes ?? [])) }}">
+                            <div class="modal-body p-0 d-flex quiz-studio">
+                                <div class="quiz-sidebar">
+                                    <ul class="nav flex-column" id="perguntasNav">
+                                    </ul>
+                                    <div class="p-3">
+                                        <button type="button" class="btn btn-outline-primary w-100"
+                                            id="adicionarPergunta">
+                                            <i class="bi bi-plus-circle me-2"></i>
+                                            Nova Questão
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="quiz-content">
+                                    <div id="perguntasContent">
+                                    </div>
+                                    <div id="emptyState" class="empty-state">
+                                        <i class="bi bi-list-check"></i>
+                                        <h3>Seu questionário está vazio</h3>
+                                        <p>Clique em "Nova Questão" para começar.</p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" id="salvar-avaliacao">
-                                    <i class="bi bi-check2-circle me-2 icon-sm"></i>
+                                    <i class="bi bi-check2-circle me-2"></i>
                                     Finalizar
                                 </button>
                             </div>
+                            <input type="hidden" id="avaliacaoJson" name="quiz"
+                                value="{{ old('quiz', json_encode($topic->quizzes ?? [])) }}">
                         </div>
                     </div>
                 </div>

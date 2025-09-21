@@ -10,15 +10,8 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#topic-collapse-{{ $topic->id }}">
-                            <div class="topic-status-icon">
-                                @if ($isWatched)
-                                    <i class="bi bi-check-circle-fill"></i>
-                                @else
-                                    <i class="bi bi-circle"></i>
-                                @endif
-                            </div>
                             <div class="topic-title-content">
-                                <span class="topic-number">Tópico {{ $index + 1 }}</span>
+                                <span class="topic-number">Tópico</span>
                                 <div class="topic-main-title">{{ $topic->title }}</div>
                             </div>
                         </button>

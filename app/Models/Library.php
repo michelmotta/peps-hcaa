@@ -62,6 +62,11 @@ class Library extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function specialties()
+    {
+        return $this->belongsToMany(Specialty::class, 'library_specialties');
+    }
+
     /**
      * Get the formatted creation date.
      *

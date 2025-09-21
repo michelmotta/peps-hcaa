@@ -14,6 +14,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SectorController;
 use App\Http\Controllers\SpecialtyController;
 use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\TopicController;
@@ -144,6 +145,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
         Route::resource('quizzes', QuizController::class);
         Route::resource('histories', HistoryController::class);
         Route::resource('libraries', LibraryController::class);
+        Route::resource('sectors', SectorController::class);
 
         // Reports
         Route::name('reports.')->prefix('reports')->group(function () {

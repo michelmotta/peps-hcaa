@@ -2046,7 +2046,6 @@ footer,
             border-radius: 0.75rem;
             margin-bottom: 1.5rem;
             transition: all 0.3s ease;
-            border-left: 5px solid #ced4da;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 
@@ -2154,8 +2153,6 @@ footer,
             }
 
             &.topic-watched {
-                border-left-color: #198754;
-
                 .topic-status-icon {
                     color: #198754;
                 }
@@ -3352,6 +3349,18 @@ footer,
         }
     }
 
+    select.form-control {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding-right: 2.5rem;
+
+        background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23133b6a' stroke-width='2' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 9l6 6 6-6'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+    }
+
     .btn-primary {
         background-color: #133b6a;
         border-color: #133b6a;
@@ -3622,6 +3631,7 @@ footer,
                 width: 100%;
 
             }
+
             a {
                 display: inline-block;
                 margin-top: 20px !important;

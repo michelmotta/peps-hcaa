@@ -46,6 +46,7 @@ class UpdateUserRequest extends FormRequest
             'profiles' => 'nullable|array',
             'profiles.*' => 'exists:profiles,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'sector_id' => 'required|exists:sectors,id',
         ];
     }
 }

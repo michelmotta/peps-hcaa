@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\File;
 use App\Models\Profile;
+use App\Models\Sector;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -44,7 +45,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('dashboard.users.create', ['profiles' => Profile::get(), 'user' => null]);
+        return view('dashboard.users.create', ['profiles' => Profile::get(), 'user' => null, 'sectors' => Sector::orderByDesc('name')->get()]);
     }
 
     /**
@@ -85,8 +86,9 @@ class UserController extends Controller
     {
         $user->load('profiles');
         $profiles = Profile::all();
+        $sectors = Sector::orderByDesc('name')->get();
 
-        return view('dashboard.users.edit', compact('user', 'profiles'));
+        return view('dashboard.users.edit', compact('user', 'profiles', 'sectors'));
     }
 
     /**

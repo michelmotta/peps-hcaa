@@ -1,266 +1,250 @@
 import Swal from 'sweetalert2';
 
-let perguntaCount = 0;
+class QuizStudio {
+    constructor() {
+        this.navContainer = document.getElementById('perguntasNav');
+        this.contentContainer = document.getElementById('perguntasContent');
+        this.emptyState = document.getElementById('emptyState');
+        this.addQuestionBtn = document.getElementById('adicionarPergunta');
+        this.saveBtn = document.getElementById('salvar-avaliacao');
+        this.jsonInput = document.getElementById('avaliacaoJson');
+        this.modalElement = document.getElementById('avaliacaoModal');
+    }
 
-function criarRespostaHtml(perguntaIndex, respostaIndex) {
-    const letra = String.fromCharCode(65 + respostaIndex);
-    return `
-        <div class="input-group mb-3 resposta-item" data-resposta-index="${respostaIndex}">
-            <span class="input-group-text fw-bold">${letra}.</span>
-            <input type="text" class="form-control" name="resposta-${letra}-${perguntaIndex}" placeholder="Texto da alternativa" required>
-            <div class="input-group-text" title="Marcar como correta">
-                <input class="form-check-input mt-0 me-2" type="radio" name="correta-${perguntaIndex}" value="${letra}" required> Correta?
-            </div>
-            <button type="button" class="btn btn-outline-danger remover-resposta" title="Remover alternativa">
-                <i class="bi bi-trash-fill"></i>
-            </button>
-        </div>
-    `;
-}
+    init(initialData = []) {
+        if (!this.navContainer || !this.contentContainer) return;
+        this._setupEventListeners();
+        this.load(initialData);
+        this._updateEmptyState();
+    }
 
-function criarPerguntaHtml(index) {
-    return `
-        <div class="accordion-item pergunta-item shadow-sm mb-3" data-pergunta-index="${index}">
-            <h2 class="accordion-header" id="heading-${index}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}" aria-expanded="true" aria-controls="collapse-${index}">
-                    <strong>
-                        <span class="pergunta-numero">Questão Nº ${index + 1}</span>
-                    </strong>
-                </button>
-            </h2>
-            <div id="collapse-${index}" class="accordion-collapse collapse show" aria-labelledby="heading-${index}">
-                <div class="accordion-body">
-                    <div class="d-flex justify-content-end mb-3">
-                        <button type="button" class="btn btn-danger btn-sm remover-pergunta" title="Remover pergunta">
-                            <i class="bi bi-trash me-1"></i>Excluir Questão
-                        </button>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold fs-4">Enunciado da Questão:</label>
-                        <textarea class="form-control" name="pergunta-${index}" rows="3" placeholder="Digite o enunciado da questão aqui..." required></textarea>
-                    </div>
-                    <hr class="my-4">
-                    <h6 class="text-muted mb-3">Alternativas:</h6>
-                    <div class="mb-3 respostas-container">
-                        ${criarRespostaHtml(index, 0)}
-                    </div>
-                    <button type="button" class="btn btn-success btn-sm adicionar-resposta" data-pergunta-index="${index}">
-                        <i class="bi bi-plus-circle me-1"></i>Adicionar Alternativa
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-}
+    _setupEventListeners() {
+        this.addQuestionBtn?.addEventListener('click', () => this._addQuestion());
+        this.saveBtn?.addEventListener('click', () => this._saveQuiz());
 
-// Loads saved quiz data into the editor
-function carregarAvaliacoesSalvas(dados) {
-    const container = document.getElementById('perguntasContainer');
-    if (!Array.isArray(dados) || !container) return;
-
-    dados.forEach((item) => {
-        const indexAtual = perguntaCount++;
-        const html = criarPerguntaHtml(indexAtual);
-        container.insertAdjacentHTML('beforeend', html);
-
-        const perguntaItem = container.querySelector(`.pergunta-item[data-pergunta-index="${indexAtual}"]`);
-        perguntaItem.querySelector(`[name="pergunta-${indexAtual}"]`).value = item.question;
-
-        const respostasContainer = perguntaItem.querySelector('.respostas-container');
-        respostasContainer.innerHTML = '';
-
-        item.options.forEach((resposta, respostaIndex) => {
-            const letra = Object.keys(resposta)[0];
-            const texto = resposta[letra];
-            const respostaHtml = criarRespostaHtml(indexAtual, respostaIndex);
-            respostasContainer.insertAdjacentHTML('beforeend', respostaHtml);
-
-            const respostaItem = respostasContainer.querySelector(`.resposta-item[data-resposta-index="${respostaIndex}"]`);
-            respostaItem.querySelector('input[type="text"]').value = texto;
-
-            if (letra === item.correct) {
-                respostaItem.querySelector('input[type="radio"]').checked = true;
+        this.navContainer.addEventListener('click', e => {
+            const navLink = e.target.closest('.nav-link');
+            if (navLink) {
+                e.preventDefault();
+                this._setActiveQuestion(navLink.dataset.index);
             }
         });
-    });
-}
 
-function reordenarRespostas(container, perguntaIndex) {
-    const respostaItems = container.querySelectorAll('.resposta-item');
-    respostaItems.forEach((respostaEl, idx) => {
-        const novaLetra = String.fromCharCode(65 + idx);
-        respostaEl.setAttribute('data-resposta-index', idx);
-        respostaEl.querySelector('.input-group-text').textContent = `${novaLetra}.`;
-        respostaEl.querySelector('input[type="text"]').setAttribute('name', `resposta-${novaLetra}-${perguntaIndex}`);
-        const radio = respostaEl.querySelector('input[type="radio"]');
-        radio.setAttribute('value', novaLetra);
-        radio.setAttribute('name', `correta-${perguntaIndex}`);
-    });
-}
+        this.contentContainer.addEventListener('click', e => this._handleContentClick(e));
+    }
 
-function reordenarPerguntas(container) {
-    const perguntas = container.querySelectorAll('.pergunta-item');
-    perguntas.forEach((perguntaEl, novoIndex) => {
-        perguntaEl.setAttribute('data-pergunta-index', novoIndex);
+    _handleContentClick(e) {
+        const button = e.target.closest('button');
+        if (!button) return;
 
-        const numeroSpan = perguntaEl.querySelector('.pergunta-numero');
-        if (numeroSpan) {
-            numeroSpan.textContent = `Questão Nº ${novoIndex + 1}`;
+        const pane = button.closest('.question-pane');
+        const index = parseInt(pane.dataset.index);
+
+        if (button.classList.contains('remover-pergunta')) {
+            this._removeQuestion(index);
         }
-
-        const btn = perguntaEl.querySelector('.accordion-button');
-        const heading = perguntaEl.querySelector('.accordion-header');
-        const collapse = perguntaEl.querySelector('.accordion-collapse');
-        heading.id = `heading-${novoIndex}`;
-        btn.setAttribute('data-bs-target', `#collapse-${novoIndex}`);
-        btn.setAttribute('aria-controls', `collapse-${novoIndex}`);
-        collapse.id = `collapse-${novoIndex}`;
-        collapse.setAttribute('aria-labelledby', `heading-${novoIndex}`);
-
-        const inputPergunta = perguntaEl.querySelector('[name^="pergunta-"]');
-        inputPergunta.setAttribute('name', `pergunta-${novoIndex}`);
-
-        const btnAdicionarResposta = perguntaEl.querySelector('.adicionar-resposta');
-        btnAdicionarResposta.setAttribute('data-pergunta-index', novoIndex);
-
-        const respostasContainer = perguntaEl.querySelector('.respostas-container');
-        reordenarRespostas(respostasContainer, novoIndex);
-    });
-}
-
-const btnAdicionarPergunta = document.getElementById('adicionarPergunta');
-if (btnAdicionarPergunta) {
-    btnAdicionarPergunta.addEventListener('click', () => {
-        if (perguntaCount >= 5) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Limite atingido!',
-                text: 'No máximo 5 questões por tópico.',
-            });
-            return;
-        }
-        const container = document.getElementById('perguntasContainer');
-        if (!container) return;
-        const indexAtual = perguntaCount++;
-        const html = criarPerguntaHtml(indexAtual);
-        container.insertAdjacentHTML('beforeend', html);
-    });
-}
-
-const containerPerguntas = document.getElementById('perguntasContainer');
-if (containerPerguntas) {
-    containerPerguntas.addEventListener('click', (event) => {
-        const target = event.target.closest('button');
-        if (!target) return;
-
-        if (target.classList.contains('adicionar-resposta')) {
-            const perguntaItem = target.closest('.pergunta-item');
-            const perguntaIndex = parseInt(perguntaItem.getAttribute('data-pergunta-index'));
-            const respostasContainer = perguntaItem.querySelector('.respostas-container');
-            const totalRespostas = respostasContainer.querySelectorAll('.resposta-item').length;
+        if (button.classList.contains('adicionar-resposta')) {
+            const respostasContainer = pane.querySelector('.respostas-container');
+            const totalRespostas = respostasContainer.children.length;
             if (totalRespostas >= 4) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Limite atingido!',
-                    text: 'No máximo 4 alternativas possíveis.',
-                });
+                Swal.fire({ icon: 'warning', title: 'Limite atingido!', text: 'No máximo 4 alternativas.' });
                 return;
             }
-            const respostaHtml = criarRespostaHtml(perguntaIndex, totalRespostas);
-            respostasContainer.insertAdjacentHTML('beforeend', respostaHtml);
+            respostasContainer.insertAdjacentHTML('beforeend', this._createAnswerHtml(index, totalRespostas));
+        }
+        if (button.classList.contains('remover-resposta')) {
+            button.closest('.resposta-item').remove();
+            this._reorderAnswers(pane.querySelector('.respostas-container'), index);
+        }
+    }
+
+    _addQuestion() {
+        const newIndex = this.navContainer.children.length;
+        if (newIndex >= 5) {
+            Swal.fire({ icon: 'warning', title: 'Limite atingido!', text: 'No máximo 5 questões.' });
+            return;
         }
 
-        if (target.classList.contains('remover-resposta')) {
-            const perguntaItem = target.closest('.pergunta-item');
-            const respostasContainer = perguntaItem.querySelector('.respostas-container');
-            target.closest('.resposta-item').remove();
-            const perguntaIndex = parseInt(perguntaItem.getAttribute('data-pergunta-index'));
-            reordenarRespostas(respostasContainer, perguntaIndex);
-        }
+        this.navContainer.insertAdjacentHTML('beforeend', this._createSidebarItemHtml(newIndex));
+        this.contentContainer.insertAdjacentHTML('beforeend', this._createContentPaneHtml(newIndex));
 
-        if (target.classList.contains('remover-pergunta')) {
-            target.closest('.pergunta-item').remove();
-            reordenarPerguntas(containerPerguntas);
-        }
-    });
-}
+        this._setActiveQuestion(newIndex);
+        this._updateEmptyState();
+    }
 
-const btnSalvar = document.getElementById('salvar-avaliacao');
-if (btnSalvar) {
-    btnSalvar.addEventListener('click', () => {
-        const perguntasData = [];
+    _removeQuestion(index) {
+        this.navContainer.querySelector(`.nav-link[data-index="${index}"]`)?.parentElement.remove();
+        this.contentContainer.querySelector(`.question-pane[data-index="${index}"]`)?.remove();
+
+        this._reorderAndSync();
+
+        const firstNavLink = this.navContainer.querySelector('.nav-link');
+        if (firstNavLink) {
+            this._setActiveQuestion(firstNavLink.dataset.index);
+        } else {
+            this._updateEmptyState();
+        }
+    }
+
+    _setActiveQuestion(index) {
+        this.navContainer.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        this.contentContainer.querySelectorAll('.question-pane').forEach(el => el.classList.remove('active'));
+
+        const navLink = this.navContainer.querySelector(`.nav-link[data-index="${index}"]`);
+        const pane = this.contentContainer.querySelector(`.question-pane[data-index="${index}"]`);
+
+        if (navLink && pane) {
+            navLink.classList.add('active');
+            pane.classList.add('active');
+        }
+        this._updateEmptyState();
+    }
+
+    _updateEmptyState() {
+        const hasQuestions = this.navContainer.children.length > 0;
+        this.emptyState.classList.toggle('active', !hasQuestions);
+    }
+
+    _reorderAndSync() {
+        const navLinks = this.navContainer.querySelectorAll('.nav-link');
+        const panes = this.contentContainer.querySelectorAll('.question-pane');
+
+        navLinks.forEach((navLink, idx) => {
+            navLink.dataset.index = idx;
+            navLink.textContent = `Questão ${idx + 1}`;
+        });
+
+        panes.forEach((pane, idx) => {
+            pane.dataset.index = idx;
+            pane.querySelector('[name^="pergunta-"]').name = `pergunta-${idx}`;
+            this._reorderAnswers(pane.querySelector('.respostas-container'), idx);
+        });
+    }
+
+    _reorderAnswers(container, questionIndex) {
+        container.querySelectorAll('.resposta-item').forEach((answerEl, idx) => {
+            const letter = String.fromCharCode(65 + idx);
+            answerEl.querySelector('input[type="radio"]').name = `correta-${questionIndex}`;
+            answerEl.querySelector('.input-group-text.fw-bold').textContent = `${letter}.`;
+        });
+    }
+
+    load(data) {
+        this.navContainer.innerHTML = '';
+        this.contentContainer.innerHTML = '';
+        if (!data || data.length === 0) return;
+
+        data.forEach((item, index) => {
+            this.navContainer.insertAdjacentHTML('beforeend', this._createSidebarItemHtml(index));
+            this.contentContainer.insertAdjacentHTML('beforeend', this._createContentPaneHtml(index));
+
+            const pane = this.contentContainer.querySelector(`.question-pane[data-index="${index}"]`);
+            pane.querySelector(`[name="pergunta-${index}"]`).value = item.question;
+
+            const answersContainer = pane.querySelector('.respostas-container');
+            answersContainer.innerHTML = '';
+
+            item.options.forEach((answer, answerIndex) => {
+                answersContainer.insertAdjacentHTML('beforeend', this._createAnswerHtml(index, answerIndex));
+                const answerItem = answersContainer.querySelector(`.resposta-item:last-child`);
+                const letter = Object.keys(answer)[0];
+                answerItem.querySelector('input[type="text"]').value = answer[letter];
+                if (letter === item.correct) {
+                    answerItem.querySelector('input[type="radio"]').checked = true;
+                }
+            });
+        });
+
+        this._setActiveQuestion(0);
+    }
+
+    _saveQuiz() {
+        const questionsData = [];
         let hasEmptyField = false;
 
-        document.querySelectorAll('.pergunta-item').forEach((pergunta, i) => {
-            const perguntaInput = pergunta.querySelector(`[name="pergunta-${i}"]`);
-            const perguntaTexto = perguntaInput?.value.trim() || '';
+        this.contentContainer.querySelectorAll('.question-pane').forEach((pane, index) => {
+            const questionInput = pane.querySelector(`[name="pergunta-${index}"]`);
+            const questionText = questionInput?.value.trim() || '';
+
+            if (!questionText) { hasEmptyField = true; questionInput?.classList.add('is-invalid'); } else { questionInput?.classList.remove('is-invalid'); }
+
             const options = [];
             let correct = null;
-
-            if (!perguntaTexto) {
-                hasEmptyField = true;
-                if (perguntaInput) perguntaInput.classList.add('is-invalid');
-            } else {
-                if (perguntaInput) perguntaInput.classList.remove('is-invalid');
-            }
-
-            pergunta.querySelectorAll('.resposta-item').forEach((respostaEl) => {
-                const input = respostaEl.querySelector('input[type="text"]');
-                const radio = respostaEl.querySelector('input[type="radio"]');
-                const texto = input?.value.trim() || '';
-                const option = radio?.value;
-
-                if (!texto) {
-                    hasEmptyField = true;
-                    if (input) input.classList.add('is-invalid');
-                } else {
-                    if (input) input.classList.remove('is-invalid');
-                }
-
-                if (radio?.checked) {
-                    correct = option;
-                }
-                options.push({ [option]: texto });
+            pane.querySelectorAll('.resposta-item').forEach(answerEl => {
+                const textInput = answerEl.querySelector('input[type="text"]');
+                const radioInput = answerEl.querySelector('input[type="radio"]');
+                const text = textInput?.value.trim() || '';
+                const option = radioInput?.value;
+                if (!text) { hasEmptyField = true; textInput?.classList.add('is-invalid'); } else { textInput?.classList.remove('is-invalid'); }
+                if (radioInput?.checked) correct = option;
+                options.push({ [option]: text });
             });
-
-            if (!correct) {
-                hasEmptyField = true;
-                pergunta.querySelectorAll('.resposta-item input[type=radio]').forEach(r => {
-                    r.closest('.input-group-text').classList.add('border-danger');
-                });
-            } else {
-                pergunta.querySelectorAll('.resposta-item input[type=radio]').forEach(r => {
-                    r.closest('.input-group-text').classList.remove('border-danger');
-                });
-            }
-
-            perguntasData.push({ question: perguntaTexto, options, correct });
+            if (!correct) { hasEmptyField = true; }
+            questionsData.push({ question: questionText, options, correct });
         });
 
         if (hasEmptyField) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Campos Incompletos!',
-                text: 'Por favor, preencha todos os enunciados, alternativas e marque uma resposta correta para cada questão.',
-            });
+            Swal.fire({ icon: 'error', title: 'Campos Incompletos!', text: 'Preencha todos os campos e marque uma resposta correta para cada questão.' });
             return;
         }
 
-        const avaliacaoJson = document.getElementById('avaliacaoJson');
-        if (avaliacaoJson) {
-            avaliacaoJson.value = JSON.stringify(perguntasData);
-        }
+        this.jsonInput.value = JSON.stringify(questionsData);
+        bootstrap.Modal.getInstance(this.modalElement)?.hide();
+    }
 
-        const modalEl = document.getElementById('avaliacaoModal');
-        if (modalEl) {
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
-        }
-    });
+    _createAnswerHtml(questionIndex, answerIndex) {
+        const letter = String.fromCharCode(65 + answerIndex);
+        return `
+            <div class="input-group mb-3 resposta-item">
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0" type="radio" name="correta-${questionIndex}" value="${letter}" title="Marcar como correta" required>
+                    <span class="ms-1">Correta?</span>
+                </div>
+                <span class="input-group-text fw-bold bg-light">${letter}.</span>
+                <input type="text" class="form-control" placeholder="Texto da alternativa">
+                <button type="button" class="btn btn-danger remover-resposta" title="Remover alternativa">
+                    <i class="bi bi-trash-fill"></i>
+                </button>
+            </div>
+        `;
+    }
+
+    _createSidebarItemHtml(index) {
+        return `
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-index="${index}">Questão ${index + 1}</a>
+            </li>
+        `;
+    }
+
+    _createContentPaneHtml(index) {
+        return `
+            <div class="question-pane" data-index="${index}">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                     <h2 class="mb-0">Questão ${index + 1}</h2>
+                     <button type="button" class="btn btn-danger remover-pergunta" title="Remover pergunta">
+                        <i class="bi bi-trash me-1"></i> Excluir Questão
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <h3>Enunciado:</h3>
+                    <textarea class="form-control" name="pergunta-${index}" rows="4" placeholder="Digite o enunciado da questão aqui..."></textarea>
+                </div>
+                <hr class="my-4">
+                <h4 class="mb-3">Alternativas:</h4>
+                <div class="respostas-container">
+                    ${this._createAnswerHtml(index, 0)}
+                    ${this._createAnswerHtml(index, 1)}
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm adicionar-resposta">
+                    <i class="bi bi-plus-circle me-1"></i>Adicionar Alternativa
+                </button>
+            </div>
+        `;
+    }
 }
 
 export function initQuizEditor(data = []) {
-    if (data && data.length > 0) {
-        carregarAvaliacoesSalvas(data);
-    }
+    const studio = new QuizStudio();
+    studio.init(data);
 }

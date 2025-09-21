@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('active')->default(false);
             $table->foreignId('file_id')->nullable()->constrained('files')->nullOnDelete();
+            $table->foreignId('sector_id')->nullable()->constrained('sectors')->nullOnDelete();
             $table->longText('biography')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

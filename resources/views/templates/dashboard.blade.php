@@ -312,6 +312,35 @@
                                     </ul>
                                 </div>
                             </li>
+                            <!-- Nav item -->
+                            <li class="nav-item">
+                                <a class="nav-link has-arrow {{ !request()->routeIs('dashboard.sectors.*') ? 'collapsed' : '' }}"
+                                    href="#!" data-bs-toggle="collapse" data-bs-target="#sectors"
+                                    aria-expanded="false" aria-controls="sectors">
+                                    <i data-feather="git-pull-request" class="nav-icon me-3 icon-xs"></i>
+                                    Setores
+                                </a>
+                                <div id="sectors"
+                                    class="collapse {{ request()->routeIs('dashboard.sectors.*') ? 'show' : '' }}"
+                                    data-bs-parent="#sideNavbar">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.sectors.*') && !request()->routeIs('dashboard.sectors.create') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.sectors.index') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Gerenciar
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.sectors.create') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.sectors.create') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Novo
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         @endcan
                         <!-- Nav item -->
                         <li class="nav-item">

@@ -14,7 +14,6 @@
             </h1>
         </div>
     </div>
-
     <div class="container-fluid">
         <div class="card shadow-sm mt-4 mb-8">
             <div class="card-body d-flex justify-content-between align-items-center">
@@ -46,9 +45,7 @@
                         <p class="text-muted mb-0">Dúvidas Pendentes</p>
                     </div>
                 </div>
-
                 <hr>
-
                 <div class="accordion" id="filterAccordion">
                     <div class="accordion-item border-0">
                         <h2 class="accordion-header" id="headingOne">
@@ -118,17 +115,16 @@
                                 data-fancybox="lesson-{{ $lesson->id }}" class="col-md-4 rounded-start"
                                 style="background-image: url('{{ asset('storage/' . $lesson->file->path) }}'); background-size: cover; background-position: center; min-height: 250px;">
                             </a>
-
                             <div class="col-md-8">
                                 <div class="card-body d-flex flex-column h-100 p-4">
                                     <div class="flex-grow-1">
                                         <div class="d-flex flex-wrap gap-1 mb-2">
                                             @foreach ($lesson->specialties as $specialty)
-                                                <a href="#"
+                                                <span
                                                     class="badge bg-light text-dark text-decoration-none fw-normal">
                                                     <i data-feather="tag" class="icon-xs me-1"></i>
                                                     {{ $specialty->name }}
-                                                </a>
+                                                </span>
                                             @endforeach
                                         </div>
                                         <h3 class="mb-3 fw-bold">{{ $lesson->name }}</h3>
@@ -239,12 +235,13 @@
                                                     class="btn btn-ghost btn-icon btn-sm rounded-circle" title="Editar"
                                                     data-bs-toggle="tooltip"><i data-feather="edit"
                                                         class="icon-xs"></i></a>
-                                                <button onclick="confirmDelete('delete-item-{{ $lesson->id }}')"
-                                                    class="btn btn-ghost btn-icon btn-sm rounded-circle text-danger"
-                                                    title="Apagar" data-bs-toggle="tooltip"><i data-feather="trash-2"
+                                                @if ($lesson->lesson_status === LessonStatusEnum::RASCUNHO->value)
+                                                    <button onclick="confirmDelete('delete-item-{{ $lesson->id }}')"
+                                                        class="btn btn-ghost btn-icon btn-sm rounded-circle text-danger"
+                                                        title="Apagar" data-bs-toggle="tooltip"><i data-feather="trash-2"
                                                         class="icon-xs"></i></button>
+                                                @endif
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>

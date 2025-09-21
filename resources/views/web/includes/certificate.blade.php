@@ -289,8 +289,7 @@
                         @endif
                         realizado no período de {{ $lessonUserData->created_at->format('d/m/Y') }} a
                         {{ $lessonUserData->finished_at->format('d/m/Y') }},
-                        com carga horária total de {{ $lesson->workload }} horas e nota final de
-                        <strong>{{ $lessonUserData->score ?? 0 }}</strong>.
+                        com carga horária total de {{ $lesson->workload }}.
                     </p>
 
                     <p class="description" style="margin-top: 25px">Campo Grande - MS, {{ $certificateDate }}</p>

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreLibraryRequest;
 use App\Http\Requests\UpdateLibraryRequest;
 use App\Models\File;
 use App\Models\Library;
+use App\Models\Specialty;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,9 +30,14 @@ class LibraryController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-     public function create()
+    public function create()
     {
-        return view('dashboard.libraries.create');
+        $specialties = Specialty::whereNull('parent_id')
+            ->with('children')
+            ->orderBy('name')
+            ->get();
+
+        return view('dashboard.libraries.create', ['specialties' => $specialties]);
     }
 
     /**
@@ -49,7 +55,11 @@ class LibraryController extends Controller
 
             $validatedData['user_id'] = Auth::id();
 
-            Library::create($validatedData);
+            $library = Library::create($validatedData);
+
+            if ($request->has('specialty_ids')) {
+                $library->specialties()->attach($request->input('specialty_ids'));
+            }
 
             return redirect()
                 ->route('dashboard.libraries.index')
@@ -60,13 +70,24 @@ class LibraryController extends Controller
                 ->with('error', 'Ocorreu um erro ao cadastrar o arquivo: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Library $library)
     {
-        return view('dashboard.libraries.edit', ['library' => $library]);
+        $specialties = Specialty::whereNull('parent_id')
+            ->with('children')
+            ->orderBy('name')
+            ->get();
+
+        $selectedSpecialties = $library->specialties()->pluck('specialties.id')->toArray();
+
+        return view('dashboard.libraries.edit', [
+            'library' => $library,
+            'specialties' => $specialties,
+            'selectedSpecialties' => $selectedSpecialties
+        ]);
     }
 
     /**
@@ -86,6 +107,8 @@ class LibraryController extends Controller
             }
 
             $library->update($validatedData);
+
+            $library->specialties()->sync($request->input('specialty_ids', []));
 
             return redirect()
                 ->route('dashboard.libraries.index')

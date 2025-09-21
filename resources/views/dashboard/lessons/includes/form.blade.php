@@ -180,7 +180,7 @@
         const updateButtonText = () => {
             const checkedCount = document.querySelectorAll('input[name="specialty_ids[]"]:checked').length;
             if (checkedCount === 0) {
-                specialtyButtonText.textContent = 'Selecione as especialidades';
+                specialtyButtonText.textContent = 'Selecione a(s) especialidade(s)';
             } else if (checkedCount === 1) {
                 specialtyButtonText.textContent = '1 especialidade selecionada';
             } else {

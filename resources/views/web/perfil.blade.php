@@ -86,6 +86,22 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-12 mb-3">
+                                    <label for="cpf" class="form-label">Setor de Trabalho</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text @error('sector_id') border border-danger @enderror"><i
+                                                class="bi bi-buildings"></i></span>
+                                        <select name="sector_id" id="sector_id" class="form-control">
+                                            <option value="">--  Selecione um setor</option>
+                                            @foreach ($sectors as $sector)
+                                                <option value="{{ $sector->id }}" @if(isset($user) && $user->sector_id == $sector->id) selected @endif>{{ $sector->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @error('sector_id')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-12 mb-3">
                                     <label for="biography" class="form-label">Resumo Profissional</label>
                                     <textarea class="form-control @error('biography') is-invalid @enderror" id="biography" name="biography"
                                         style="height:100px">{{ $user->biography ?? old('biography') }}</textarea>

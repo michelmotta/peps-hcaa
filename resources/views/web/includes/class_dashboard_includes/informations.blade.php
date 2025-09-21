@@ -68,8 +68,10 @@
                 <div class="col-md-12">
                     <div class="teacher-info shadow-none">
                         <div class="teacher-thumbnail">
-                            <img src="{{ asset('storage/' . $lesson->teacher->file->path) }}" class="img-fluid"
-                                alt="Professor Jesse Pinkman">
+                            <img src="{{ $lesson->teacher?->file?->path
+                                ? asset('storage/' . $lesson->teacher->file->path)
+                                : 'https://placehold.co/150x150/EBF4FF/7F9CF5?text=' . urlencode($lesson->teacher->name ?? 'P') }}"
+                                class="img-fluid rounded-circle" alt="{{ $lesson->teacher->name ?? 'Professor' }}">
                         </div>
                         <div class="p-4">
                             <h6 class="fw-bold text-center mb-0">

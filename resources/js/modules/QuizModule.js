@@ -3,19 +3,18 @@ import { initQuizPlayer } from './quiz-player';
 
 export class QuizModule {
     static init() {
-        this.initQuizFromJson();
-        initQuizPlayer();
-    }
-    
-    static initQuizFromJson() {
-        const quizJson = document.getElementById('avaliacaoJson')?.value;
-        if (quizJson) {
+        const quizDataInput = document.getElementById('avaliacaoJson');
+        let initialData = [];
+
+        if (quizDataInput?.value && quizDataInput.value.trim() !== '[]' && quizDataInput.value.trim() !== '') {
             try {
-                const data = JSON.parse(quizJson);
-                initQuizEditor(data);
+                initialData = JSON.parse(quizDataInput.value);
             } catch (e) {
-                console.error('Erro ao carregar avaliação salva:', e);
+                console.error('Could not parse quiz JSON. Initializing an empty editor.', e);
             }
         }
+
+        initQuizEditor(initialData);
+        initQuizPlayer();
     }
 }

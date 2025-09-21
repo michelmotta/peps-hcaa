@@ -1,7 +1,3 @@
-@php
-    use Illuminate\Support\Str;
-@endphp
-
 @extends('templates.dashboard')
 @section('content')
     <div class="bg-primary rounded-3 mt-n6 mx-n4">
@@ -54,11 +50,19 @@
                             <div class="col-md-8">
                                 <div class="card-body d-flex flex-column h-100">
                                     <div class="flex-grow-1">
-                                        <h4 class="card-title text-truncate mb-2">{{ $library->title }}</h4>
+                                        <div>
+                                            @foreach ($library->specialties as $specialty)
+                                                <span class="badge bg-light text-dark text-decoration-none fw-normal">
+                                                    <i data-feather="tag" class="icon-xs me-1"></i>
+                                                    {{ $specialty->name }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                        <h4 class="card-title text-truncate mb-2 mt-1">{{ $library->title }}</h4>
                                         <div class="small text-muted mb-3">
                                             <div class="d-flex align-items-center">
                                                 <i data-feather="user" class="icon-xs me-2"></i>
-                                                <span>Postado por: {{ $library->user->name }}</span>
+                                                <span class="d-block">Postado por: {{ $library->user->name }}</span>
                                             </div>
                                         </div>
                                     </div>

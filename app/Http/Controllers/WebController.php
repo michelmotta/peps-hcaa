@@ -11,6 +11,7 @@ use App\Models\Guidebook;
 use App\Models\Lesson;
 use App\Models\LessonUser;
 use App\Models\Library;
+use App\Models\Sector;
 use App\Models\Specialty;
 use App\Models\Suggestion;
 use App\Models\User;
@@ -298,22 +299,34 @@ class WebController extends Controller
 
     public function library(Request $request)
     {
-        $searchTerm = $request->input('q');
+        $searchTerm  = $request->input('q');
+        $specialtyId = $request->query('specialty_id');
+        $sortBy      = $request->query('sort_by', 'newest');
+
+        $query = Library::with('file');
 
         if ($searchTerm) {
-            /** @var \App\Models\library $libraryItems */
-            $libraryItems = Library::search($searchTerm)
-                ->paginate(12);
-
-            $libraryItems->load('file');
-        } else {
-            $libraryItems = Library::with('file')
-                ->latest()
-                ->paginate(12);
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'ILIKE', "%{$searchTerm}%");
+            });
         }
+
+        if ($specialtyId) {
+            $query->whereHas('specialties', fn($q) => $q->where('specialties.id', $specialtyId));
+        }
+
+        $orderDirection = $sortBy === 'oldest' ? 'asc' : 'desc';
+        $query->orderBy('id', $orderDirection);
+
+        $libraryItems = $query->paginate(12);
+
+        $specialties = Specialty::whereNull('parent_id')
+            ->orderBy('name')
+            ->get();
 
         return view('web.library', [
             'libraryItems' => $libraryItems,
+            'specialties'  => $specialties,
         ]);
     }
 
@@ -361,12 +374,13 @@ class WebController extends Controller
     public function perfil()
     {
         $user = Auth::user();
+        $sectors = Sector::orderByDesc('name')->get();
 
         if ($user) {
-            return view('web.perfil', ['user' => $user]);
+            return view('web.perfil', ['user' => $user, 'sectors' => $sectors]);
         }
 
-        return view('web.perfil');
+        return view('web.perfil', ['sectors' => $sectors]);
     }
 
     public function userTerms()
