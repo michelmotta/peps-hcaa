@@ -61,7 +61,7 @@ class FeedbackController extends Controller
             'comentario' => 'nullable|string|max:1000',
         ]);
 
-        Feedback::updateOrCreate(
+        $feedback = Feedback::updateOrCreate(
             [
                 'user_id' => Auth::id(),
                 'lesson_id' => $lesson->id,
@@ -72,6 +72,9 @@ class FeedbackController extends Controller
             ]
         );
 
-        return response()->json(['message' => 'Avaliação enviada com sucesso!']);
+        return response()->json([
+            'message' => 'Avaliação enviada com sucesso!',
+            'feedback' => $feedback
+        ]);
     }
 }

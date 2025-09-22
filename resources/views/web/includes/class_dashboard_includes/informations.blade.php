@@ -48,7 +48,6 @@
                                                 <button class="accordion-button collapsed shadow-none" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#faq-{{ $topic->id }}">
                                                     <i class="fas fa-graduation-cap me-2"></i>
-                                                    {{ $index + 1 }}.
                                                     {{ $topic->title }}
                                                 </button>
                                             </h2>

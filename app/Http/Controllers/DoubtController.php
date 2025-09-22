@@ -151,7 +151,9 @@ class DoubtController extends Controller
 
             $doubt->load('user.file');
 
-            $filePath = $doubt->user->file ? asset('storage/' . $doubt->user->file->path) : null;
+            $filePath = $doubt->user->file
+                ? asset('storage/' . $doubt->user->file->path)
+                : "https://placehold.co/40x40/EBF4FF/7F9CF5?text=" . urlencode(substr($doubt->user->name, 0, 1));
 
             return response()->json([
                 'status' => 'success',

@@ -6,7 +6,7 @@
 
     <div class="feedback-body">
         @if ($feedback === null)
-            <div id="feedback-status"></div>
+            <div id="feedback-status" style="display: none;"></div>
             <form id="feedback-form" data-lesson-id="{{ $lesson->id }}" novalidate>
                 @csrf
                 <div class="form-group">

@@ -4,7 +4,6 @@
 
 @extends('templates.dashboard')
 @section('content')
-    {{-- Page Header --}}
     <div class="bg-primary rounded-3 mt-n6 mx-n4">
         <div class="p-10">
             <h1 class="mb-0 text-white text-center ">
@@ -15,7 +14,6 @@
     </div>
 
     <div class="container-fluid">
-        {{-- Header with Title and Actions --}}
         <div class="card shadow-sm mb-4 mt-4">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center">
                 <h3 class="mb-0">Sugestões</h3>
@@ -36,16 +34,11 @@
                 </div>
             </div>
         </div>
-
-
-        {{-- Feed/Timeline Layout --}}
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 @forelse ($suggestions as $suggestion)
                     <div class="card shadow-sm mb-4">
-                        {{-- START: Updated Post Header with Rank on the Right --}}
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                            {{-- Left side: Avatar and user info --}}
                             <div class="d-flex align-items-center">
                                 @if ($suggestion->user && $suggestion->user->file)
                                     <a href="{{ asset('storage/' . $suggestion->user->file->path) }}" data-fancybox
@@ -63,8 +56,6 @@
                                     <small class="text-muted">sugerido em {{ $suggestion->created_at_formatted }}</small>
                                 </div>
                             </div>
-
-                            {{-- Right side: Prominent Rank Badge --}}
                             <div>
                                 @php
                                     $rank = $startRank + $loop->iteration;
@@ -82,10 +73,6 @@
                                 <div class="rank-badge {{ $rankClass }}">#{{ $rank }}</div>
                             </div>
                         </div>
-                        {{-- END: Updated Post Header --}}
-
-
-                        {{-- Post Body --}}
                         <div class="card-body">
                             <h3 class="mb-3">{{ $suggestion->name }}</h3>
                             <p class="text-muted">
@@ -108,8 +95,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        {{-- Post Footer --}}
                         <div class="card-footer bg-white text-end">
                             <button data-bs-toggle="modal" data-bs-target="#modal-{{ $suggestion->id }}"
                                 class="btn btn-ghost btn-icon btn-sm rounded-circle" title="Visualizar">
@@ -132,8 +117,6 @@
                             @endcan
                         </div>
                     </div>
-
-                    {{-- Modal --}}
                     <div class="modal fade" id="modal-{{ $suggestion->id }}" tabindex="-1" role="dialog"
                         aria-labelledby="modal-title-{{ $suggestion->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -165,8 +148,6 @@
                         </div>
                     </div>
                 @endforelse
-
-                {{-- Pagination --}}
                 @if ($suggestions->isNotEmpty() && $suggestions->hasPages())
                     <div class="card card-pagination shadow-sm mt-4">
                         <div class="card-body">
