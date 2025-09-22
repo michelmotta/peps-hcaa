@@ -149,6 +149,8 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'can:isCoord
 
         // Reports
         Route::name('reports.')->prefix('reports')->group(function () {
+            Route::get('periods', [ReportController::class, 'reportByPeriod'])->name('periods');
+            Route::get('periods/export', [ReportController::class, 'exportPeriodsPdf'])->name('periods.export');
             Route::get('students', [ReportController::class, 'reportByStudent'])->name('students');
             Route::get('students/export', [ReportController::class, 'exportStudentsPdf'])->name('students.export');
             Route::get('teachers', [ReportController::class, 'reportByTeacher'])->name('teachers');

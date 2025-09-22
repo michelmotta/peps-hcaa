@@ -6,7 +6,6 @@
 @extends('templates.dashboard')
 
 @section('content')
-    {{-- Page Title --}}
     <div class="bg-primary rounded-3 mt-n6 mx-n4">
         <div class="p-10">
             <h1 class="mb-0 text-white text-center">
@@ -17,7 +16,6 @@
     </div>
 
     <div class="container-fluid">
-        {{-- Filter Section --}}
         <div class="row mb-4 justify-content-center">
             <div class="col-lg-10">
                 <div class="card p-4 shadow-sm">
@@ -142,8 +140,6 @@
                             </div>
                         </div>
                     </div>
-
-                    {{-- Topics Accordion --}}
                     <div class="card mt-4 shadow-sm">
                         <div class="card-header">
                             <h3 class="details-title mb-0">

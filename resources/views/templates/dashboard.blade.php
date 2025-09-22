@@ -201,6 +201,13 @@
                                     data-bs-parent="#sideNavbar">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
+                                            <a class="nav-link has-arrow {{ request()->routeIs('dashboard.reports.period') ? 'menu-active' : '' }}"
+                                                href="{{ route('dashboard.reports.periods') }}">
+                                                <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>
+                                                Períodos
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link has-arrow {{ request()->routeIs('dashboard.reports.students') ? 'menu-active' : '' }}"
                                                 href="{{ route('dashboard.reports.students') }}">
                                                 <i data-feather="corner-down-right" class="nav-icon me-2 icon-xs"></i>

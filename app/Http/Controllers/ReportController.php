@@ -7,11 +7,87 @@ use App\Models\Lesson;
 use App\Models\LessonUser;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ReportController extends Controller
 {
+
+    public function reportByPeriod(Request $request)
+    {
+        $lessons = collect();
+        $filter = [];
+
+        if ($request->filled(['start_date', 'end_date'])) {
+            $validated = $request->validate([
+                'start_date' => 'required|date',
+                'end_date'   => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $startDate = Carbon::parse($validated['start_date'])->startOfDay();
+            $endDate = Carbon::parse($validated['end_date'])->endOfDay();
+            $filter = ['start_date' => $validated['start_date'], 'end_date' => $validated['end_date']];
+
+            $lessons = Lesson::with([
+                'teacher',
+                'file',
+                'specialties',
+                'topics',
+                'subscriptions' => function ($query) use ($startDate, $endDate) {
+                    $query->where('lesson_user.finished', true)
+                        ->whereBetween('lesson_user.finished_at', [$startDate, $endDate])
+                        ->with('file');
+                }
+            ])
+                ->withCount('subscriptions as total_subscriptions_count')
+                ->whereHas('subscriptions', function ($query) use ($startDate, $endDate) {
+                    $query->where('lesson_user.finished', true)
+                        ->whereBetween('lesson_user.finished_at', [$startDate, $endDate]);
+                })
+                ->orderBy('name', 'asc')
+                ->get();
+        }
+
+        return view('dashboard.reports.report_period', compact('lessons', 'filter'));
+    }
+
+    public function exportPeriodsPdf(Request $request)
+    {
+        $validated = $request->validate([
+            'start_date' => 'required|date',
+            'end_date'   => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $startDate = Carbon::parse($validated['start_date'])->startOfDay();
+        $endDate = Carbon::parse($validated['end_date'])->endOfDay();
+
+        $lessons = Lesson::with([
+            'teacher',
+            'topics',
+            'subscriptions' => function ($query) use ($startDate, $endDate) {
+                $query->where('lesson_user.finished', true)
+                    ->whereBetween('lesson_user.finished_at', [$startDate, $endDate]);
+            }
+        ])
+            ->withCount('subscriptions as total_subscriptions_count')
+            ->whereHas('subscriptions', function ($query) use ($startDate, $endDate) {
+                $query->where('lesson_user.finished', true)
+                    ->whereBetween('lesson_user.finished_at', [$startDate, $endDate]);
+            })
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $pdf = Pdf::loadView('dashboard.reports.report_period_pdf', [
+            'lessons'    => $lessons,
+            'start_date' => $startDate,
+            'end_date'   => $endDate,
+        ]);
+
+        $fileName = 'relatorio-aulas-por-periodo-' . $startDate->format('Y-m-d') . '-a-' . $endDate->format('Y-m-d') . '.pdf';
+
+        return $pdf->stream($fileName);
+    }
 
     public function reportByStudent(Request $request)
     {
