@@ -85,11 +85,10 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div>
-                                                <a href="{{ asset('storage/' . $subscription->user->file->path) }}"
-                                                    data-fancybox>
+                                                <a href="{{ $subscription->user->getAvatarUrl(150) }}" data-fancybox>
                                                     <img class="avatar-md avatar rounded-circle"
-                                                        src="{{ asset('storage/' . $subscription->user->file->path) }}"
-                                                        alt="">
+                                                        src="{{ $subscription->user->getAvatarUrl(150) }}"
+                                                        alt="Foto de {{ $subscription->user->name }}">
                                                 </a>
                                             </div>
                                             <div class="ms-3 lh-1">

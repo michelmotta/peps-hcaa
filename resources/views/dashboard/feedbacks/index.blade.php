@@ -82,8 +82,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="d-flex">
-                            <img src="{{ asset('storage/' . $feedback->user->file->path) }}"
-                                class="avatar rounded-circle me-3" alt="Avatar">
+                            <img src="{{ $feedback->user->getAvatarUrl(150) }}" class="avatar rounded-circle me-3"
+                                alt="Avatar de {{ $feedback->user->name }}">
                             <div>
                                 <strong class="d-block">{{ $feedback->user->name }}</strong>
                                 <div class="rating-stars">

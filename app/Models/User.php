@@ -20,6 +20,8 @@ class User extends Authenticatable implements CanResetPassword
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, Searchable, CanResetPasswordTrait;
 
+    protected $appends = ['avatar_url'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -233,5 +235,15 @@ class User extends Authenticatable implements CanResetPassword
         ]);
 
         Mail::to($this->getEmailForPasswordReset())->send(new ForgotPasswordMail($this, $url));
+    }
+
+    public function getAvatarUrl(int $size = 100): string
+    {
+        if ($this->file) {
+            return asset('storage/' . $this->file->path);
+        }
+
+        $initial = strtoupper(mb_substr($this->name, 0, 1));
+        return "https://placehold.co/{$size}x{$size}/EBF4FF/7F9CF5?text={$initial}";
     }
 }
