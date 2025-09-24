@@ -61,8 +61,8 @@
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-md-3 text-center">
-                                    <img src="{{ $student->file ? asset('storage/' . $student->file->path) : asset('images/default_user.png') }}"
-                                        alt="Foto do Estudante" class="img-fluid rounded-circle"
+                                    <img src="{{ $student->getAvatarUrl(150) }}" alt="Foto do Estudante"
+                                        class="img-fluid rounded-circle"
                                         style="width: 150px; height: 150px; object-fit: cover;">
                                 </div>
                                 <div class="col-md-9">

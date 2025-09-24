@@ -23,10 +23,13 @@
                                 <label class="form-label fw-semibold">Filtrar por Período de Conclusão</label>
                                 <div class="input-group">
                                     <span class="input-group-text">De</span>
-                                    <input type="date" name="start_date" class="form-control"
+                                    <input type="date" name="start_date"
+                                        class="form-control @if ($errors->has('start_date') || $errors->has('end_date')) is-invalid @endif"
                                         value="{{ $filter['start_date'] ?? '' }}" required>
+
                                     <span class="input-group-text">Até</span>
-                                    <input type="date" name="end_date" class="form-control"
+                                    <input type="date" name="end_date"
+                                        class="form-control @if ($errors->has('start_date') || $errors->has('end_date')) is-invalid @endif"
                                         value="{{ $filter['end_date'] ?? '' }}" required>
                                 </div>
                             </div>
@@ -35,6 +38,17 @@
                                     <i data-feather="search" class="icon-xs"></i>
                                     <span class="ms-1">Gerar Relatório</span>
                                 </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                @error('start_date')
+                                    <div class="text-danger mt-1 small">{{ $message }}</div>
+                                @else
+                                    @error('end_date')
+                                        <div class="text-danger mt-1 small">{{ $message }}</div>
+                                    @enderror
+                                @enderror
                             </div>
                         </div>
                     </form>
@@ -80,7 +94,8 @@
                                                 id="list-{{ $lesson->id }}-list" data-bs-toggle="list"
                                                 href="#list-{{ $lesson->id }}" role="tab"
                                                 aria-controls="list-{{ $lesson->id }}">
-                                                <span class="fs-4 fw-semibold">{{ $lesson->name }}</span>
+                                                <span class="fs-4 fw-semibold">{{ $loop->iteration }}.
+                                                    {{ $lesson->name }}</span>
                                             </a>
                                         @endforeach
                                     </div>
@@ -117,19 +132,34 @@
                                                 <div class="card-body">
                                                     <h5 class="mb-3"><i data-feather="list" class="icon-sm me-1"></i>
                                                         Tópicos da Aula</h5>
-                                                    <ul class="list-group list-group-flush">
-                                                        @forelse ($lesson->topics as $topic)
-                                                            <li class="list-group-item px-0 py-2">
-                                                                <i class="bi bi-dot text-muted me-1"></i>
-                                                                <strong>{{ $topic->title }}:</strong>
-                                                                <span
-                                                                    class="text-muted small">{!! strip_tags($topic->description) !!}</span>
-                                                            </li>
-                                                        @empty
-                                                            <li class="list-group-item text-center text-muted">Nenhum tópico
-                                                                cadastrado.</li>
-                                                        @endforelse
-                                                    </ul>
+                                                    @if ($lesson->topics->isNotEmpty())
+                                                        <div class="accordion" id="topicsAccordion-{{ $lesson->id }}">
+                                                            @foreach ($lesson->topics as $topic)
+                                                                <div class="accordion-item">
+                                                                    <h2 class="accordion-header"
+                                                                        id="heading-topic-{{ $topic->id }}">
+                                                                        <button
+                                                                            class="accordion-button collapsed fw-semibold"
+                                                                            type="button" data-bs-toggle="collapse"
+                                                                            data-bs-target="#collapse-topic-{{ $topic->id }}">
+                                                                            {{ $topic->title }}
+                                                                        </button>
+                                                                    </h2>
+                                                                    <div id="collapse-topic-{{ $topic->id }}"
+                                                                        class="accordion-collapse collapse"
+                                                                        data-bs-parent="#topicsAccordion-{{ $lesson->id }}">
+                                                                        <div class="accordion-body small text-muted">
+                                                                            {!! strip_tags($topic->description) !!}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @else
+                                                        <div class="text-center text-muted p-3">
+                                                            Nenhum tópico cadastrado.
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 <div class="card-body border-top">
                                                     <h5 class="mb-3"><i data-feather="users" class="icon-sm me-1"></i>
@@ -160,7 +190,7 @@
                                                                                     <h5 class="mb-1 fs-6">
                                                                                         {{ $student->name }}</h5>
                                                                                     <p class="mb-0 small text-muted">
-                                                                                        {{ $student->email }}</p>
+                                                                                        CPF: {{ $student->cpf }}</p>
                                                                                 </div>
                                                                             </div>
                                                                         </td>

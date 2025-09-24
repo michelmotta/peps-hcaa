@@ -20,10 +20,27 @@ class ReportController extends Controller
         $filter = [];
 
         if ($request->filled(['start_date', 'end_date'])) {
-            $validated = $request->validate([
-                'start_date' => 'required|date',
-                'end_date'   => 'required|date|after_or_equal:start_date',
-            ]);
+            $validated = $request->validate(
+                [
+                    'start_date' => 'required|date',
+                    'end_date'   => [
+                        'required',
+                        'date',
+                        'after_or_equal:start_date',
+                        function ($attribute, $value, $fail) use ($request) {
+                            $startDate = Carbon::parse($request->input('start_date'));
+                            $endDate = Carbon::parse($value);
+
+                            if ($startDate->diffInDays($endDate) > 365) {
+                                $fail('Devido à quantidade de dados, o intervalo máximo permitido por relatório é de 1 ano.');
+                            }
+                        },
+                    ],
+                ],
+                [
+                    'end_date.after_or_equal' => 'A data final não pode ser anterior à data inicial do período.'
+                ]
+            );
 
             $startDate = Carbon::parse($validated['start_date'])->startOfDay();
             $endDate = Carbon::parse($validated['end_date'])->endOfDay();

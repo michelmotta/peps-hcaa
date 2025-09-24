@@ -5,7 +5,7 @@
                 @forelse ($lessons as $lesson)
                     <div class="col-md-6">
                         <div
-                            class="row class-card g-0 align-items-stretch bg-white overflow-hidden mb-4 position-relative">
+                            class="row class-card g-0 align-items-stretch bg-white overflow-hidden mb-4 position-relative h-100">
                             <div class="col-md-4">
                                 <div class="thumbnail position-relative h-100 overflow-hidden">
                                     @auth

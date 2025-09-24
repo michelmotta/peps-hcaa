@@ -278,7 +278,7 @@
                                     <ul class="nav flex-column" id="perguntasNav">
                                     </ul>
                                     <div class="p-3">
-                                        <button type="button" class="btn btn-outline-primary w-100"
+                                        <button type="button" class="btn btn-primary w-100"
                                             id="adicionarPergunta">
                                             <i class="bi bi-plus-circle me-2"></i>
                                             Nova Questão
