@@ -211,7 +211,7 @@
         </div>
         <div class="header-text">
             <h1 class="company-title">PEPS | HCAA</h1>
-            <p>Programa de Educação Permanente em Saúde</p>
+            <p>Plataforma de Educação Permanente em Saúde</p>
         </div>
     </div>
 

@@ -22,7 +22,7 @@
                 <div class="mb-5 text-center">
                     <div class="mb-15">
                         <h2 class="mb-0 text-white" style="font-size: 55px">PEPS | HCAA</h2>
-                        <h3 class="text-white">Programa de Educação Permanente em Saúde</h3>
+                        <h3 class="text-white">Plataforma de Educação Permanente em Saúde</h3>
                     </div>
                 </div>
             </div>

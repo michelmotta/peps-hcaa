@@ -7,7 +7,7 @@
                     <div class="col-md-12">
                         <img src="{{ asset('images/logo-home.png') }}" alt="">
                         <h1>PEPS | HCAA</h1>
-                        <h2>Programa de Educação Permanente em Saúde</h2>
+                        <h2>Plataforma de Educação Permanente em Saúde</h2>
                     </div>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                             </div>
                             <div>
                                 <span>Aulas Publicadas</span>
-                                <strong>{{$lessonsCount}}</strong>
+                                <strong>{{ $lessonsCount }}</strong>
                             </div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                             </div>
                             <div>
                                 <span>Estudantes</span>
-                                <strong>{{$studentsCount}}</strong>
+                                <strong>{{ $studentsCount }}</strong>
                             </div>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                             </div>
                             <div>
                                 <span>Professores</span>
-                                <strong>{{$teachersCount}}</strong>
+                                <strong>{{ $teachersCount }}</strong>
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,8 @@
                             @foreach ($specialties as $specialty)
                                 <a href="{{ route('web.classes', ['specialty_id' => $specialty->id]) }}">
                                     <div class="item">
-                                        <img src="{{ asset('storage/' . optional($specialty->file)->path ?? 'images/default-specialty.jpg') }}" alt="">
+                                        <img src="{{ asset('storage/' . optional($specialty->file)->path ?? 'images/default-specialty.jpg') }}"
+                                            alt="">
                                         <h4>{{ $specialty->name }}</h4>
                                     </div>
                                 </a>

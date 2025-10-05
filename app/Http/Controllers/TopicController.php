@@ -25,8 +25,8 @@ class TopicController extends Controller
         $query = Topic::query()
             ->when(
                 $searchTerm,
-                fn($q) => Topic::search($searchTerm)->query(fn($q) => $q->orderByDesc('id')),
-                fn($q) => $q->orderByDesc('id')
+                fn($q) => Topic::search($searchTerm)->query(fn($q) => $q->orderBy('id', 'asc')),
+                fn($q) => $q->orderBy('id', 'asc')
             );
 
         $topics = $query->where('lesson_id', $lesson->id)

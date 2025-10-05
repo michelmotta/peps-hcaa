@@ -205,7 +205,7 @@
                 </td>
                 <td class="header-text-cell">
                     <h1>PEPS | HCAA</h1>
-                    <p>Programa de Educação Permanente em Saúde</p>
+                    <p>Plataforma de Educação Permanente em Saúde</p>
                 </td>
             </tr>
         </table>

@@ -3,13 +3,13 @@ services:
     container_name: webserver
     image: nginx:latest
     ports:
-      - '80:80'
-      - "443:443"
+      - '8080:80'
+      - "8085:443"
     volumes:
-      - .:/var/www/eps.hcaa.org.br
+      - .:/var/www/peps.hcaa.org.br
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./docker/nginx/certs:/etc/nginx/certs
-    working_dir: /var/www/eps.hcaa.org.br
+    working_dir: /var/www/peps.hcaa.org.br
     depends_on:
       php-fpm:
         condition: service_started
@@ -18,8 +18,8 @@ services:
     container_name: php-fpm
     build: .
     volumes:
-      - .:/var/www/eps.hcaa.org.br
-    working_dir: /var/www/eps.hcaa.org.br
+      - .:/var/www/peps.hcaa.org.br
+    working_dir: /var/www/peps.hcaa.org.br
     command: php-fpm
     depends_on:
       postgres:

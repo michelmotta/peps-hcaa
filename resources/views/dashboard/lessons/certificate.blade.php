@@ -267,7 +267,7 @@
                             <tr>
                                 <td>
                                     <h1>Certificado de Conclusão</h1>
-                                    <p>Programa de Educação Permanente em Saúde</p>
+                                    <p>Plataforma de Educação Permanente em Saúde</p>
                                 </td>
                                 <td style="text-align: right;">
                                     <img src="{{ public_path('images/logo.png') }}" alt="Logo" style="width: 200px">
@@ -281,7 +281,7 @@
                 </tr>
                 <tr>
                     <td class="content-cell">
-                        <p class="presented">O Programa de Educação Permanente em Saúde do Hospital de Câncer de Campo
+                        <p class="presented">A Plataforma de Educação Permanente em Saúde do Hospital de Câncer de Campo
                             Grande certifica, para os devidos fins, que</p>
                         <h2 class="name">{{ $user->name }}</h2>
                         <p class="cpf-text">portador(a) do CPF nº {{ $user->cpf }}</p>
@@ -328,7 +328,7 @@
         <div class="footer">
             <div class="footer-yellow-bar"></div>
             <div class="footer-slogan">
-                Programa de Educação Permanente em Saúde<br>Hospital de Câncer Alfredo Abrão
+                Plataforma de Educação Permanente em Saúde<br>Hospital de Câncer Alfredo Abrão
             </div>
         </div>
     </div>
@@ -381,7 +381,7 @@
         <div class="footer">
             <div class="footer-yellow-bar"></div>
             <div class="footer-slogan">
-                Programa de Educação Permanente em Saúde<br>Hospital de Câncer Alfredo Abrão
+                Plataforma de Educação Permanente em Saúde<br>Hospital de Câncer Alfredo Abrão
             </div>
         </div>
     </div>

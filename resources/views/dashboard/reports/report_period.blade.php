@@ -202,7 +202,7 @@
                                                                         </td>
                                                                         <td class="text-center fw-bold">
                                                                             @if (isset($student->pivot->score))
-                                                                                {{ number_format((float) $student->pivot->score, 1, ',', '.') }}
+                                                                                {{ $student->pivot->score }}
                                                                             @else
                                                                                 -
                                                                             @endif

@@ -17,7 +17,7 @@
         <div class="container">
             <div class="row">
                 @forelse ($teachers as $teacher)
-                    <div class="col-md-6 mb-4">
+                    <div class="col-md-6 mb-4 h-100">
                         <div class="teacher-card-horizontal">
                             <div class="teacher-photo-wrapper">
                                 @if ($teacher->file)
@@ -32,7 +32,7 @@
                                     <h4 class="teacher-name">{{ $teacher->name }}</h4>
                                     <p class="teacher-expertise">{{ $teacher->expertise }}</p>
                                     <p class="teacher-bio">
-                                        {{ Str::words($teacher->biography, 30, '...') }}
+                                        {!! Str::words($teacher->biography, 30, '...') !!}
                                     </p>
                                 </div>
                                 <div class="teacher-footer-info">

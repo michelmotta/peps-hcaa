@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Favicon icon-->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('icons/logo-icon.png') }}">
-    <title>Programa de Educação Permanente em Saúde - PEPS | HCAA</title>
+    <title>Plataforma de Educação Permanente em Saúde - PEPS | HCAA</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -25,97 +25,102 @@
         <div class="navbar-wrapper">
             <nav class="fixed-top navbar navbar-expand-lg navbar-custom">
                 <div class="container">
-                    <!-- Logo -->
                     <a class="navbar-brand text-white" href="{{ route('web.index') }}">
                         <img src="{{ asset('images/logo.png') }}" alt="Logo">
                     </a>
-
-                    <!-- Hamburger -->
                     <button class="navbar-toggler text-white border-white" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarContent">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-
-                    <!-- Nav content -->
                     <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
                         <ul class="navbar-nav mb-2 mb-lg-0 text-center">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('web.index') }}">
-                                    <i class="bi bi-house-door"></i> Início
+                                <a class="nav-link {{ request()->routeIs('web.index') ? 'active' : '' }}"
+                                    href="{{ route('web.index') }}">
+                                    <i class="bi bi-house-door-fill"></i> Início
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('web.classes') }}">
-                                    <i class="bi bi-journal-text"></i> Aulas
+                                <a class="nav-link {{ request()->routeIs('web.classes*') ? 'active' : '' }} {{ request()->routeIs('web.class*') ? 'active' : '' }}"
+                                    href="{{ route('web.classes') }}">
+                                    <i class="bi bi-easel2-fill"></i> Aulas
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('web.teachers') }}">
-                                    <i class="bi bi-person-vcard"></i> Professores
+                                <a class="nav-link {{ request()->routeIs('web.teachers*') ? 'active' : '' }}"
+                                    href="{{ route('web.teachers') }}">
+                                    <i class="bi bi-people-fill"></i> Professores
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('web.informations') }}">
-                                    <i class="bi bi-info-circle"></i> Informações
+                                <a class="nav-link {{ request()->routeIs('web.informations') ? 'active' : '' }}"
+                                    href="{{ route('web.informations') }}">
+                                    <i class="bi bi-info-circle-fill"></i> Informações
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('web.suggestions') }}">
-                                    <i class="bi bi-chat-dots"></i> Sugerir Temas
+                                <a class="nav-link {{ request()->routeIs('web.suggestions') ? 'active' : '' }}"
+                                    href="{{ route('web.suggestions') }}">
+                                    <i class="bi bi-lightbulb-fill"></i> Sugestões
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('web.library') }}">
-                                    <i class="bi bi-book"></i> Biblioteca
+                                <a class="nav-link {{ request()->routeIs('web.library') ? 'active' : '' }}"
+                                    href="{{ route('web.library') }}">
+                                    <i class="bi bi-stack"></i> Biblioteca
                                 </a>
                             </li>
-                            <!-- Dropdown menu -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="menuDropdown" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-house-lock"></i>
-                                    @auth {{ Auth::user()->name }} @endauth
-                                    @guest Acessar @endguest
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="menuDropdown">
-                                    @guest
-                                        <li>
-                                            <a class="dropdown-item" href="{{ route('login') }}">
-                                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                                            </a>
-                                        </li>
-                                    @endguest
-                                    @auth
+                            @auth
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle {{ request()->routeIs(['web.myClasses', 'web.perfil']) ? 'active' : '' }}"
+                                        href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i class="bi bi-person-circle"></i>
+                                        {{ Auth::user()->name }}
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="menuDropdown">
                                         @can('isCoordenadorOrProfessor')
                                             <li>
                                                 <a class="dropdown-item" href="{{ route('dashboard.index') }}">
-                                                    <i class="bi bi-window-sidebar me-2"></i> Dashboard
+                                                    <i class="bi bi-layout-wth me-2"></i> Dashboard
                                                 </a>
                                             </li>
                                         @endcan
                                         <li>
-                                            <a class="dropdown-item" href="{{ route('web.myClasses') }}">
-                                                <i class="bi bi-collection-play me-2"></i> Minhas Aulas
+                                            <a class="dropdown-item {{ request()->routeIs('web.myClasses') ? 'active' : '' }}"
+                                                href="{{ route('web.myClasses') }}">
+                                                <i class="bi bi-collection-play-fill me-2"></i> Minhas Aulas
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="{{ route('web.perfil') }}">
-                                                <i class="bi bi-person me-2"></i> Perfil
+                                            <a class="dropdown-item {{ request()->routeIs('web.perfil') ? 'active' : '' }}"
+                                                href="{{ route('web.perfil') }}">
+                                                <i class="bi bi-person-fill me-2"></i> Perfil
                                             </a>
                                         </li>
-                                        <hr>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
                                         <li>
                                             <form method="POST" action="{{ route('logout-post') }}">
                                                 @csrf
                                                 <button class="dropdown-item" type="submit">
-                                                    <i class="bi bi-box-arrow-in-left me-2"></i>
+                                                    <i class="bi bi-box-arrow-right me-2"></i>
                                                     Sair
                                                 </button>
                                             </form>
                                         </li>
-                                    @endauth
-                                </ul>
-                            </li>
+                                    </ul>
+                                </li>
+                            @endauth
+                            @guest
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}"
+                                        href="{{ route('login') }}">
+                                        <i class="bi bi-box-arrow-in-right"></i> Login
+                                    </a>
+                                </li>
+                            @endguest
                         </ul>
                     </div>
                 </div>
@@ -131,15 +136,12 @@
     <footer class="footer mt-5 pt-5 pb-3 text-white">
         <div class="container">
             <div class="row text-center text-md-start">
-                <!-- Coluna 1: Logo centralizada -->
                 <div class="col-md-4 mb-4 d-flex flex-column align-items-center text-center">
                     <img src="{{ asset('images/logo-home.png') }}" alt="Logo" class="footer-logo mb-4">
                     <p class="mb-1">PEPS | HCAA</p>
-                    <p class="small mb-0">Programa de Educação Permanente em Saúde</p>
+                    <p class="small mb-0">Plataforma de Educação Permanente em Saúde</p>
                     <p class="small">Hospital de Câncer Alfredo Abrão</p>
                 </div>
-
-                <!-- Coluna 2: Links principais -->
                 <div class="col-md-4 mb-4 text-center">
                     <h5 class="mb-3">Menu</h5>
                     <ul class="list-unstyled">
@@ -159,7 +161,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('web.informations') }}#" class="footer-link">
+                            <a href="{{ route('web.informations') }}" class="footer-link">
                                 Informações
                             </a>
                         </li>
@@ -175,8 +177,6 @@
                         </li>
                     </ul>
                 </div>
-
-                <!-- Coluna 3: Links adicionais -->
                 <div class="col-md-4 mb-4 text-center">
                     <h5 class="mb-3">Links Úteis</h5>
                     <ul class="list-unstyled">
@@ -203,8 +203,6 @@
                     </ul>
                 </div>
             </div>
-
-            <!-- Créditos -->
             <div class="text-center border-top pt-3 mt-4 small text-white">
                 © {{ date('Y') }} Hospital de Câncer de Campo Grande - Alfredo Abrão. Todos os direitos reservados.
             </div>

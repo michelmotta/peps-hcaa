@@ -81,6 +81,10 @@ class WebController extends Controller
 
         $watchedTopicIds = $user ? $user->histories()->pluck('topic_id')->toArray() : [];
 
+        $lesson->load(['topics' => function ($query) {
+            $query->orderBy('id', 'asc');
+        }]);
+
         return view('web.class', [
             'lesson' => $lesson,
             'feedback' => $feedback,
