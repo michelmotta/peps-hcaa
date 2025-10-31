@@ -24,7 +24,7 @@ class UpdateSpecialtyRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'description' => 'nullable',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240',
         ];
     }
 }

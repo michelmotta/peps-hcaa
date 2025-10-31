@@ -72,7 +72,7 @@
                                         {!! $lesson->description !!}
                                     </div>
                                     <div class="faqs mt-5">
-                                        <h4 class="text-center mb-4">Tópicos da Aula</h4>
+                                        <h4 class="text-center mb-4" style="color: #133b6a;text-transform: uppercase;font-weight: 600;">Tópicos da Aula</h4>
                                         <div class="accordion" id="faqAccordion">
                                             @foreach ($lesson->topics as $index => $topic)
                                                 <div class="accordion-item mb-3 border-0 rounded-3 overflow-hidden">
@@ -112,7 +112,7 @@
                                     <h6 class="fw-bold text-center mb-0">{{ $lesson->teacher->name }}</h6>
                                     <p class="text-muted text-center mb-3">{{ $lesson->teacher->expertise }}</p>
                                     <div class="text-muted small custom-text-justify teacher-biography">
-                                        {{ $lesson->teacher->biography }}
+                                        {!! $lesson->teacher->biography !!}
                                     </div>
                                 </div>
                             </div>

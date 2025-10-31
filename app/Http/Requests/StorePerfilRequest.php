@@ -28,7 +28,7 @@ class StorePerfilRequest extends FormRequest
             'username' => 'required|max:255|unique:users',
             'password' => 'required|min:6|max:255|confirmed',
             'biography' => 'nullable|string',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240',
             'sector_id' => 'required|exists:sectors,id',
             'terms' => 'accepted',
         ];

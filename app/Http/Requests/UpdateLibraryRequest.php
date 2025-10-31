@@ -23,7 +23,7 @@ class UpdateLibraryRequest extends FormRequest
     {
         return [
             'title' => 'required|max:255',
-            'file' => 'file|mimes:pdf|max:2048',
+            'file' => 'file|mimes:pdf|max:10240',
         ];
     }
 }

@@ -17,8 +17,8 @@
         <div class="container">
             <div class="row">
                 @forelse ($teachers as $teacher)
-                    <div class="col-md-6 mb-4 h-100">
-                        <div class="teacher-card-horizontal">
+                    <div class="col-md-6 mb-4 d-flex">
+                        <div class="teacher-card-horizontal flex-fill">
                             <div class="teacher-photo-wrapper">
                                 @if ($teacher->file)
                                     <img src="{{ asset('storage/' . $teacher->file->path) }}" alt="{{ $teacher->name }}">

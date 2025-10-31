@@ -40,7 +40,7 @@ class UpdatePerfilRequest extends FormRequest
                 Rule::unique('users', 'username')->ignore($this->route('user')),
             ],
             'password' => 'nullable|min:6|max:255|confirmed',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240',
             'sector_id' => 'required|exists:sectors,id',
             'biography' => 'nullable|string',
         ];

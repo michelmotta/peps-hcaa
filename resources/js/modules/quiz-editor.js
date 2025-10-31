@@ -198,7 +198,7 @@ class QuizStudio {
             <div class="input-group mb-3 resposta-item">
                 <div class="input-group-text">
                     <input class="form-check-input mt-0" type="radio" name="correta-${questionIndex}" value="${letter}" title="Marcar como correta" required>
-                    <span class="ms-1">Correta?</span>
+                    <span class="ms-1"><- Correta?</span>
                 </div>
                 <span class="input-group-text fw-bold bg-light">${letter}.</span>
                 <input type="text" class="form-control" placeholder="Texto da alternativa">

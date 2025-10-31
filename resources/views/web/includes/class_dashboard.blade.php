@@ -67,24 +67,28 @@
                     <div class="video-container mb-4">
                         <div class="overflow-hidden shadow">
                             <video controls class="js-player player w-100"></video>
+                            <div id="video-loading" class="video-loading" style="display:none;">
+                                <div class="spinner"></div>
+                                <p>Carregando vídeo...</p>
+                            </div>
                         </div>
                     </div>
                     <ul class="nav nav-tabs justify-content-center mb-4" id="cursoTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="anexos-tab" data-bs-toggle="tab" data-bs-target="#anexos"
-                                type="button" role="tab">
+                            <button class="nav-link active" id="anexos-tab" data-bs-toggle="tab"
+                                data-bs-target="#anexos" type="button" role="tab">
                                 <i class="bi bi-paperclip me-1"></i> Conteúdo
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="conteudo-tab" data-bs-toggle="tab"
-                                data-bs-target="#conteudo" type="button" role="tab">
+                            <button class="nav-link" id="conteudo-tab" data-bs-toggle="tab" data-bs-target="#conteudo"
+                                type="button" role="tab">
                                 <i class="bi bi-journal-text me-1"></i> Sobre
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="comunicados-tab" data-bs-toggle="tab" data-bs-target="#comunicados"
-                                type="button" role="tab">
+                            <button class="nav-link" id="comunicados-tab" data-bs-toggle="tab"
+                                data-bs-target="#comunicados" type="button" role="tab">
                                 <i class="bi bi-broadcast me-1"></i> Comunicados
                             </button>
                         </li>
@@ -107,8 +111,8 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="feedback-tab" data-bs-toggle="tab" data-bs-target="#feedback"
-                                type="button" role="tab">
+                            <button class="nav-link" id="feedback-tab" data-bs-toggle="tab"
+                                data-bs-target="#feedback" type="button" role="tab">
                                 <i class="bi bi-chat-dots me-1"></i> Avaliar
                             </button>
                         </li>
@@ -141,3 +145,43 @@
         </div>
     </div>
 </section>
+<style>
+    .video-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(5, 44, 82, 0.8);
+        color: #fff;
+        font-size: 1.1rem;
+        text-align: center;
+        z-index: 10;
+        border-radius: 0.5rem;
+        transition: opacity 0.3s ease;
+    }
+
+    .video-loading .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-bottom: 12px;
+    }
+
+    .video-container .overflow-hidden {
+        position: relative;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>

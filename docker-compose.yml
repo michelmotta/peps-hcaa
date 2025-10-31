@@ -17,6 +17,7 @@ services:
   php-fpm:
     container_name: php-fpm
     build: .
+    user: "${UID}:${GID}"
     volumes:
       - .:/var/www/peps.hcaa.org.br
     working_dir: /var/www/peps.hcaa.org.br

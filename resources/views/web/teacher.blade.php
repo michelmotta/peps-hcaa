@@ -44,7 +44,7 @@
                 <hr class="profile-divider">
                 <div class="biography-wrapper">
                     <h3 class="section-title">Sobre o professor</h3>
-                    <p>{{ $teacher->biography }}</p>
+                    <p>{!! $teacher->biography !!}</p>
                 </div>
             </div>
         </div>

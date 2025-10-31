@@ -29,7 +29,7 @@ class StoreUserRequest extends FormRequest
             'password' => 'required|min:6|max:255|confirmed',
             'biography' => 'nullable',
             'expertise' => 'nullable',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240',
             'sector_id' => 'required|exists:sectors,id',
             'profiles' => 'nullable|array',
             'profiles.*' => 'exists:profiles,id',

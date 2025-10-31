@@ -38,7 +38,7 @@
                                             Olá, {{ $user->name }},
                                         </p>
                                         <p style="color: #4a5568; line-height: 1.7; font-size: 16px; text-align: left;">
-                                            Seja muito bem-vindo(a) ao <strong>PEPS - Programa de Educação Permanente em
+                                            Seja muito bem-vindo(a) ao <strong>PEPS - Plataforma de Educação Permanente em
                                                 Saúde</strong>! Estamos felizes em ter você conosco.
                                         </p>
                                         <table width="100%" border="0" cellspacing="0" cellpadding="0"

@@ -53,6 +53,7 @@ class TopicManager {
         this.progressManager = progressManager;
         this.sentEvent = false;
         this.mustWatchPercentage = 0.8;
+        this.loadingElement = document.getElementById('video-loading');
     }
     
     init() {
@@ -101,6 +102,7 @@ class TopicManager {
     }
     
     loadVideo(videoUrl) {
+        this.showLoading();
         this.player.source = {
             type: 'video',
             sources: [{ src: videoUrl, type: 'video/mp4' }],
@@ -110,11 +112,23 @@ class TopicManager {
     
     setupPlayerEvents() {
         this.player.on('timeupdate', () => this.handleTimeUpdate());
-        this.player.on('loadeddata', () => this.sentEvent = false);
+        this.player.on('loadeddata', () => {
+            this.sentEvent = false;
+            this.hideLoading();
+        });
         this.player.on('playing', () => this.handlePlaying());
         this.player.on('pause', () => this.handlePause());
         this.player.on('ended', () => this.handleEnded());
     }
+
+    showLoading() {
+        if (this.loadingElement) this.loadingElement.style.display = 'flex';
+    }
+
+    hideLoading() {
+        if (this.loadingElement) this.loadingElement.style.display = 'none';
+    }
+
     
     handleTimeUpdate() {
         const currentItem = document.querySelector('.topic-item.active');
