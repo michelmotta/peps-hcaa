@@ -36,6 +36,8 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 10s
@@ -49,3 +51,6 @@ services:
       - "8025:8025"  # Interface web
       - "1025:1025"  # Porta SMTP
     restart: unless-stopped
+
+volumes:
+  postgres_data:

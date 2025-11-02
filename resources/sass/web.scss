@@ -272,10 +272,6 @@ header {
                 .item {
                     background-color: $main-color;
 
-                    img {
-                        filter: brightness(0) invert(1);
-                    }
-
                     h4 {
                         color: #fff !important;
                     }
@@ -2233,7 +2229,7 @@ footer,
         }
 
         .start-quiz-btn {
-            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            /* Estilos que AMBOS os botões vão compartilhar */
             border: none;
             font-size: 1.25rem;
             padding: 0.8rem 2.5rem;
@@ -2245,6 +2241,14 @@ footer,
             &:hover {
                 transform: scale(1.05);
                 box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            }
+
+            &.btn-start-quiz {
+                background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            }
+
+            &.btn-review-topic {
+                /* O background amarelo do .btn-warning será usado */
             }
         }
     }

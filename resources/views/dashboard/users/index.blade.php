@@ -15,6 +15,13 @@
                 <div class="d-flex align-items-center">
                     <form method="GET" action="{{ route('dashboard.users.index') }}" class="me-2">
                         <div class="input-group">
+                            <select class="form-select" name="status" style="max-width: 120px;"
+                                onchange="this.form.submit()">
+                                <option value="" {{ !request('status') ? 'selected' : '' }}>Todos</option>
+                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Ativos</option>
+                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inativos
+                                </option>
+                            </select>
                             <input type="search" class="form-control" name="q" value="{{ request('q') }}"
                                 placeholder="Pesquisar usuários...">
                             <button class="btn btn-primary" type="submit" title="Buscar">

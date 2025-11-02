@@ -27,13 +27,23 @@ class UserController extends Controller
         ];
 
         $searchTerm = $request->input('q');
+        $status = $request->input('status');
 
         $query = $searchTerm
             ? User::search($searchTerm)
-            ->query(fn($q) => $q->with($relations)->orderByDesc('id'))
+            ->query(fn($q) => $q->with($relations)
+                ->orderBy('active', 'desc')
+                ->orderByDesc('id'))
             : User::query()
             ->with($relations)
+            ->orderBy('active', 'desc')
             ->orderByDesc('id');
+
+        if ($status === 'active') {
+            $query->where('active', true);
+        } elseif ($status === 'inactive') {
+            $query->where('active', false);
+        }
 
         return view('dashboard.users.index', [
             'users' => $query->paginate(15)->withQueryString(),

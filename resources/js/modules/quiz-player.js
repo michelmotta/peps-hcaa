@@ -190,7 +190,9 @@ export function initQuizPlayer() {
     });
 
     ui.modal.addEventListener('hidden.bs.modal', () => {
-        if (topicToPlayAfterClose) {
+        const isTopicFailure = !!topicToPlayAfterClose;
+
+        if (isTopicFailure) {
             const topicId = topicToPlayAfterClose;
             topicToPlayAfterClose = null;
             const topicItem = document.querySelector(`.topic-item[data-topic-id="${topicId}"]`);
@@ -202,12 +204,72 @@ export function initQuizPlayer() {
                 }
             }
         }
+
         resetUIForNewQuestion();
-        if (state.lessonId) {
-            axios.post(`/aula/${state.lessonId}/quiz/clear-session`).catch(err => console.error("Failed to clear session:", err));
-        }
+
         if (quizTriggerButton) {
             quizTriggerButton.focus();
+        }
+    });
+
+    document.querySelectorAll('.quiz-button-container').forEach(container => {
+        const lessonId = container.dataset.lessonId;
+        // Lê o ID do tópico bloqueado diretamente do atributo data
+        const lockedTopicId = container.dataset.lockedTopicId;
+
+        const quizButton = container.querySelector('.btn-start-quiz');
+        const reviewButton = container.querySelector('.btn-review-topic');
+
+        if (!quizButton || !reviewButton) return;
+
+        if (lockedTopicId) {
+            quizButton.style.display = 'none';
+            reviewButton.style.display = 'inline-flex';
+
+            reviewButton.onclick = () => {
+                const topicItem = document.querySelector(`.topic-item[data-topic-id="${lockedTopicId}"]`);
+                if (topicItem) {
+                    topicItem.click();
+                    const videoContainer = document.querySelector('.video-container');
+                    if (videoContainer) {
+                        videoContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            };
+
+            // Adiciona o destaque no tópico da playlist
+            const topicItem = document.querySelector(`.topic-item[data-topic-id="${lockedTopicId}"]`);
+            if (topicItem) {
+                topicItem.classList.add('must-watch');
+                topicItem.title = "Você precisa assistir este tópico para reabrir o quiz.";
+            }
+        } else {
+            quizButton.style.display = 'inline-flex';
+            reviewButton.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('quiz:unlocked', (event) => {
+        const { lessonId, topicId } = event.detail;
+
+        const container = document.querySelector(`.quiz-button-container[data-lesson-id="${lessonId}"]`);
+        if (!container) return;
+
+        // Atualiza o atributo data para refletir o novo estado
+        container.dataset.lockedTopicId = '';
+
+        const quizButton = container.querySelector('.btn-start-quiz');
+        const reviewButton = container.querySelector('.btn-review-topic');
+
+        // Troca os botões
+        if (reviewButton) reviewButton.style.display = 'none';
+        if (quizButton) quizButton.style.display = 'inline-flex';
+
+        // Remove o destaque do tópico
+        const topicItem = document.querySelector(`.topic-item[data-topic-id="${topicId}"]`);
+        if (topicItem) {
+            topicItem.classList.remove('must-watch');
+            topicItem.title = "";
         }
     });
 }

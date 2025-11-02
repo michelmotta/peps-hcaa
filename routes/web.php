@@ -87,7 +87,7 @@ Route::name('web.')->group(function () {
             Route::prefix('/quiz')->name('quiz.')->group(function () {
                 Route::get('/next-question', [QuizController::class, 'getNextQuestion'])->name('nextQuestion');
                 Route::post('/submit-answer', [QuizController::class, 'submitAnswer'])->name('submitAnswer');
-                Route::post('/clear-session', [QuizController::class, 'clearSession'])->name('clearSession');
+                Route::post('/video-watched', [QuizController::class, 'markVideoAsWatched'])->name('videoWatched');
             });
 
             // Feedback Routes

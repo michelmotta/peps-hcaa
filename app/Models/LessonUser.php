@@ -25,6 +25,7 @@ class LessonUser extends Pivot
         'created_at',
         'finished_at',
         'score',
+        'quiz_locked_topic_id',
     ];
 
     /**

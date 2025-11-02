@@ -31,10 +31,20 @@
                 </div>
                 <h2>Teste seus conhecimentos!</h2>
                 <p class="lead">Encare o desafio e mostre o que você aprendeu.</p>
-                <button type="button" class="btn btn-primary btn-lg start-quiz-btn" data-bs-toggle="modal"
-                    data-bs-target="#quizModal" data-lesson-id="{{ $lesson->id ?? 'UNKNOWN_LESSON' }}">
-                    <i class="bi bi-play-circle-fill"></i> Iniciar Quiz
-                </button>
+                <div class="quiz-button-container" data-lesson-id="{{ $lesson->id ?? 'UNKNOWN_LESSON' }}"
+                    data-locked-topic-id="{{ $quizLockedTopicId ?? '' }}">
+
+                    <button type="button" class="btn btn-primary btn-lg start-quiz-btn btn-start-quiz"
+                        data-bs-toggle="modal" data-bs-target="#quizModal"
+                        data-lesson-id="{{ $lesson->id ?? 'UNKNOWN_LESSON' }}">
+                        <i class="bi bi-play-circle-fill me-1"></i> Iniciar Quiz
+                    </button>
+
+                    <button type="button" class="btn btn-warning btn-lg start-quiz-btn btn-review-topic"
+                        style="display: none;">
+                        <i class="bi bi-play-circle-fill me-1"></i> Revisar Tópico Obrigatório
+                    </button>
+                </div>
             </div>
         @endif
     </div>

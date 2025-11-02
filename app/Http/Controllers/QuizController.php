@@ -8,47 +8,26 @@ use App\Models\Quiz;
 use App\Models\Topic;
 use App\Models\User;
 use App\Models\UserTopicQuiz;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\QuizAttempt;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Session;
 
 class QuizController extends Controller
 {
     private const MINIMUM_PASSING_SCORE = 50;
 
     /**
-     * Define the session key for the user's quiz state.
-     * Uses user ID and lesson ID to keep sessions separate.
-     */
-    private function getQuizSessionKey(int $lessonId): string
-    {
-        return "quiz_state_" . Auth::id() . "_" . $lessonId;
-    }
-
-    /**
-     * Checks if the current quiz state in the session is valid for the given lesson.
-     */
-    private function isValidQuizState(?array $state, int $lessonId): bool
-    {
-        return $state !== null && isset($state['lesson_id']) && $state['lesson_id'] === $lessonId;
-    }
-
-    /**
      * Initializes a fresh quiz state for a lesson.
-     *
-     * @throws \App\Exceptions\NoTopicsFoundException|\Exception If no topics are found for the lesson.
      */
     private function initializeQuizState(Lesson $lesson): array
     {
         $topics = $lesson->topics()->withCount('quizzes')->get();
 
         if ($topics->isEmpty()) {
-            throw new \Exception('Nenhum tópico encontrado para esta aula.');
+            throw new Exception('Nenhum tópico encontrado para esta aula.');
         }
 
         $totalQuestionsInLesson = 0;
@@ -112,7 +91,6 @@ class QuizController extends Controller
         $currentQuestionIndex = $topicProgress['current_question_index'];
         $questionsIds = $topicProgress['questions_ids'];
 
-        // Ensure index is valid before trying to access it
         if (isset($questionsIds[$currentQuestionIndex])) {
             return Quiz::find($questionsIds[$currentQuestionIndex]);
         }
@@ -138,8 +116,8 @@ class QuizController extends Controller
     }
 
     /**
-     * Returns a standardized JSON response for a question.
-     */
+     * Returns a standardized JSON response for a question.
+     */
     private function responseQuestion(
         Lesson $lesson,
         Topic $currentTopic,
@@ -165,7 +143,6 @@ class QuizController extends Controller
             'current_question_index' => $currentQuestionIndexInTopic + 1,
             'total_questions_in_topic' => $totalQuestionsInTopic,
             'progress_in_topic' => $progressInTopic,
-
             'question' => [
                 'id' => $question->id,
                 'text' => $question->question,
@@ -175,8 +152,8 @@ class QuizController extends Controller
     }
 
     /**
-     * Returns a standardized JSON response for quiz completion.
-     */
+     * Returns a standardized JSON response for quiz completion.
+     */
     private function responseFinished(): JsonResponse
     {
         return response()->json([
@@ -187,8 +164,8 @@ class QuizController extends Controller
     }
 
     /**
-     * Returns a standardized JSON response for topic completion and readiness for next.
-     */
+     * Returns a standardized JSON response for topic completion and readiness for next.
+     */
     private function responseNextTopicReady(bool $isCorrect, string $correctAnswer): JsonResponse
     {
         return response()->json([
@@ -200,9 +177,9 @@ class QuizController extends Controller
     }
 
     /**
-     * Returns a standardized JSON response for a topic failure.
-     * Includes Topic and Video information for the frontend to handle.
-     */
+     * Returns a standardized JSON response for a topic failure.
+     * Includes Topic and Video information for the frontend to handle.
+     */
     private function responseTopicFailed(bool $isCorrect, string $correctAnswer, float $score, Topic $topic, Lesson $lesson): JsonResponse
     {
         $topic->loadMissing('video');
@@ -235,15 +212,16 @@ class QuizController extends Controller
 
     /**
      * Finalizes the lesson quiz, calculates overall score, and updates lesson_user table.
+     * Aceita $attempt em vez de $sessionKey e atualiza o $attempt.
      */
-    private function finalizeLessonQuiz(Lesson $lesson, User $user, string $sessionKey, array $quizState): void
+    private function finalizeLessonQuiz(Lesson $lesson, User $user, QuizAttempt $attempt, array $quizState): void
     {
         $averageScore = 0;
         if (count($quizState['topics_scores']) > 0) {
             $averageScore = array_sum($quizState['topics_scores']) / count($quizState['topics_scores']);
         }
 
-        DB::transaction(function () use ($lesson, $user, $averageScore) {
+        DB::transaction(function () use ($lesson, $user, $averageScore, $attempt) {
             LessonUser::updateOrCreate(
                 [
                     'user_id' => $user->id,
@@ -255,33 +233,73 @@ class QuizController extends Controller
                     'finished_at' => now(),
                 ]
             );
+            $attempt->update([
+                'status' => 'completed',
+                'progress_state' => null,
+            ]);
         });
-        Session::forget($sessionKey);
     }
 
+    /**
+     * Carrega o estado do DB (ou cria um novo) em vez da Session.
+     */
     public function getNextQuestion(Lesson $lesson): JsonResponse
     {
-        $sessionKey = $this->getQuizSessionKey($lesson->id);
-        $quizState = Session::get($sessionKey);
+        $user = Auth::user();
+        if (!$user) {
+            return $this->responseError('Usuário não autenticado.', 401);
+        }
+
+        $lessonUser = DB::table('lesson_user')
+            ->where('user_id', $user->id)
+            ->where('lesson_id', $lesson->id)
+            ->first();
+
+        if ($lessonUser && $lessonUser->quiz_locked_topic_id !== null) {
+            $topic = Topic::find($lessonUser->quiz_locked_topic_id);
+            $topicTitle = $topic ? $topic->title : 'pendente';
+
+            // Retorna um erro 403 (Proibido) que o frontend pode tratar
+            return $this->responseError(
+                "Você precisa assistir ao vídeo completo do tópico '{$topicTitle}' para desbloquear o quiz.",
+                403 // Proibido
+            );
+        }
 
         try {
-            if (!$this->isValidQuizState($quizState, $lesson->id)) {
+            // Tenta encontrar uma tentativa 'in_progress'
+            $attempt = QuizAttempt::where('user_id', $user->id)
+                ->where('lesson_id', $lesson->id)
+                ->where('status', 'in_progress')
+                ->first();
+
+            if ($attempt) {
+                // Se encontrou, carrega o estado
+                $quizState = $attempt->progress_state;
+            } else {
+                // Se não, inicializa um novo estado e cria a tentativa
                 $quizState = $this->initializeQuizState($lesson);
-                Session::put($sessionKey, $quizState);
+                $attempt = QuizAttempt::create([
+                    'user_id' => $user->id,
+                    'lesson_id' => $lesson->id,
+                    'status' => 'in_progress',
+                    'progress_state' => $quizState,
+                ]);
             }
 
             while (true) {
                 $currentTopicId = $this->getCurrentTopicId($quizState);
 
                 if ($currentTopicId === null) {
-                    $this->finalizeLessonQuiz($lesson, Auth::user(), $sessionKey, $quizState);
+                    $this->finalizeLessonQuiz($lesson, $user, $attempt, $quizState);
                     return $this->responseFinished();
                 }
 
                 $currentTopic = Topic::find($currentTopicId);
                 if (!$currentTopic) {
                     $this->advanceTopicIndex($quizState);
-                    Session::put($sessionKey, $quizState);
+                    $attempt->progress_state = $quizState;
+                    $attempt->save();
                     continue;
                 }
 
@@ -292,29 +310,33 @@ class QuizController extends Controller
                 if (empty($topicProgress['questions_ids'])) {
                     $quizState['topics_scores'][$currentTopicId] = 100;
                     $this->advanceTopicIndex($quizState);
-                    Session::put($sessionKey, $quizState);
+                    $attempt->progress_state = $quizState;
+                    $attempt->save();
                     continue;
                 }
 
                 $question = $this->getCurrentQuestion($topicProgress);
                 if (!$question) {
                     $quizState['topics_progress'][$currentTopicId]['current_question_index']++;
-                    Session::put($sessionKey, $quizState);
+                    $attempt->progress_state = $quizState;
+                    $attempt->save();
                     continue;
                 }
 
+                // Lógica de cálculo de progresso (inalterada)
                 $overallCurrentQuestionNumber = 0;
                 for ($i = 0; $i < $quizState['current_topic_index']; $i++) {
                     $previousTopicId = $quizState['topics_order'][$i];
                     $overallCurrentQuestionNumber += ($quizState['topic_question_counts'][$previousTopicId] ?? 0);
                 }
                 $overallCurrentQuestionNumber += $topicProgress['current_question_index'] + 1;
-
                 $totalQuestionsInLesson = $quizState['total_questions_in_lesson'] ?? 0;
                 $overallProgressInLesson = $totalQuestionsInLesson > 0 ?
                     round(($overallCurrentQuestionNumber / $totalQuestionsInLesson) * 100) : 0;
 
-                Session::put($sessionKey, $quizState);
+                $attempt->progress_state = $quizState;
+                $attempt->save();
+
                 return $this->responseQuestion(
                     $lesson,
                     $currentTopic,
@@ -330,6 +352,9 @@ class QuizController extends Controller
         }
     }
 
+    /**
+     * MODIFICADO: Carrega e salva o estado no DB em vez da Session.
+     */
     public function submitAnswer(Request $request, Lesson $lesson): JsonResponse
     {
         $request->validate([
@@ -337,23 +362,30 @@ class QuizController extends Controller
             'selected_option' => 'required|string',
         ]);
 
-        $sessionKey = $this->getQuizSessionKey($lesson->id);
-        $quizState = Session::get($sessionKey);
         $user = Auth::user();
-
         if (!$user) {
             return $this->responseError('Usuário não autenticado.', 401);
         }
 
         try {
-            if (!$this->isValidQuizState($quizState, $lesson->id)) {
-                return $this->responseError('Sessão do quiz inválida. Por favor, reinicie.', 400);
+            // Encontra a tentativa 'in_progress'
+            $attempt = QuizAttempt::where('user_id', $user->id)
+                ->where('lesson_id', $lesson->id)
+                ->where('status', 'in_progress')
+                ->first();
+
+            // Se não houver tentativa, a sessão é inválida (ou o quiz foi iniciado em outra aba)
+            if (!$attempt) {
+                return $this->responseError('Tentativa de quiz não encontrada. Por favor, reinicie.', 400);
             }
+
+            // Carrega o estado do DB
+            $quizState = $attempt->progress_state;
 
             $currentTopicId = $this->getCurrentTopicId($quizState);
             if ($currentTopicId === null) {
                 if (!empty($quizState['topics_scores'])) {
-                    $this->finalizeLessonQuiz($lesson, $user, $sessionKey, $quizState);
+                    $this->finalizeLessonQuiz($lesson, $user, $attempt, $quizState);
                 }
                 return $this->responseError('Não há mais perguntas. O quiz já foi concluído.', 400);
             }
@@ -381,6 +413,7 @@ class QuizController extends Controller
 
             $isCorrect = strtolower(trim($request->selected_option)) === strtolower(trim($question->correct));
 
+            // Atualiza o array $quizState
             $quizState['topics_progress'][$currentTopicId]['answered_count']++;
             if ($isCorrect) {
                 $quizState['topics_progress'][$currentTopicId]['correct_count']++;
@@ -415,7 +448,14 @@ class QuizController extends Controller
 
                 if ($score < self::MINIMUM_PASSING_SCORE) {
                     unset($quizState['topics_progress'][$currentTopicId]);
-                    Session::put($sessionKey, $quizState);
+
+                    LessonUser::where('user_id', $user->id)
+                        ->where('lesson_id', $lesson->id)
+                        ->update(['quiz_locked_topic_id' => $currentTopicId]);
+
+                    $attempt->progress_state = $quizState;
+                    $attempt->save();
+
                     return $this->responseTopicFailed($isCorrect, $question->correct, $score, $currentTopic, $lesson);
                 }
 
@@ -423,19 +463,22 @@ class QuizController extends Controller
                 $this->advanceTopicIndex($quizState);
 
                 if ($this->getCurrentTopicId($quizState) === null) {
-                    $this->finalizeLessonQuiz($lesson, $user, $sessionKey, $quizState);
+                    $this->finalizeLessonQuiz($lesson, $user, $attempt, $quizState);
                     return $this->responseFinished();
                 }
 
-                Session::put($sessionKey, $quizState);
+                $attempt->progress_state = $quizState;
+                $attempt->save();
+
                 return $this->responseNextTopicReady($isCorrect, $question->correct);
             }
 
-            Session::put($sessionKey, $quizState);
+            $attempt->progress_state = $quizState;
+            $attempt->save();
+
             return response()->json([
                 'status' => 'answer_received',
                 'is_correct' => $isCorrect,
-                //'correct_answer' => $question->correct,
                 'message' => $isCorrect ? 'Resposta correta!' : 'Resposta incorreta.',
             ]);
         } catch (Exception $e) {
@@ -443,18 +486,41 @@ class QuizController extends Controller
         }
     }
 
-    public function clearSession(Lesson $lesson): JsonResponse
+    /**
+     * Marca um vídeo de tópico como assistido, desbloqueando o quiz se for o tópico bloqueado.
+     */
+    public function markVideoAsWatched(Request $request, Lesson $lesson): JsonResponse
     {
-        try {
-            $sessionKey = $this->getQuizSessionKey($lesson->id);
-            Session::forget($sessionKey);
+        $request->validate([
+            'topic_id' => 'required|integer|exists:topics,id'
+        ]);
+
+        $user = Auth::user();
+        $watchedTopicId = $request->input('topic_id');
+
+        if (!$user) {
+            return $this->responseError('Usuário não autenticado.', 401);
+        }
+
+        $lessonUser = LessonUser::where('user_id', $user->id)
+            ->where('lesson_id', $lesson->id)
+            ->first();
+
+        // Só desbloqueia se o vídeo assistido for EXATAMENTE o vídeo que estava bloqueando o quiz
+        if ($lessonUser && $lessonUser->quiz_locked_topic_id == $watchedTopicId) {
+            $lessonUser->update(['quiz_locked_topic_id' => null]);
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Sessão do quiz limpa com sucesso.',
+                'status' => 'unlocked',
+                'message' => 'Tópico assistido! O quiz está desbloqueado.',
+                'lesson_id' => $lesson->id,
+                'topic_id' => $watchedTopicId
             ]);
-        } catch (Exception $e) {
-            return $this->responseError('Ocorreu um erro ao limpar a sessão do quiz.', 500);
         }
+
+        return response()->json([
+            'status' => 'not_locked',
+            'message' => 'Vídeo assistido.'
+        ]);
     }
 }

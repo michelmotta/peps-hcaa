@@ -59,6 +59,7 @@ class WebController extends Controller
         $feedback = null;
         $lessonUserData = null;
         $averageScore = null;
+        $quizLockedTopicId = null;
 
         if ($user) {
             $feedback = Feedback::where('lesson_id', $lesson->id)
@@ -68,6 +69,8 @@ class WebController extends Controller
             $lessonUserData = LessonUser::where('user_id', $user->id)
                 ->where('lesson_id', $lesson->id)
                 ->first();
+
+            $quizLockedTopicId = $lessonUserData->quiz_locked_topic_id ?? null;                
         }
 
         $rawAverageScore = LessonUser::where('lesson_id', $lesson->id)
@@ -91,6 +94,7 @@ class WebController extends Controller
             'watchedTopicIds' => $watchedTopicIds,
             'lessonUserData' => $lessonUserData,
             'averageScore' => $averageScore,
+            'quizLockedTopicId' => $quizLockedTopicId,
         ]);
     }
 
