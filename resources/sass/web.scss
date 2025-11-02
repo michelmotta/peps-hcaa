@@ -3575,6 +3575,53 @@ footer,
     }
 }
 
+.custom-text-justify {
+    text-align: justify;
+}
+
+.image-container {
+    position: relative;
+}
+
+.curso-thumbnail {
+    display: block;
+}
+
+.cta-button {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    z-index: 10;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(160deg, #1a4c8a 0%, #133b6a 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 10px 20px rgba(19, 59, 106, 0.3);
+    transition: filter 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .bi {
+        font-size: 1.5rem;
+    }
+
+    &:hover {
+        filter: brightness(1.2);
+    }
+}
+
+.content-below-image {
+    padding-top: 4rem !important;
+}
+
 @media (max-width: 768px) {
     .home-banner {
         padding-bottom: 50px !important;
@@ -3627,51 +3674,40 @@ footer,
             }
         }
     }
-}
 
-.custom-text-justify {
-    text-align: justify;
-}
-
-.image-container {
-    position: relative;
-}
-
-.curso-thumbnail {
-    display: block;
-}
-
-.cta-button {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translate(-50%, 50%);
-    z-index: 10;
-    padding: 1rem 2.5rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    background: linear-gradient(160deg, #1a4c8a 0%, #133b6a 100%);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 10px 20px rgba(19, 59, 106, 0.3);
-    transition: filter 0.3s ease;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-
-    .bi {
-        font-size: 1.5rem;
+    .curso-tabs {
+        .tab-content {
+            padding: 0px 0px 10px 0px;
+        }
     }
 
-    &:hover {
-        filter: brightness(1.2);
+    .avaliacao-section {
+        .avaliacao-card {
+            padding: 0px;
+            text-align: center;
+        }
     }
-}
 
-.content-below-image {
-    padding-top: 4rem !important;
+    .curso-tabs {
+        .nav-tabs {
+            .nav-link {
+                padding: 15px 10px;
+            }
+        }
+    }
+    .avaliacao-section {
+        .avaliacao-card {
+            .start-quiz-btn{
+                font-size: 16px;
+            }
+        }
+    }
+    .quiz-modal-content {
+        .question-box{
+            padding: 20px 10px;
+        }
+        .answer-options{
+            padding: 0 15px 30px;
+        }
+    }
 }

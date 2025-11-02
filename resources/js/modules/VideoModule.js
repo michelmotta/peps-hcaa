@@ -66,12 +66,18 @@ class TopicManager {
     setupFirstTopic() {
         const firstItem = this.topicItems[0];
         if (firstItem) {
+            this.showLoading();
             firstItem.classList.add('active');
             const firstVideoUrl = firstItem.dataset.video;
+
+            const posterImg = firstItem.querySelector('.topic-thumb');
+            const firstPosterUrl = posterImg ? posterImg.src : '';
+
             if (firstVideoUrl) {
                 this.player.source = {
                     type: 'video',
                     sources: [{ src: firstVideoUrl, type: 'video/mp4' }],
+                    poster: firstPosterUrl
                 };
             }
         }
@@ -84,7 +90,7 @@ class TopicManager {
                 if (!videoUrl) return;
 
                 this.setActiveTopic(item);
-                this.loadVideo(videoUrl);
+                this.loadVideo(item)
             });
         });
     }
@@ -101,22 +107,34 @@ class TopicManager {
         if (currentIcon) currentIcon.style.display = 'inline';
     }
 
-    loadVideo(videoUrl) {
+    loadVideo(item) {
+        const videoUrl = item.dataset.video;
+        const posterImg = item.querySelector('.topic-thumb');
+        const posterUrl = posterImg ? posterImg.src : '';
         this.showLoading();
         this.player.source = {
             type: 'video',
             sources: [{ src: videoUrl, type: 'video/mp4' }],
+            poster: posterUrl
         };
         this.player.play();
     }
 
     setupPlayerEvents() {
         this.player.on('timeupdate', () => this.handleTimeUpdate());
+
         this.player.on('loadeddata', () => {
             this.sentEvent = false;
+        });
+
+        this.player.on('canplay', () => {
             this.hideLoading();
         });
-        this.player.on('playing', () => this.handlePlaying());
+
+        this.player.on('playing', () => {
+            this.handlePlaying();
+        });
+
         this.player.on('pause', () => this.handlePause());
         this.player.on('ended', () => this.handleEnded());
     }

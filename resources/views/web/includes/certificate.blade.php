@@ -96,13 +96,13 @@
         }
 
         .sig-cell {
-            width: 50%;
+            width: 33.33%;
             text-align: center;
         }
 
         .sig-line {
             border-bottom: 1px solid #333;
-            width: 280px;
+            width: 250px;
             margin: 0 auto 5px auto;
         }
 
@@ -298,8 +298,13 @@
                         <tr>
                             <td class="sig-cell">
                                 <div class="sig-line"></div>
-                                <div class="sig-name">Nome do(a) Coordenador(a)</div>
-                                <div class="sig-role">Coordenador(a) do PEPS</div>
+                                <div class="sig-name">&nbsp;</div>
+                                <div class="sig-role">Coordenador(a)</div>
+                            </td>
+                            <td class="sig-cell">
+                                <div class="sig-line"></div>
+                                <div class="sig-name">{{ $lesson->teacher->name }}</div>
+                                <div class="sig-role">Professor</div>
                             </td>
                             <td class="sig-cell">
                                 <div class="sig-line"></div>
@@ -353,7 +358,7 @@
                                 <p class="professor-expertise">{{ $lesson->teacher->expertise }}</p>
                             @endif
                             @if ($lesson->teacher->biography)
-                                <p class="professor-description">{{ $lesson->teacher->biography }}</p>
+                                <p class="professor-description">{!! $lesson->teacher->biography !!}</p>
                             @endif
                         </div>
                     @endif
@@ -366,9 +371,6 @@
                                 @foreach ($lesson->topics as $topic)
                                     <li>
                                         <div class="topic-title">{{ $topic->title }}</div>
-                                        @if ($topic->resume)
-                                            <div class="topic-resume">{{ $topic->resume }}</div>
-                                        @endif
                                     </li>
                                 @endforeach
                             </ul>

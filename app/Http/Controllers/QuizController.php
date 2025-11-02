@@ -235,7 +235,7 @@ class QuizController extends Controller
             );
             $attempt->update([
                 'status' => 'completed',
-                'progress_state' => null,
+                'progress_state' => [],
             ]);
         });
     }
